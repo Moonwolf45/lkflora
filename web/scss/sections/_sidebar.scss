@@ -1,0 +1,124 @@
+@media (min-width:991px) {
+	body.js_active-sidebar{
+		.sidebar{
+			width: 215px;
+		}
+		.header {
+	    	width: calc(100% - 215px);
+	    }
+	    .content {
+		   
+		}
+		#wrapper{
+			padding-left: 215px;
+		}
+		.menu__text{
+			opacity: 1;
+			visibility: inherit;
+			pointer-events: auto;
+		}
+	}
+}
+
+
+
+.sidebar{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 80px;
+	background: $white;
+	height: 100%;
+	border:solid rgba(149, 177, 158, 0.25);
+	border-width: 0 1px 0 0;
+	transition:0.3s;
+	box-shadow: 1px 0px 8px rgba(228, 232, 240, 0.1), 0px 4px 4px rgba(0, 0, 0, 0.25);
+	z-index: 105;
+}
+
+.sidebar__wrapp{
+	height: calc(100% - 80px);
+	font-size: 0;
+}
+
+
+
+.sidebar__scroll{
+	height: 100%;
+	-ms-overflow-y: auto;
+	    overflow-y: auto;
+	 -ms-overflow-x: hidden;
+	     overflow-x: hidden;
+	    
+	&:before{
+		content: "";
+		height: 100%;
+		display: inline-block;
+		vertical-align: middle;
+		width: 0px;
+	}
+}
+.sidebar__menu{
+	width: calc(100%);
+	display: inline-block;
+	vertical-align: middle;
+}
+
+
+// none mobile
+.sidebar__mobile-block{
+	display: none;
+	padding: 35px 20px 20px 24px;
+}
+.sidebar__mobile-close-logo{
+	display: flex;
+	margin-bottom: 25px;
+	-webkit-align-items: center;
+	        align-items: center;
+}
+.sidebar__logo{
+	max-width: 130px;
+	margin-left: 10px;
+}
+@media (max-width:991px) {
+	.sidebar{
+		width: 215px;
+		transform:translateX(-100%);
+		-webkit-box-shadow: none;
+		        box-shadow: none;
+		transition: 0.5s;
+	}
+	.sidebar__burger{
+		display: none;
+	}
+	.sidebar__scroll:before{
+		display: none;
+	}
+	.sidebar__mobile-block{
+		display: block;
+	}
+	.sidebar__wrapp {
+    	height: calc(100% - 171px);
+	}
+	body.js_active-sidebar{
+		overflow: hidden;
+		.sidebar{
+			transform:translateX(0%);
+			box-shadow: 1px 0px 8px rgba(228, 232, 240, 0.1), 0px 4px 4px rgba(0, 0, 0, 0.25);
+		}
+		#wrapper{
+			transition:0.5s;
+			&:before{
+				content: "";
+				position: absolute;
+				left: 0;
+				top: 0;
+				
+				z-index: 101;
+				background: rgba($dark,0.8);
+				width: 100%;
+				height: 100%;
+			}
+		}
+	}
+}

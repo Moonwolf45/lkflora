@@ -1,0 +1,22 @@
+{
+  "name": "siteproduct",
+  "version": "1.0.0",
+  "description": "My super gulp version wherein i update everyday",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Artem Repetskyi",
+  "license": "ISC",
+  "devDependencies": {
+    "gulp": "^4.0.0",
+    "gulp-autoprefixer": "^6.0.0",
+    "gulp-clean-css": "^4.0.0",
+    "gulp-sass": "^4.0.2",
+    "gulp-sourcemaps": "^2.6.5",
+    "gulp-watch": "^5.0.1"
+  },
+  "dependencies": {
+    "gulp-css-scss": "^0.1.0"
+  }
+}

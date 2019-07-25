@@ -1,0 +1,38 @@
+
+
+.field_disable{
+	pointer-events: none;
+	opacity: 0.4;
+}
+
+.field__justi{
+	display: flex;
+	-webkit-justify-content: space-between;
+	        justify-content: space-between;
+	    -webkit-align-items: center;
+	            align-items: center;
+	   
+	   
+}
+.field__link,
+.field__text{
+	display: inline-block;
+	margin-bottom: 8px;
+	color: $light-gray;
+}
+
+.field__text{
+	font-weight: 500;
+	font-size: 12px;
+	letter-spacing: 1.125px;
+	text-transform: uppercase;
+}
+
+.field__link{
+	font-size: 15px;
+	&:hover{
+		text-decoration: underline;
+	}
+}
+
+

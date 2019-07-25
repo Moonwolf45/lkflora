@@ -1,0 +1,87 @@
+.menu{
+	
+}
+
+.menu__link{
+	height: 56px;
+	width: 100%;
+	display: block;
+	position: relative;
+	transition:0.3s;
+	overflow: hidden;
+	&:before{
+		content: "";
+		width: 15px;
+		height: 100%;
+		position: absolute;
+		left: 0;
+		top: 0;
+		display: block;
+		background: $green;
+		
+		visibility: hidden;
+		opacity: 0;
+		transform:scale(2);
+		
+		transition:0.3s;
+	}
+	&:hover{
+		background: rgba($gray-2,0.1);
+		&:before{
+			visibility: inherit;
+			opacity: 1;
+			width: 3px;
+			transform:scale(1);
+		}
+	}
+	&.active{
+		cursor: default;
+		background: rgba($gray-2,0.1);
+		&:before{
+			visibility: inherit;
+			opacity: 1;
+			width: 3px;
+			transform:scale(1);
+		}
+	}
+}
+.menu__box{
+	white-space: nowrap;
+	font-size: 0;
+}
+
+.menu__text,
+.menu__icon{
+	display: inline-block;
+	vertical-align: middle;
+}
+.menu__icon{
+	position: relative;
+	height: 56px;
+	svg{
+		position: relative;
+		top: 50%;
+		transform:translate(0,-50%);
+	}
+}
+
+.menu__text{
+	position: relative;
+	left: -10px;
+	opacity: 0;
+	visibility: hidden;
+	pointer-events: none;
+	font-weight: 300;
+	font-size: 16px;
+	color: $dark;
+}
+
+
+
+@media (max-width:991px) {
+	.menu__text{
+		opacity: 1;
+		visibility: inherit;
+		pointer-events: auto;
+	}
+}

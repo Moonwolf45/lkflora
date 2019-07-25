@@ -1,0 +1,23 @@
+.input{
+	background: rgba($gray-field,0.3);
+	border: 1px solid rgba(#95B19E, 0.3);
+	border-radius: 5px;
+	height: 40px;
+	display: block;
+	color: $dark;
+	width: 100%;
+	text-indent: 15px;
+	font-size: 15px;
+	font-family: $rubik;
+	
+	transition:0.5s;
+
+	@include placeholder {
+		font-size: 15px;
+		color: $dark;
+	}
+}
+
+
+
+

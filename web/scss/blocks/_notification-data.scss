@@ -1,0 +1,16 @@
+
+
+@media (max-width:991px) {
+	.notification-data{
+		display: block;
+		height: 50px;
+		width: 50px;
+		svg{
+			display: block;
+			position: relative;
+			margin: 0 auto;
+			top: 50%;
+			transform:translate(0,-50%);
+		}
+	}
+}
