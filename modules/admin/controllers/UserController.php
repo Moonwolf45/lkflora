@@ -38,8 +38,7 @@ class UserController extends Controller {
     /**
      * @return string
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $searchModel = new UserSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -55,8 +54,7 @@ class UserController extends Controller {
      * @return string
      * @throws NotFoundHttpException
      */
-    public function actionView($id)
-    {
+    public function actionView($id) {
         $userSettingsData = UserSettings::findOne(['user_id' => $id]);
 
         return $this->render('view', [
@@ -73,8 +71,7 @@ class UserController extends Controller {
      *
      * @return string
      */
-    public function generate_password($number = 10)
-    {
+    public function generate_password($number = 10) {
         $arr = ['a', 'b', 'c', 'd', 'e', 'f',
                 'g', 'h', 'i', 'j', 'k', 'l',
                 'm', 'n', 'o', 'p', 'r', 's',
@@ -102,8 +99,7 @@ class UserController extends Controller {
      * @return string|\yii\web\Response
      * @throws \yii\base\Exception
      */
-    public function actionCreate()
-    {
+    public function actionCreate() {
         $model = new User;
 
         if ($model->load(Yii::$app->request->post())) {
@@ -132,8 +128,7 @@ class UserController extends Controller {
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException
      */
-    public function actionUpdate($id)
-    {
+    public function actionUpdate($id) {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -153,8 +148,7 @@ class UserController extends Controller {
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function actionDelete($id)
-    {
+    public function actionDelete($id) {
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -166,9 +160,8 @@ class UserController extends Controller {
      * @return User|null
      * @throws NotFoundHttpException
      */
-    protected function findModel($id)
-    {
-        if (($model = User::findOne($id)) !== null) {
+    protected function findModel($id) {
+        if (($model = User::find()->with('shops')->where(['id' => $id])->one()) !== null) {
             return $model;
         }
 

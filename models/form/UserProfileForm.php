@@ -104,8 +104,8 @@ class UserProfileForm extends Model {
      */
     public function upload() {
         if ($this->validate()) {
-            $name_image = time() . '.' . $this->image->extension;
-            $new_name_image = 'upload/temp_files/' . $this->image->baseName . '.' . $this->image->extension;
+            $name_image = $this->image->baseName . '.' . $this->image->extension;
+            $new_name_image = 'upload/temp_files/' . time() . '.' . $this->image->extension;
             $path = 'upload/user/' . $name_image;
             shell_exec('convert ' . $new_name_image . ' -auto-orient -quality 90 ' . $path);
             $this->image->saveAs($path);

@@ -2,6 +2,7 @@
 
 namespace app\models\db;
 
+use app\models\shops\Shops;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -245,5 +246,9 @@ class User extends ActiveRecord implements IdentityInterface {
         mail($this->email, 'Для вас создана учетная запись', $msg);
 
         return true;
+    }
+
+    public function getShops() {
+        return $this->hasMany(Shops::class, ['user_id' => 'id']);
     }
 }

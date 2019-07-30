@@ -30,19 +30,48 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'email:email',
-            'doc_num',
+            [
+                'attribute' => 'doc_num',
+                'value' => function($userSettingsData) {
+                    return $userSettingsData->doc_num;
+                }
+            ],
+            [
+                'attribute' => 'shops',
+                'label' => 'Магазины',
+                'format' => 'html',
+                'value' => function($data) {
+                    if ($data->shops) {
+                        $shop_string = '';
+                        $i = 1;
+                        foreach ($data->shops as $shop) {
+                            $shop_string .= $i . ': ' . $shop->name . '<br>';
+                            $i++;
+                        }
+
+                        return '<p class="text-success">' . $shop_string . '</p>';
+                    } else {
+                        return '<p class="text-danger">Не найдено не одного магазина</p>';
+                    }
+                }
+            ]
         ],
-    ]) ?>
-
-
-    <?php
-    if ($userSettingsData != null){
-        echo '<pre>';
-        var_dump($userSettingsData);
-    } else {
-        echo '* Дополнительных данных на пользователя не найдено';
-    }
-
-    ?>
+    ]); ?>
+    <?= DetailView::widget([
+        'model' => $userSettingsData,
+        'attributes' => [
+            'doc_num',
+            'type_org',
+            'name_org',
+            'ur_addr_org',
+            'ogrn',
+            'inn',
+            'kpp',
+            'bik_banka',
+            'name_bank',
+            'kor_schet',
+            'rass_schet'
+        ],
+    ]); ?>
 
 </div>

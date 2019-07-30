@@ -43,6 +43,7 @@ AdminAsset::register($this); ?>
             ['label' => 'Главная админки', 'url' => ['/admin']],
             ['label' => 'Пользователи', 'url' => ['/admin/user']],
             ['label' => 'Тарифы', 'url' => ['/admin/tariff']],
+            ['label' => 'Магазины', 'url' => ['/admin/shops']],
         ],
     ]);
 

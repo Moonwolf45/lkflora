@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models;
+namespace app\models\tariff;
 
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -40,6 +40,9 @@ class Tariff extends ActiveRecord {
         ];
     }
 
+    /**
+     * @return array
+     */
     public function behaviors(){
         return [
             [

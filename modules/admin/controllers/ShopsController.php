@@ -3,23 +3,23 @@
 namespace app\modules\admin\controllers;
 
 use Yii;
-use app\models\tariff\Tariff;
-use app\models\tariff\TariffSearch;
+use app\models\shops\Shops;
+use app\models\shops\ShopsSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * TariffController implements the CRUD actions for Tariff model.
+ * ShopsController implements the CRUD actions for Shops model.
  */
-class TariffController extends Controller {
+class ShopsController extends Controller {
     /**
      * {@inheritdoc}
      */
     public function behaviors() {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -28,11 +28,11 @@ class TariffController extends Controller {
     }
 
     /**
-     * Lists all Tariff models.
+     * Lists all Shops models.
      * @return mixed
      */
     public function actionIndex() {
-        $searchModel = new TariffSearch();
+        $searchModel = new ShopsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -42,7 +42,7 @@ class TariffController extends Controller {
     }
 
     /**
-     * Displays a single Tariff model.
+     * Displays a single Shops model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -54,12 +54,12 @@ class TariffController extends Controller {
     }
 
     /**
-     * Creates a new Tariff model.
+     * Creates a new Shops model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate() {
-        $model = new Tariff();
+        $model = new Shops();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -71,7 +71,7 @@ class TariffController extends Controller {
     }
 
     /**
-     * Updates an existing Tariff model.
+     * Updates an existing Shops model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -90,15 +90,11 @@ class TariffController extends Controller {
     }
 
     /**
-     * Deletes an existing Tariff model.
+     * Deletes an existing Shops model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     *
      * @param integer $id
-     *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id) {
         $this->findModel($id)->delete();
@@ -107,14 +103,14 @@ class TariffController extends Controller {
     }
 
     /**
-     * Finds the Tariff model based on its primary key value.
+     * Finds the Shops model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Tariff the loaded model
+     * @return Shops the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id) {
-        if (($model = Tariff::findOne($id)) !== null) {
+        if (($model = Shops::findOne($id)) !== null) {
             return $model;
         }
 
