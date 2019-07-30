@@ -14,10 +14,10 @@ AppAsset::register($this);
     <!DOCTYPE html>
     <html lang="<?= Yii::$app->language ?>">
     <head>
-        <meta charset="<?= Yii::$app->charset ?>">
+        <meta http-equiv="Content-Type" content="text/html; charset=<?= Yii::$app->charset; ?>">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <link href="favicon.png" rel="shortcut icon" type="image/x-icon"/>
+        <link href="/images/favicon.ico" rel="shortcut icon" type="image/x-icon">
         <?php $this->registerCsrfMetaTags() ?>
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
@@ -31,7 +31,7 @@ AppAsset::register($this);
                     <div class="user-log__col">
                         <div class="user-log__block">
                             <div class="logo  user-log__logo">
-                                <img class="logo__img" src="images/logo.png" alt="">
+                                <img class="logo__img" src="/images/logo.png" alt="">
                             </div>
                             <div class="user-log__desc">
                                 <h2 class="user-log__title"><?=$this->title?></h2>
@@ -41,7 +41,7 @@ AppAsset::register($this);
                     </div>
                     <div class="user-log__col user-log__col_mobile">
                         <div class="user-log__image">
-                            <img src="images/authorization-img.jpg" alt="" class="user-log__img">
+                            <img src="/images/authorization-img.jpg" alt="" class="user-log__img">
                         </div>
                     </div>
                 </div>

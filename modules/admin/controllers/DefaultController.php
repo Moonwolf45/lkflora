@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use Yii;
 
@@ -10,19 +11,17 @@ use Yii;
  *
  * @package app\modules\admin\controllers
  */
-class DefaultController extends Controller
-{
+class DefaultController extends Controller {
     /**
      * Настройка доступа
      * todo: в данный момент доступ открыт всем авторизированным пользователям!
      *
      * @return array
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
-                'class' => \yii\filters\AccessControl::class,
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'allow' => true,
@@ -33,16 +32,12 @@ class DefaultController extends Controller
         ];
     }
 
-    /** @var string */
-    public $layout = 'admin';
-
     /**
      * Главная админки
      *
      * @return bool|string
      */
-    public function actionIndex()
-    {
+    public function actionIndex(){
         return $this->render('index');
     }
 }

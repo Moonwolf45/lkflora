@@ -9,24 +9,24 @@ use yii\web\AssetBundle;
  *
  * @package app\assets
  */
-class AppAsset extends AssetBundle
-{
+class AppAsset extends AssetBundle {
     public $basePath = '@webroot';
-
     public $baseUrl = '@web';
 
     public $css = [
-        'style.css',
+        'css/style.css',
+        'css/dadata.css',
     ];
 
     public $js = [
-        'js/jquery-3.3.1.min.js',
         'js/jquery.cookie.js',
         'js/main.js',
+        'js/jquery.suggestions.min.js',
+        'js/359.js',
     ];
 
     public $depends = [
-        //'yii\web\YiiAsset',
-        //'yii\bootstrap\BootstrapAsset',
+        'yii\web\YiiAsset',
+        //'yii\bootstrap\BootstrapPluginAsset',
     ];
 }

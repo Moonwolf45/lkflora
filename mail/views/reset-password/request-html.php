@@ -1,3 +1,4 @@
 <?php
 /** @var $link string */
-echo $link;
+
+echo $this->params['link'];

@@ -1,6 +1,5 @@
 <?php
 
-use app\models\db\UserSettings;
 use yii\helpers\Html;
 use yii\web\View;
 use yii\widgets\ActiveForm;
@@ -9,24 +8,8 @@ use yii\widgets\ActiveForm;
 /* @var $model app\models\db\UserSettings */
 /* @var $form ActiveForm */
 
-$this->title = 'Анкета';
+$this->title = 'Анкета'; ?>
 
-$script = <<< JS
-    $('.radio__nesting').on('click', function(e) {
-      
-      console.log('1');
-      
-      var ip = $("#type-ip").prop("checked");
-      
-      if (ip){
-        $('#kpp-div').addClass('field_disable');
-      } else {
-        $('#kpp-div').removeClass('field_disable');
-      }
-    });
-JS;
-$this->registerJs($script, yii\web\View::POS_READY);
-?>
 <div class="content">
     <h2 class="content__title">Анкета</h2>
     <div class="content__row">
@@ -167,3 +150,21 @@ $this->registerJs($script, yii\web\View::POS_READY);
         </div>
     </div>
 </div>
+
+<?php
+$script = <<< JS
+    $('.radio__nesting').on('click', function(e) {
+      
+      console.log('1');
+      
+      var ip = $("#type-ip").prop("checked");
+      
+      if (ip){
+        $('#kpp-div').addClass('field_disable');
+      } else {
+        $('#kpp-div').removeClass('field_disable');
+      }
+    });
+JS;
+
+$this->registerJs($script, View::POS_READY); ?>

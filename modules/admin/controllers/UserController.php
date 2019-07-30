@@ -6,17 +6,14 @@ use app\models\db\UserSettings;
 use Yii;
 use app\models\db\User;
 use app\models\db\UserSearch;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * Контроллер пользователя
  */
-class UserController extends Controller
-{
-    /** @var string */
-    public $layout = 'admin';
+class UserController extends Controller {
 
     /**
      * Настройка доступа
@@ -24,11 +21,10 @@ class UserController extends Controller
      *
      * @return array
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
-                'class' => \yii\filters\AccessControl::class,
+                'class' => AccessControl::class,
                 'rules' => [
                     [
                         'allow' => true,

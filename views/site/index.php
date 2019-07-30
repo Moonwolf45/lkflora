@@ -10,8 +10,8 @@ $this->title = 'Авторизация';
 <div class="field user-log__field">
     <p class="field__text">Ваш email</p>
     <?= $form->field($model, 'email', [
-        'inputOptions' => ['class' => 'input'],
-    ])->label('') ?>
+        'inputOptions' => ['class' => 'input']
+    ])->label(''); ?>
 </div>
 <div class="field user-log__field">
     <div class="field__justi">

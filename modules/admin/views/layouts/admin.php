@@ -12,13 +12,13 @@ use yii\bootstrap\NavBar;
 use yii\helpers\Url;
 use yii\widgets\Breadcrumbs;
 
-AdminAsset::register($this);
-?>
+AdminAsset::register($this); ?>
+
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language ?>">
 <head>
-    <meta charset="<?= Yii::$app->charset ?>">
+    <meta http-equiv="Content-Type" content="text/html; charset=<?= Yii::$app->charset; ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <?= Html::csrfMetaTags() ?>
@@ -29,29 +29,32 @@ AdminAsset::register($this);
 <?php $this->beginBody() ?>
 
 <div class="wrap">
-    <?php
-    NavBar::begin([
+    <?php NavBar::begin([
         'brandLabel' => "Админ-панель FloraPoint",
-        'brandUrl'   => "index.php?r=admin",
+        'brandUrl'   => "/admin",
         'options'    => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
+
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items'   => [
             ['label' => 'Главная админки', 'url' => ['/admin']],
             ['label' => 'Пользователи', 'url' => ['/admin/user']],
+            ['label' => 'Тарифы', 'url' => ['/admin/tariff']],
         ],
     ]);
+
     NavBar::end();
     ?>
 
     <div class="container">
         <?= Breadcrumbs::widget([
+            'homeLink' => ['label' => 'Главная', 'url' => '/admin'],
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
+        ]); ?>
+        <?= Alert::widget(); ?>
         <?= $content ?>
     </div>
 </div>

@@ -157,24 +157,21 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->getPrimaryKey();
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getAuthKey()
-    {
+    public function getAuthKey() {
         return $this->auth_key;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function validateAuthKey($authKey)
-    {
+    public function validateAuthKey($authKey) {
         return $this->getAuthKey() === $authKey;
     }
 
@@ -185,8 +182,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return bool if password provided is valid for current user
      */
-    public function validatePassword($password)
-    {
+    public function validatePassword($password) {
         return Yii::$app->security->validatePassword($password, $this->password_hash);
     }
 
@@ -197,16 +193,14 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @throws \yii\base\Exception
      */
-    public function setPassword($password)
-    {
+    public function setPassword($password) {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
      * Generates "remember me" authentication key
      */
-    public function generateAuthKey()
-    {
+    public function generateAuthKey() {
         $this->auth_key = Yii::$app->security->generateRandomString();
     }
 
@@ -249,8 +243,7 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @return string
      */
-    public function sendMailForNewUser()
-    {
+    public function sendMailForNewUser() {
         $msg = "Адрес входа: http://{$_SERVER['HTTP_HOST']} \n";
         $msg .= "Логин: {$this->email} \n";
         $msg .= "Пароль: {$this->password_hash} \n";

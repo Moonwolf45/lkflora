@@ -17,7 +17,7 @@ $this->title = 'Ваше фото';
                     <?php $form = ActiveForm::begin(); ?>
                     <div style="text-align: center">
                         <b>Ваше текущее фото:</b><br><br>
-                        <img src="<?php
+                        <img src="/<?php
                         if (Yii::$app->user->identity->avatar) {
                             echo Yii::$app->user->identity->avatar;
                         } else {
@@ -38,7 +38,7 @@ $this->title = 'Ваше фото';
                         <div class="unloadAvaInp">
                             <div class="form-group">
                                 <label class="label">
-                                    <img src="<?php
+                                    <img src="/<?php
                                     if (Yii::$app->user->identity->avatar) {
                                         echo Yii::$app->user->identity->avatar;
                                     } else {

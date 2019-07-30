@@ -6,16 +6,13 @@ use app\models\AuthForm;
 use app\models\db\User;
 use app\models\form\ResetPasswordConfirmForm;
 use app\models\form\ResetPasswordForm;
-use app\models\LoginForm;
 use app\models\RegistrationForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
-use yii\filters\VerbFilter;
 
-class SiteController extends Controller
-{
+class SiteController extends Controller {
     /**
      * {@inheritdoc}
      */
@@ -62,7 +59,7 @@ class SiteController extends Controller
         $model = new AuthForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['user/index']);
+            return $this->redirect(['/user/index']);
         } else {
             $model->password = '';
 
@@ -86,7 +83,7 @@ class SiteController extends Controller
         $model->load(Yii::$app->request->post());
         if ($user = $model->save()) {
             if (Yii::$app->getUser()->login($user)) {
-                $this->redirect(['user/index']);
+                $this->redirect(['/user/index']);
             }
         } else {
             $errors = $model->errors;
@@ -103,7 +100,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        $this->redirect('index.php?r=site/index');
+        $this->redirect('/site/index');
 
         return true;
     }
@@ -111,8 +108,7 @@ class SiteController extends Controller
     /**
      * Восстановление пароля
      */
-    public function actionResetPassword()
-    {
+    public function actionResetPassword() {
         $this->layout = 'main-reset-password';
 
         $model = new ResetPasswordForm;
@@ -132,8 +128,7 @@ class SiteController extends Controller
      * @return string
      * @throws \yii\base\Exception
      */
-    public function actionResetPasswordConfirm($token = '')
-    {
+    public function actionResetPasswordConfirm($token = '') {
         $this->layout = 'main-reset-password';
 
         $user = User::findByPasswordResetToken($token);

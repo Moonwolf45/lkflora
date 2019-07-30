@@ -9,8 +9,7 @@ use app\models\db\User;
 /**
  * UserSearch represents the model behind the search form of `app\models\User`.
  */
-class UserSearch extends User
-{
+class UserSearch extends User {
     /**
      * {@inheritdoc}
      */

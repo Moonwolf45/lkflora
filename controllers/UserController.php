@@ -14,12 +14,10 @@ use app\models\form\UserSettingsForm;
 use app\models\form\UploadAvatarForm;
 use yii\web\UploadedFile;
 
-class UserController extends Controller
-{
+class UserController extends Controller {
     public $layout = 'user';
 
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
                 'class' => AccessControl::class,
@@ -46,8 +44,7 @@ class UserController extends Controller
      *
      * @return string
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         if (Yii::$app->user->isGuest) {
             $this->render('auth');
         }
@@ -55,7 +52,7 @@ class UserController extends Controller
         $model = new UserSettingsForm;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['user/index']);
+            return $this->redirect(['/user/index']);
         }
 
         $model->loadData();

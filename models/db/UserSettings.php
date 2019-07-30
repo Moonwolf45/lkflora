@@ -3,6 +3,7 @@
 namespace app\models\db;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "user_settings".
@@ -21,13 +22,11 @@ use Yii;
  * @property string $kor_schet   Кор счет
  * @property string $rass_schet  Рассчетный счет
  */
-class UserSettings extends \yii\db\ActiveRecord
-{
+class UserSettings extends ActiveRecord {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return 'user_settings';
     }
 
