@@ -25,8 +25,7 @@ use yii\web\IdentityInterface;
  * @property integer $updated_at
  * @property string  $password write-only password
  */
-class User extends ActiveRecord implements IdentityInterface
-{
+class User extends ActiveRecord implements IdentityInterface {
     public $passForMail;
 
     const STATUS_DELETED = 0;
@@ -56,10 +55,9 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 
@@ -172,7 +170,7 @@ class User extends ActiveRecord implements IdentityInterface
      * {@inheritdoc}
      */
     public function validateAuthKey($authKey) {
-        return $this->getAuthKey() === $authKey;
+        return $this->auth_key === $authKey;
     }
 
     /**
@@ -209,29 +207,25 @@ class User extends ActiveRecord implements IdentityInterface
      *
      * @throws \yii\base\Exception
      */
-    public function generatePasswordResetToken()
-    {
+    public function generatePasswordResetToken() {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
-    public function generateEmailVerificationToken()
-    {
+    public function generateEmailVerificationToken() {
         $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**
      * Очистка токена восстановления пароля
      */
-    public function removePasswordResetToken()
-    {
+    public function removePasswordResetToken() {
         $this->password_reset_token = null;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'email'   => 'E-mail пользователя',
             'doc_num' => 'Номер договора',

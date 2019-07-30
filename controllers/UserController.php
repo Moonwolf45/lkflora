@@ -67,12 +67,11 @@ class UserController extends Controller {
     }
 
     /**
-     * Авторизация todo
+     * Авторизация
      *
      * @return string|\yii\web\Response
      */
-    public function actionAuth()
-    {
+    public function actionAuth() {
         $model = new AuthForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->redirect(['user/index']);
@@ -92,8 +91,7 @@ class UserController extends Controller {
      * @throws \yii\base\Exception
      * @throws \yii\db\Exception
      */
-    public function actionSettings()
-    {
+    public function actionSettings() {
         if (Yii::$app->user->isGuest) {
             $this->render('auth');
         }
@@ -132,8 +130,7 @@ class UserController extends Controller {
      *
      * @return string|\yii\web\Response
      */
-    public function actionAvaUpload()
-    {
+    public function actionAvaUpload() {
         $model = new UploadAvatarForm;
 
         if (Yii::$app->request->isPost) {
@@ -158,8 +155,7 @@ class UserController extends Controller {
      *
      * @return \yii\web\Response
      */
-    public function actionLogout()
-    {
+    public function actionLogout() {
         Yii::$app->user->logout();
 
         return $this->goHome();

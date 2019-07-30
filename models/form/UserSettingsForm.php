@@ -10,26 +10,17 @@ use yii\base\Model;
  * Форма сохранения данных на странице user/index
  * @package app\models\form
  */
-class UserSettingsForm extends Model
-{
+class UserSettingsForm extends Model {
+
     public $type_org;
-
     public $name_org;
-
     public $ur_addr_org;
-
     public $ogrn;
-
     public $inn;
-
     public $kpp;
-
     public $bank_bic;
-
     public $bank_name;
-
     public $kor_schet;
-
     public $rass_schet;
 
     /**
@@ -46,8 +37,7 @@ class UserSettingsForm extends Model
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id'          => 'ID',
             'user_id'     => 'ID пользователя',
@@ -70,8 +60,7 @@ class UserSettingsForm extends Model
      *
      * @return bool
      */
-    public function save()
-    {
+    public function save() {
         if (!$this->validate()) {
             return false;
         }
@@ -102,8 +91,7 @@ class UserSettingsForm extends Model
     /**
      *  Метод заполнения модели данными
      */
-    public function loadData()
-    {
+    public function loadData() {
         $userId = Yii::$app->user->id;
         $userSettings = UserSettings::findOne(['user_id' => $userId]);
 

@@ -7942,3 +7942,149 @@ $_SERVER = [
     'argv' => []
     'argc' => 0
 ]
+2019-07-30 14:17:40 [127.0.0.1][2][uo92s3g560m5c4i7lmc3d5748e6cf0kk][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "upload/skzh-44-04.jpg". in D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\base\Module.php:537
+Stack trace:
+#0 D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction('upload/skzh-44-...', Array)
+#1 D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\base\Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#2 D:\OpenServer\domains\flora-lk\web\index.php(12): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\base\Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#1 D:\OpenServer\domains\flora-lk\web\index.php(12): yii\base\Application->run()
+#2 {main}
+2019-07-30 14:17:40 [127.0.0.1][2][uo92s3g560m5c4i7lmc3d5748e6cf0kk][info][application] $_GET = []
+
+$_POST = []
+
+$_FILES = []
+
+$_COOKIE = [
+    '_identity' => '3b845f2a51c504e4ed39ef94971224da479a4614700281e4ac271e9457507c1ba:2:{i:0;s:9:\"_identity\";i:1;s:14:\"[2,\"\",2592000]\";}'
+    'PHPSESSID' => 'uo92s3g560m5c4i7lmc3d5748e6cf0kk'
+    '_csrf' => '6eb266450117df12e179cd9acde009b53bfc1b331f6a6b052085e848baa7fc2ca:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"6-uopHxZv-Gcp22aSStBCZFiiQa6PVSj\";}'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__id' => 2
+]
+
+$_SERVER = [
+    'REDIRECT_REDIRECT_REDIRECT_STATUS' => '200'
+    'REDIRECT_REDIRECT_STATUS' => '200'
+    'REDIRECT_STATUS' => '200'
+    'HTTP_HOST' => 'floralk.loc'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
+    'HTTP_ACCEPT' => 'image/webp,image/apng,image/*,*/*;q=0.8'
+    'HTTP_REFERER' => 'http://floralk.loc/user/index'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7'
+    'HTTP_COOKIE' => '_identity=3b845f2a51c504e4ed39ef94971224da479a4614700281e4ac271e9457507c1ba%3A2%3A%7Bi%3A0%3Bs%3A9%3A%22_identity%22%3Bi%3A1%3Bs%3A14%3A%22%5B2%2C%22%22%2C2592000%5D%22%3B%7D; PHPSESSID=uo92s3g560m5c4i7lmc3d5748e6cf0kk; _csrf=6eb266450117df12e179cd9acde009b53bfc1b331f6a6b052085e848baa7fc2ca%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%226-uopHxZv-Gcp22aSStBCZFiiQa6PVSj%22%3B%7D'
+    'PATH' => 'd:\\openserver\\modules\\php\\PHP_7.2-x64\\ext;d:\\openserver\\modules\\php\\PHP_7.2-x64\\pear;d:\\openserver\\modules\\php\\PHP_7.2-x64\\pear\\bin;d:\\openserver\\modules\\php\\PHP_7.2-x64;d:\\openserver\\modules\\imagemagick;d:\\openserver\\modules\\wget\\bin;d:\\openserver\\modules\\git;d:\\openserver\\modules\\git\\bin;d:\\openserver\\modules\\git\\mingw\\bin;d:\\openserver\\modules\\git\\cmd;d:\\openserver\\modules\\database\\MySQL-8.0-x64\\bin;d:\\openserver\\modules\\database\\PostgreSQL-11.2-x64\\bin;d:\\openserver\\modules\\database\\PostgreSQL-11.2-x64\\lib;d:\\openserver\\modules\\database\\MongoDB-4.0-x64;d:\\openserver\\modules\\dns\\Bind-9.12-x64;d:\\openserver\\modules\\memcached\\Memcached-1.5-x64;d:\\openserver\\modules\\redis\\Redis-3.2-x64;d:\\openserver\\modules\\http\\Apache_2.4-PHP_7.2-7.3-x64\\bin;d:\\openserver\\modules\\http\\Apache_2.4-PHP_7.2-7.3-x64;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\system32\\Wbem;C:\\WINDOWS\\SysWOW64'
+    'SystemRoot' => 'C:\\WINDOWS'
+    'COMSPEC' => 'C:\\WINDOWS\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\WINDOWS'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_NAME' => 'floralk.loc'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'D:/OpenServer/domains/flora-lk'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'D:/OpenServer/domains/flora-lk'
+    'SERVER_ADMIN' => '[no address given]'
+    'SCRIPT_FILENAME' => 'D:/OpenServer/domains/flora-lk/web/index.php'
+    'REMOTE_PORT' => '6511'
+    'REDIRECT_URL' => '/index.php'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/upload/skzh-44-04.jpg'
+    'SCRIPT_NAME' => '/web/index.php'
+    'PHP_SELF' => '/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1564485460.004
+    'REQUEST_TIME' => 1564485460
+    'argv' => []
+    'argc' => 0
+]
+2019-07-30 14:24:28 [127.0.0.1][2][uo92s3g560m5c4i7lmc3d5748e6cf0kk][error][yii\web\HttpException:404] yii\base\InvalidRouteException: Unable to resolve the request "upload/skzh-44-04.jpg". in D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\base\Module.php:537
+Stack trace:
+#0 D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\web\Application.php(103): yii\base\Module->runAction('upload/skzh-44-...', Array)
+#1 D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\base\Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#2 D:\OpenServer\domains\flora-lk\web\index.php(12): yii\base\Application->run()
+#3 {main}
+
+Next yii\web\NotFoundHttpException: Страница не найдена. in D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\web\Application.php:115
+Stack trace:
+#0 D:\OpenServer\domains\flora-lk\vendor\yiisoft\yii2\base\Application.php(386): yii\web\Application->handleRequest(Object(yii\web\Request))
+#1 D:\OpenServer\domains\flora-lk\web\index.php(12): yii\base\Application->run()
+#2 {main}
+2019-07-30 14:24:28 [127.0.0.1][2][uo92s3g560m5c4i7lmc3d5748e6cf0kk][info][application] $_GET = []
+
+$_POST = []
+
+$_FILES = []
+
+$_COOKIE = [
+    '_identity' => '3b845f2a51c504e4ed39ef94971224da479a4614700281e4ac271e9457507c1ba:2:{i:0;s:9:\"_identity\";i:1;s:14:\"[2,\"\",2592000]\";}'
+    'PHPSESSID' => 'uo92s3g560m5c4i7lmc3d5748e6cf0kk'
+    '_csrf' => '6eb266450117df12e179cd9acde009b53bfc1b331f6a6b052085e848baa7fc2ca:2:{i:0;s:5:\"_csrf\";i:1;s:32:\"6-uopHxZv-Gcp22aSStBCZFiiQa6PVSj\";}'
+]
+
+$_SESSION = [
+    '__flash' => []
+    '__id' => 2
+]
+
+$_SERVER = [
+    'REDIRECT_REDIRECT_REDIRECT_STATUS' => '200'
+    'REDIRECT_REDIRECT_STATUS' => '200'
+    'REDIRECT_STATUS' => '200'
+    'HTTP_HOST' => 'floralk.loc'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_PRAGMA' => 'no-cache'
+    'HTTP_CACHE_CONTROL' => 'no-cache'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.142 Safari/537.36'
+    'HTTP_ACCEPT' => 'image/webp,image/apng,image/*,*/*;q=0.8'
+    'HTTP_REFERER' => 'http://floralk.loc/user/index'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7'
+    'HTTP_COOKIE' => '_identity=3b845f2a51c504e4ed39ef94971224da479a4614700281e4ac271e9457507c1ba%3A2%3A%7Bi%3A0%3Bs%3A9%3A%22_identity%22%3Bi%3A1%3Bs%3A14%3A%22%5B2%2C%22%22%2C2592000%5D%22%3B%7D; PHPSESSID=uo92s3g560m5c4i7lmc3d5748e6cf0kk; _csrf=6eb266450117df12e179cd9acde009b53bfc1b331f6a6b052085e848baa7fc2ca%3A2%3A%7Bi%3A0%3Bs%3A5%3A%22_csrf%22%3Bi%3A1%3Bs%3A32%3A%226-uopHxZv-Gcp22aSStBCZFiiQa6PVSj%22%3B%7D'
+    'PATH' => 'd:\\openserver\\modules\\php\\PHP_7.2-x64\\ext;d:\\openserver\\modules\\php\\PHP_7.2-x64\\pear;d:\\openserver\\modules\\php\\PHP_7.2-x64\\pear\\bin;d:\\openserver\\modules\\php\\PHP_7.2-x64;d:\\openserver\\modules\\imagemagick;d:\\openserver\\modules\\wget\\bin;d:\\openserver\\modules\\git;d:\\openserver\\modules\\git\\bin;d:\\openserver\\modules\\git\\mingw\\bin;d:\\openserver\\modules\\git\\cmd;d:\\openserver\\modules\\database\\MySQL-8.0-x64\\bin;d:\\openserver\\modules\\database\\PostgreSQL-11.2-x64\\bin;d:\\openserver\\modules\\database\\PostgreSQL-11.2-x64\\lib;d:\\openserver\\modules\\database\\MongoDB-4.0-x64;d:\\openserver\\modules\\dns\\Bind-9.12-x64;d:\\openserver\\modules\\memcached\\Memcached-1.5-x64;d:\\openserver\\modules\\redis\\Redis-3.2-x64;d:\\openserver\\modules\\http\\Apache_2.4-PHP_7.2-7.3-x64\\bin;d:\\openserver\\modules\\http\\Apache_2.4-PHP_7.2-7.3-x64;C:\\WINDOWS\\system32;C:\\WINDOWS;C:\\WINDOWS\\system32\\Wbem;C:\\WINDOWS\\SysWOW64'
+    'SystemRoot' => 'C:\\WINDOWS'
+    'COMSPEC' => 'C:\\WINDOWS\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\WINDOWS'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_NAME' => 'floralk.loc'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'D:/OpenServer/domains/flora-lk'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'D:/OpenServer/domains/flora-lk'
+    'SERVER_ADMIN' => '[no address given]'
+    'SCRIPT_FILENAME' => 'D:/OpenServer/domains/flora-lk/web/index.php'
+    'REMOTE_PORT' => '6584'
+    'REDIRECT_URL' => '/index.php'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => ''
+    'REQUEST_URI' => '/upload/skzh-44-04.jpg'
+    'SCRIPT_NAME' => '/web/index.php'
+    'PHP_SELF' => '/web/index.php'
+    'REQUEST_TIME_FLOAT' => 1564485868.257
+    'REQUEST_TIME' => 1564485868
+    'argv' => []
+    'argc' => 0
+]

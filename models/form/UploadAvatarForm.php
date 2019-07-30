@@ -3,14 +3,12 @@
 namespace app\models\form;
 
 use yii\base\Model;
-use yii\web\UploadedFile;
 
 /**
  * Модель загрузки аватарки профиля
  * @package app\models
  */
-class UploadAvatarForm extends Model
-{
+class UploadAvatarForm extends Model {
 
     public $image;
 
@@ -19,10 +17,9 @@ class UploadAvatarForm extends Model
      *
      * @return array
      */
-    public function rules()
-    {
+    public function rules() {
         return [
-            [['image'], 'file', 'extensions' => 'png, jpg'],
+            [['image'], 'file', 'extensions' => 'png, jpg', 'maxSize' => 1024 * 1024 * 5]
         ];
     }
 
@@ -31,10 +28,15 @@ class UploadAvatarForm extends Model
      *
      * @return bool
      */
-    public function upload()
-    {
+    public function upload() {
         if ($this->validate()) {
-            $this->image->saveAs("upload/{$this->image->baseName}.{$this->image->extension}");
+            $name_image = time() . '.' . $this->image->extension;
+            $new_name_image = 'upload/temp_files/' . $this->image->baseName . '.' . $this->image->extension;
+            $path = 'upload/user/' . $name_image;
+            shell_exec('convert ' . $path . ' -auto-orient -quality 90 ' . $new_name_image);
+            $this->image->saveAs($path);
+
+            @unlink($new_name_image);
         } else {
             return false;
         }

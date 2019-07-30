@@ -15,14 +15,14 @@ $this->title = 'Ваше фото';
             <div class="content__box">
                 <div class="settings">
                     <?php $form = ActiveForm::begin(); ?>
-                    <div style="text-align: center">
+                    <div style="text-align:center;">
                         <b>Ваше текущее фото:</b><br><br>
                         <img src="/<?php
                         if (Yii::$app->user->identity->avatar) {
                             echo Yii::$app->user->identity->avatar;
                         } else {
                             echo 'images/user-photo.png'; } ?>" alt="Ваше фото"
-                             style="width: 150px; height: 150px; border-radius: 50%;">
+                             style="width:150px;height:150px;border-radius:50%;">
                         <br><br>
                         <?= $form->field($model, 'image')->fileInput() ?>
 
@@ -43,7 +43,7 @@ $this->title = 'Ваше фото';
                                         echo Yii::$app->user->identity->avatar;
                                     } else {
                                         echo 'images/user-photo.png'; } ?>" alt="Ваше фото"
-                                         style="width: 150px; height: 150px; border-radius: 50%;">
+                                         style="width:150px;height:150px;border-radius:50%;">
                                     <input type="file">
                                 </label>
                             </div>

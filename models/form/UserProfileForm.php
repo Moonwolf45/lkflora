@@ -11,28 +11,22 @@ use yii\db\Exception;
  * Форма сохранения данных на странице user/settings
  * @package app\models\form
  */
-class UserProfileForm extends Model
-{
+class UserProfileForm extends Model {
+
     public $email;
-
     public $company_name;
-
     public $current_pass;
-
     public $new_pass;
-
     public $repeat_new_pass;
-
     public $image;
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['email', 'company_name', 'current_pass', 'new_pass', 'repeat_new_pass'], 'string'],
-            [['image'], 'file', 'extensions' => 'png, jpg'],
+            [['image'], 'file', 'extensions' => 'png, jpg', 'maxSize' => 1024 * 1024 * 5]
         ];
     }
 
@@ -43,8 +37,7 @@ class UserProfileForm extends Model
      * @throws Exception
      * @throws \yii\base\Exception
      */
-    public function save()
-    {
+    public function save() {
         if (!$this->validate()) {
             return false;
         }
@@ -85,8 +78,7 @@ class UserProfileForm extends Model
     /**
      *  Метод заполнения модели данными
      */
-    public function loadData()
-    {
+    public function loadData() {
         $userId = Yii::$app->user->id;
         $userProfile = User::findOne(['id' => $userId]);
 
@@ -99,8 +91,7 @@ class UserProfileForm extends Model
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'image' => false,
         ];
@@ -111,10 +102,15 @@ class UserProfileForm extends Model
      *
      * @return bool
      */
-    public function upload()
-    {
+    public function upload() {
         if ($this->validate()) {
-            $this->image->saveAs("upload/{$this->image->baseName}.{$this->image->extension}");
+            $name_image = time() . '.' . $this->image->extension;
+            $new_name_image = 'upload/temp_files/' . $this->image->baseName . '.' . $this->image->extension;
+            $path = 'upload/user/' . $name_image;
+            shell_exec('convert ' . $path . ' -auto-orient -quality 90 ' . $new_name_image);
+            $this->image->saveAs($path);
+
+            @unlink($new_name_image);
         } else {
             return false;
         }

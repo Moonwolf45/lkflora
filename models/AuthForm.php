@@ -10,19 +10,18 @@ use yii\base\Model;
  * Форма авторизации
  * @package app\models
  */
-class AuthForm extends Model
-{
-    public $email;
+class AuthForm extends Model {
 
+    public $email;
     public $password;
+    public $rememberMe = false;
 
     private $_user;
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['email', 'password'], 'required'],
             ['password', 'validatePassword'],
@@ -35,12 +34,12 @@ class AuthForm extends Model
      * @param string $attribute the attribute currently being validated
      * @param array  $params    the additional name-value pairs given in the rule
      */
-    public function validatePassword($attribute, $params)
-    {
+    public function validatePassword($attribute, $params) {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
+
             if (!$user || !$user->validatePassword($this->password)) {
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, 'E-mail\пароль введены не верно.');
             }
         }
     }
@@ -50,12 +49,16 @@ class AuthForm extends Model
      *
      * @return bool whether the user is logged in successfully
      */
-    public function login()
-    {
+    public function login() {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), 3600 * 24 * 30);
-        }
+            if ($this->rememberMe) {
+                $key = $this->getUser();
+                $key->generateAuthKey();
+                $key->save();
+            }
 
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        }
         return false;
     }
 
@@ -64,9 +67,8 @@ class AuthForm extends Model
      *
      * @return User|null
      */
-    protected function getUser()
-    {
-        if ($this->_user === null) {
+    protected function getUser() {
+        if ($this->_user === false) {
             $this->_user = User::findByEmail($this->email);
         }
 
