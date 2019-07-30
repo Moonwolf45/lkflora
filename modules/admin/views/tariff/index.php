@@ -17,22 +17,32 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Создать тариф', ['create'], ['class' => 'btn btn-success']); ?>
     </p>
 
+<!--    --><?php //echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+            'id',
             'name',
             [
                 'attribute' => 'cost',
                 'format' => ['decimal', 2],
                 'headerOptions' => ['width' => '120'],
             ],
-            'about:html',
+            [
+                'attribute' => 'about',
+                'filter' => false,
+                'format' => 'html',
+                'headerOptions' => ['width' => '300'],
+            ],
             [
                 'attribute' => 'drop',
+                'filter' => [0 => "Нет", 1 => "Да"],
                 'format' => 'html',
+                'headerOptions' => ['width' => '120'],
                 'value' => function($data) {
                     if ($data->drop) {
                         return '<p class="text-success">Да</p>';
@@ -43,7 +53,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'status',
+                'filter' => [0 => "Выключен", 1 => "Включен"],
                 'format' => 'html',
+                'headerOptions' => ['width' => '120'],
                 'value' => function($data) {
                     if ($data->status) {
                         return '<p class="text-success">Включен</p>';
@@ -57,4 +69,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
+
+
 </div>

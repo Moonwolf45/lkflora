@@ -106,11 +106,13 @@ class UserController extends Controller {
             $model->image = UploadedFile::getInstance($model, 'image');
 
             if ($model->image) {
-                $model->upload();
                 $currentUserId = Yii::$app->user->id;
                 $user = User::findOne(['id' => $currentUserId]);
-                $user->avatar = 'upload/' . $model->image->name;
-                $user->save();
+                $image = $model->upload();
+                if ($image != false) {
+                    $user->avatar = $image;
+                    $user->save();
+                }
             }
 
             return $this->redirect(['user/settings']);
@@ -134,13 +136,15 @@ class UserController extends Controller {
         $model = new UploadAvatarForm;
 
         if (Yii::$app->request->isPost) {
-            $model->image = UploadedFile::getInstance($model, 'image');
-            $model->upload();
-
             $currentUserId = Yii::$app->user->id;
             $user = User::findOne(['id' => $currentUserId]);
-            $user->avatar = 'upload/' . $model->image->name;
-            $user->save();
+
+            $model->image = UploadedFile::getInstance($model, 'image');
+            $image = $model->upload();
+            if ($image != false) {
+                $user->avatar = $image;
+                $user->save();
+            }
 
             return $this->redirect(['user/ava-upload']);
         }

@@ -3,11 +3,10 @@
 
 /** @var $profileSettings \app\models\db\User */
 
-use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = 'Ваше фото';
-?>
+$this->title = 'Ваше фото'; ?>
+
 <div class="content">
     <h2 class="content__title">Ваше фото</h2>
     <div class="content__row">

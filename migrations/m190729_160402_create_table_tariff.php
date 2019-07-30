@@ -11,7 +11,7 @@ class m190729_160402_create_table_tariff extends Migration {
      * {@inheritdoc}
      */
     public function safeUp() {
-        $this->createTable('tariff', [
+        $this->createTable('{{%tariff}}', [
             'id' => Schema::TYPE_PK,
             'created_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
             'updated_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
@@ -28,7 +28,7 @@ class m190729_160402_create_table_tariff extends Migration {
      * {@inheritdoc}
      */
     public function safeDown() {
-        $this->dropTable('tariff');
+        $this->dropTable('{{%tariff}}');
     }
 
 }

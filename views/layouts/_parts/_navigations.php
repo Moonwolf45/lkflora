@@ -145,7 +145,7 @@ $currentPage = end(explode('%2F', $currentPage));
         <div class="sidebar__scroll">
             <ul class="menu sidebar__menu">
                 <li class="menu__item">
-                    <a href="" class="menu__link">
+                    <a href="<?=Url::to(['user/index']); ?>" class="menu__link" title="Главная">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <svg width="80" height="56" viewBox="0 0 80 56" fill="none"
@@ -171,7 +171,7 @@ $currentPage = end(explode('%2F', $currentPage));
                 <li class="menu__item">
                     <a href="<?php echo Url::to(['user/index']); ?>" class="menu__link <?php if ($currentPage == 'index') {
                            echo 'active';
-                        } ?>">
+                        } ?>" title="Анкета">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <svg width="80" height="24" viewBox="0 0 21 24" fill="none"
@@ -187,7 +187,7 @@ $currentPage = end(explode('%2F', $currentPage));
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="" class="menu__link">
+                    <a href="" class="menu__link" title="Финансы">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <svg width="80" height="56" viewBox="0 0 80 56" fill="none"
@@ -203,7 +203,7 @@ $currentPage = end(explode('%2F', $currentPage));
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="" class="menu__link">
+                    <a href="" class="menu__link" title="Тех. поддержка">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <svg width="80" height="56" viewBox="0 0 80 56" fill="none"
@@ -221,7 +221,7 @@ $currentPage = end(explode('%2F', $currentPage));
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="" class="menu__link">
+                    <a href="" class="menu__link" title="Приложение">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <svg width="80" height="56" viewBox="0 0 80 56" fill="none"
@@ -240,7 +240,7 @@ $currentPage = end(explode('%2F', $currentPage));
                     <a href="<?php echo Url::to(['user/settings']); ?>"
                        class="menu__link <?php if ($currentPage == 'settings') {
                            echo 'active';
-                       } ?>">
+                       } ?>" title="Настройки">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <svg width="80" height="56" viewBox="0 0 80 56" fill="none"
@@ -256,7 +256,7 @@ $currentPage = end(explode('%2F', $currentPage));
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="" class="menu__link">
+                    <a href="" class="menu__link" title="Инструкции">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <svg width="80" height="56" viewBox="0 0 80 56" fill="none"
@@ -272,7 +272,7 @@ $currentPage = end(explode('%2F', $currentPage));
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="<?php echo Url::to(['site/logout']); ?>" class="menu__link menu__link_last">
+                    <a href="<?php echo Url::to(['site/logout']); ?>" class="menu__link menu__link_last" title="Выйти">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <svg width="80" height="56" viewBox="0 0 80 56" fill="none"

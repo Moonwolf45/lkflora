@@ -14,7 +14,6 @@ mihaildev\elfinder\Assets::noConflict($this);
 ?>
 
 <div class="tariff-form">
-
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]); ?>
@@ -27,7 +26,7 @@ mihaildev\elfinder\Assets::noConflict($this);
             'digits' => 2,
         ],
         'displayOptions' => ['class' => 'form-control kv-monospace'],
-    ]); ?>
+    ])->label('Стоимость обслуживания (ежемесячно)'); ?>
 
     <?php echo $form->field($model, 'about')->widget(CKEditor::class, [
         'editorOptions' => ElFinder::ckeditorOptions('elfinder', [])
@@ -54,5 +53,4 @@ mihaildev\elfinder\Assets::noConflict($this);
     </div>
 
     <?php ActiveForm::end(); ?>
-
 </div>

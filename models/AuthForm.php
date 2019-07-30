@@ -68,7 +68,7 @@ class AuthForm extends Model {
      * @return User|null
      */
     protected function getUser() {
-        if ($this->_user === false) {
+        if ($this->_user === null) {
             $this->_user = User::findByEmail($this->email);
         }
 
