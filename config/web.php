@@ -12,6 +12,7 @@ $config = [
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'language' => 'ru-RU',
+    'layout' => 'user',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
@@ -79,7 +80,7 @@ $config = [
             'access' => ['@'],
             'root' => [
                 'path' => 'upload',
-                'name' => 'Files'
+                'name' => 'files'
             ],
         ]
     ],

@@ -14,19 +14,21 @@ class AppAsset extends AssetBundle {
     public $baseUrl = '@web';
 
     public $css = [
-        'css/style.css',
         'css/dadata.css',
+        'css/style.css',
     ];
 
     public $js = [
         'js/jquery.cookie.js',
-        'js/main.js',
         'js/jquery.suggestions.min.js',
         'js/359.js',
+        'js/jsx-select.js',
+        'js/jsx-modal.js',
+        'js/main.js',
     ];
 
     public $depends = [
         'yii\web\YiiAsset',
-        //'yii\bootstrap\BootstrapPluginAsset',
+//        'yii\bootstrap\BootstrapPluginAsset',
     ];
 }

@@ -14,10 +14,9 @@ class TariffSearch extends Tariff {
      */
     public function rules() {
         return [
-            [['id'], 'integer'],
+            [['id', 'term'], 'integer'],
             [['drop', 'status'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['name', 'about'], 'safe'],
-            [['term'], 'date'],
             [['cost'], 'number'],
         ];
     }
@@ -58,7 +57,6 @@ class TariffSearch extends Tariff {
             'term' => $this->term,
         ]);
 
-//        $query->andFilterWhere(['like', 'name', $this->name])->andFilterWhere(['like', 'about', $this->about]);
         $query->andFilterWhere(['like', 'name', $this->name]);
 
         return $dataProvider;

@@ -14,8 +14,8 @@ class ShopsSearch extends Shops {
      */
     public function rules() {
         return [
-            [['id', 'user_id'], 'integer'],
-            [['name', 'address'], 'safe'],
+            [['id', 'version', 'tariff_id', 'user_id'], 'integer'],
+            [['address'], 'safe'],
         ];
     }
 
@@ -34,7 +34,7 @@ class ShopsSearch extends Shops {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = Shops::find()->with('user');
+        $query = Shops::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -48,11 +48,12 @@ class ShopsSearch extends Shops {
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'version' => $this->version,
+            'tariff_id' => $this->tariff_id,
             'user_id' => $this->user_id,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'address', $this->address]);
+        $query->andFilterWhere(['like', 'address', $this->address]);
 
         return $dataProvider;
     }

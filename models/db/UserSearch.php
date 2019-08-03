@@ -4,7 +4,6 @@ namespace app\models\db;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\db\User;
 
 /**
  * UserSearch represents the model behind the search form of `app\models\User`.
@@ -13,8 +12,7 @@ class UserSearch extends User {
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['id', 'status', 'created_at', 'updated_at'], 'integer'],
             [['email', 'company_name', 'password_hash', 'password_reset_token', 'auth_key', 'doc_num'], 'safe'],
@@ -24,8 +22,7 @@ class UserSearch extends User {
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
-    {
+    public function scenarios() {
         // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
@@ -37,8 +34,7 @@ class UserSearch extends User {
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
+    public function search($params) {
         $query = User::find();
 
         // add conditions that should always apply here
@@ -58,9 +54,7 @@ class UserSearch extends User {
         // grid filtering conditions
         $query->andFilterWhere([
             'id'         => $this->id,
-            'status'     => $this->status,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'status'     => $this->status
         ]);
 
         $query->andFilterWhere(['like', 'email', $this->email])

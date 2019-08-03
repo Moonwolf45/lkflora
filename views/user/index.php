@@ -1,170 +1,174 @@
 <?php
 
+use app\models\shops\Shops;
 use yii\helpers\Html;
-use yii\web\View;
-use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
 
-/* @var $this yii\web\View */
-/* @var $model app\models\db\UserSettings */
-/* @var $form ActiveForm */
+$this->title = 'Главная'; ?>
 
-$this->title = 'Анкета'; ?>
-
-<div class="content">
-    <h2 class="content__title">Анкета</h2>
-    <div class="content__row">
-        <div class="content__col-12">
-            <div class="content__box">
-                <div class="profile">
-                    <?php $form = ActiveForm::begin(); ?>
-                    <div class="little-title">Реквизиты</div>
-                    <form action="" class="profile__form">
-                        <div class="profile__row">
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="profile__field">
-                                        <p class="field__text point-event-opacity">0</p>
-                                        <div class="profile__block-radio">
-                                            <label class="radio radio_margin-r-35px">
-                                                <input class="radio__radio" <?php if ($profileSettings->type_org == 'ip') {
-                                                    echo ' checked ';
-                                                } ?> type="radio" name="UserSettingsForm[type_org]" value="ip"
-                                                       id="type-ip">
-                                                <div class="radio__nesting">
-                                                    <span class="radio__circle"></span>
-                                                    <span class="radio__text">ИП</span>
-                                                </div>
-                                            </label>
-                                            <label class="radio">
-                                                <input class="radio__radio" <?php if ($profileSettings->type_org == 'ooo') {
-                                                    echo ' checked ';
-                                                } ?> type="radio" name="UserSettingsForm[type_org]" value="ooo"
-                                                       id="type-ooo">
-                                                <div class="radio__nesting">
-                                                    <span class="radio__circle"></span>
-                                                    <span class="radio__text">ООО / АО / ЗАО </span>
-                                                </div>
-                                            </label>
+<div class="content  content-main content-advertising">
+    <div class="content__row content__row_main">
+        <div class="content__col-6 content__col_shops">
+            <div class="content__box content__box_pb85">
+                <div class="shops">
+                    <div class="shops__wrapp">
+                        <?php Pjax::begin(); ?>
+                            <div class="shops__block">
+                                <div class="shops__box s-di-vertical-m shops__box_pr40">
+                                    <div class="shops__image">
+                                        <?=Html::img('@web/images/shops-image.png', ['class' => 'shops__img']); ?>
+                                        <div class="shops-count">
+                                            <p class="shops-count__number"><?=count($shops); ?></p>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field">
-                                        <p class="field__text">Наименование</p>
-                                        <?= $form->field($model, 'name_org', [
-                                            'inputOptions' => ['class' => 'input', 'id' => 'party'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
+                                <div class="shops__box s-di-vertical-m">
+                                    <h3 class="shops__box-title">
+                                        Ваши магазины
+                                    </h3>
+                                    <div class="add-something" data-jsx-modal-target="store">
+                                        <div class="add-something__plus s-di-vertical-m"></div>
+                                        <p class="add-something__text add-something__text_fs14 s-di-vertical-m">добавить магазин</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field ">
-                                        <p class="field__text">Юридический адрес</p>
-                                        <?= $form->field($model, 'ur_addr_org', [
-                                            'inputOptions' => ['class' => 'input', 'id' => 'address'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
-                                    </div>
-                                </div>
+                            <?php foreach ($shops as $shop): ?>
+                                <ul class="shops__list">
+                                    <?php $id_modal_version = md5($shop['id'] . '_' . $shop['version']);
+                                        $version = $shop['version']; ?>
+                                    <li class="shops__item-mobile">
+                                        <div class="shops__item-box s-di-vertical-m shops__item-title">версия</div>
+                                        <div class="shops__item-box shops__item-box-mobile s-di-vertical-m" data-jsx-modal-target="version-change_<?=$id_modal_version; ?>">
+                                            <a href="#" class="shops__item-box-link shops__item-name">
+                                                <?=Shops::getVersion($version); ?>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li class="shops__item">
+                                        <div class="shops__item-box shops__item-title">Адрес</div>
+                                        <div class="shops__item-box shops__item-box_mw115 shops__item-title">версия</div>
+                                    </li>
+                                    <li class="shops__item shops__item_p2">
+                                        <div class="shops__item-box shops__item-name"><?=$shop['address']; ?></div>
+                                        <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="version-change_<?=$id_modal_version; ?>">
+                                            <a href="#" class="shops__item-box-link shops__item-name">
+                                                <?=Shops::getVersion($version); ?>
+                                            </a>
+                                        </div>
+                                    </li>
+                                    <li class="shops__item shops__item_pb12">
+                                        <div class="shops__item-box shops__item-box_df">
+                                            <div class="shops__item-icon">
+                                                <?=Html::img('@web/images/icon/icon-lifebuoy.svg'); ?>
+                                            </div>
+                                            <p class="shops__item-box-text">Техподдержка:
+                                            </p>
+                                            <?php $id_modal_tariff = md5($shop['id'] . '_' . $shop['tariff']['id']);
+                                                $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id']; ?>
+                                            <div class="shops__item-tariff" data-jsx-modal-target="tariff_<?=$id_modal_tariff; ?>">
+                                                <a href="#" class="shops__item-tariff-text">
+                                                    <?=$shop['tariff']['name']; ?> (<?=Yii::$app->formatter->asDecimal($shop['tariff']['cost'], 2); ?> руб/мес)
+                                                </a>
+                                                <a href="#" class="shops__item-tariff-icon">
+                                                    <?=Html::img('@web/images/icon/icon-list-arrow.svg'); ?>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="shops__item">
+                                        <div class="add-something">
+                                            <div class="add-something__plus s-di-vertical-m"></div>
+                                            <p class="add-something__text s-di-vertical-m">добавить услугу</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                                <?php echo $this->render('modal/tariff', compact('modelShop', 'tariffs',
+                                    'id_modal_tariff', 'tariff_id', 'shop_id')); ?>
+                                <?php echo $this->render('modal/version-change', compact('version',
+                                    'id_modal_version')); ?>
+                            <?php endforeach; ?>
+                        <?php Pjax::end(); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content__col-3 content__col_add-services">
+            <div class="content__box">
+                <div class="add-services">
+                    <div class="add-services__wrapp">
+                        <p class="sub-title">
+                            Подключено услуг на
+                        </p>
+                        <p class="add-services__total">2 450 руб/мес</p>
+                        <p class="add-services__detalization">детализация</p>
+                        <p class="sub-title">
+                            Созданные счета
+                        </p>
+                        <div class="check-status">
+                            <div class="check-status__block">
+                                <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
+                                <p class="check-status__condition check-status__condition_off">Не оплачен</p>
                             </div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field">
-                                        <p class="field__text">ОГРН / ОГРНИП</p>
-                                        <?= $form->field($model, 'ogrn', [
-                                            'inputOptions' => ['class' => 'input', 'id' => 'ogrn'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
-                                    </div>
-                                </div>
+                            <div class="check-status__block">
+                                <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
+                                <p class="check-status__condition check-status__condition_off">Не оплачен</p>
                             </div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field">
-                                        <p class="field__text">ИНН</p>
-                                        <?= $form->field($model, 'inn', [
-                                            'inputOptions' => ['class' => 'input', 'id' => 'inn'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="s-line s-line_row"></div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field <?php if ($profileSettings->type_org == 'ip') {
-                                        echo 'field_disable';
-                                    } ?>" id='kpp-div'>
-                                        <p class="field__text">КПП</p>
-                                        <?= $form->field($model, 'kpp', [
-                                            'inputOptions' => ['class' => 'input', 'id' => 'kpp'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field">
-                                        <p class="field__text">Бик банка</p>
-                                        <?= $form->field($model, 'bank_bic', [
-                                            'inputOptions' => ['class' => 'input'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field">
-                                        <p class="field__text">название банка</p>
-                                        <?= $form->field($model, 'bank_name', [
-                                            'inputOptions' => ['class' => 'input', 'id' => 'bank'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field">
-                                        <p class="field__text">кор счет</p>
-                                        <?= $form->field($model, 'kor_schet', [
-                                            'inputOptions' => ['class' => 'input'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="profile__col">
-                                <div class="profile__box">
-                                    <div class="field profile__field">
-                                        <p class="field__text">рассчетный счет</p>
-                                        <?= $form->field($model, 'rass_schet', [
-                                            'inputOptions' => ['class' => 'input'],
-                                        ])->label('')->textInput(['placeholder' => ""]) ?>
-                                    </div>
-                                </div>
+                            <div class="check-status__block">
+                                <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
+                                <p class="check-status__condition check-status__condition_on">Оплачен</p>
                             </div>
                         </div>
-                        <?= Html::submitButton('Сохранить', ['class' => 'button button_width-200px profile__button']) ?>
-                        <?php ActiveForm::end(); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content__col-3 content__col_support">
+            <div class="content__box">
+                <div class="support">
+                    <div class="support__wrapp">
+                        <div class="support__block_top">
+                            <p class="sub-title sub-title_pl20">
+                                Техподдержка
+                            </p>
+                            <button class="button button_width-200px support__button" data-jsx-modal-target="appeal">
+                                Создать обращение
+                            </button>
+                        </div>
+                        <div class="support__block">
+                            <div class="support__box">
+                                <p class="support__box-title support__box-title_circle">
+                                    Как собрать букет ?
+                                </p>
+                                <p class="support__box-text">
+                                    Вы можете пройти в разделе там
+                                </p>
+                            </div>
+                            <div class="support__box">
+                                <p class="support__box-title">
+                                    Хочу построить от ?
+                                </p>
+                                <p class="support__box-text">
+                                    То что Вы ищете нахо
+                                </p>
+                            </div>
+                            <div class="support__box">
+                                <p class="support__box-title">
+                                    Как собрать букет на подарок ?
+                                </p>
+                                <p class="support__box-text">
+                                    Вы можете пройти в разделе там
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<?php
-$script = <<< JS
-    $('.radio__nesting').on('click', function(e) {
-      
-      console.log('1');
-      
-      var ip = $("#type-ip").prop("checked");
-      
-      if (ip){
-        $('#kpp-div').addClass('field_disable');
-      } else {
-        $('#kpp-div').removeClass('field_disable');
-      }
-    });
-JS;
 
-$this->registerJs($script, View::POS_READY); ?>
+<?php echo $this->render('modal/store', compact('modelShop', 'tariffs')); ?>
+<?php echo $this->render('modal/appeal'); ?>

@@ -2,6 +2,7 @@
 
 namespace app\models\tariff;
 
+use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
@@ -35,7 +36,7 @@ class Tariff extends ActiveRecord {
             [['drop', 'status'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['cost'], 'number'],
             [['about'], 'string'],
-            [['term'], 'date'],
+            [['status_con', 'default_con', 'term'], 'integer'],
             [['name'], 'string', 'max' => 255],
         ];
     }
@@ -67,6 +68,8 @@ class Tariff extends ActiveRecord {
             'drop' => 'Подключение тарифа',
             'status' => 'Статус',
             'term' => 'Срок действия тарифа',
+            'status_con' => 'Статус связи',
+            'default_con' => 'Состояние связи по умолчанию',
         ];
     }
 }

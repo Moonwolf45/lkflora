@@ -13,14 +13,15 @@ use yii\web\Controller;
 use yii\web\Response;
 
 class SiteController extends Controller {
+    public $layout = 'main';
+
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
+    public function behaviors() {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only'  => ['logout'],
                 'rules' => [
                     [
@@ -36,8 +37,7 @@ class SiteController extends Controller {
     /**
      * {@inheritdoc}
      */
-    public function actions()
-    {
+    public function actions() {
         return [
             'error'   => [
                 'class' => 'yii\web\ErrorAction',
@@ -54,8 +54,7 @@ class SiteController extends Controller {
      *
      * @return string
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         $model = new AuthForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
@@ -75,8 +74,7 @@ class SiteController extends Controller {
      * @return string
      * @throws \yii\base\Exception
      */
-    public function actionRegistration()
-    {
+    public function actionRegistration() {
         exit; //todo: временно, отключенный контроллер регистрации
         $model = new RegistrationForm;
 

@@ -15,30 +15,26 @@ class m190730_124619_create_shops_table extends Migration {
             'id' => Schema::TYPE_PK,
             'created_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
             'updated_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
-            'name' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Название магазина"',
             'address' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Адрес магазина"',
-            'user_id' => Schema::TYPE_INTEGER . '(11) NOT NULL COMMENT "Привязка к пользователю"',
+            'version' => Schema::TYPE_INTEGER . '(2) NOT NULL COMMENT "Версия программы"',
+            'tariff_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Привязка к тарифу"',
+            'user_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Привязка к бренду"',
         ]);
 
-        $this->addForeignKey(
-            'shopsUserId',  // это "условное имя" ключа
-            '{{%shops}}', // это название текущей таблицы
-            'user_id', // это имя поля в текущей таблице, которое будет ключом
-            '{{%user}}', // это имя таблицы, с которой хотим связаться
-            'id', // это поле таблицы, с которым хотим связаться
-            'CASCADE'
-        );
+        $this->addForeignKey('shopsUserId', '{{%shops}}', 'user_id', '{{%user}}',
+            'id', 'CASCADE');
+
+        $this->addForeignKey('shopsTariffId', '{{%shops}}', 'tariff_id', '{{%tariff}}',
+            'id');
     }
 
     /**
      * {@inheritdoc}
      */
     public function safeDown() {
-        $this->dropTable('{{%shops}}');
+        $this->dropForeignKey('shopsTariffId', '{{%shops}}');
+        $this->dropForeignKey('shopsUserId', '{{%shops}}');
 
-        $this->dropForeignKey(
-            'shopsUserId',
-            '{{%user}}'
-        );
+        $this->dropTable('{{%shops}}');
     }
 }

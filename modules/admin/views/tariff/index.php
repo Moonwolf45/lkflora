@@ -25,18 +25,24 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'name',
+            [
+                'attribute' => 'id',
+                'headerOptions' => ['width' => '50'],
+            ],
+            [
+                'attribute' => 'name',
+                'headerOptions' => ['width' => '100'],
+            ],
             [
                 'attribute' => 'cost',
                 'format' => ['decimal', 2],
-                'headerOptions' => ['width' => '120'],
+                'headerOptions' => ['width' => '100'],
             ],
             [
                 'attribute' => 'about',
                 'filter' => false,
                 'format' => 'html',
-                'headerOptions' => ['width' => '300'],
+                'headerOptions' => ['width' => '280'],
             ],
             [
                 'attribute' => 'drop',
@@ -55,7 +61,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'status',
                 'filter' => [0 => "Выключен", 1 => "Включен"],
                 'format' => 'html',
-                'headerOptions' => ['width' => '120'],
+                'headerOptions' => ['width' => '140'],
                 'value' => function($data) {
                     if ($data->status) {
                         return '<p class="text-success">Включен</p>';
@@ -64,7 +70,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            'term:date',
+            [
+                'attribute' => 'term',
+                'headerOptions' => ['width' => '120'],
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

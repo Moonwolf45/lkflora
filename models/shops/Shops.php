@@ -3,6 +3,7 @@
 namespace app\models\shops;
 
 use app\models\db\User;
+use app\models\tariff\Tariff;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
@@ -12,13 +13,16 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $created_at
  * @property int $updated_at
- * @property string $name Название магазина
  * @property string $address Адрес магазина
+ * @property string $version Версия продукта
+ * @property int $tariff_id Привязка к тарифу
  * @property int $user_id Привязка к пользователю
  *
  * @property User $user
+ * @property Tariff $tariff
  */
 class Shops extends ActiveRecord {
+
     /**
      * {@inheritdoc}
      */
@@ -29,7 +33,7 @@ class Shops extends ActiveRecord {
     /**
      * @return array
      */
-    public function behaviors(){
+    public function behaviors() {
         return [
             [
                 'class' => TimestampBehavior::class,
@@ -46,11 +50,13 @@ class Shops extends ActiveRecord {
      */
     public function rules() {
         return [
-            [['name', 'address', 'user_id'], 'required'],
-            [['user_id'], 'integer'],
-            [['name', 'address'], 'string', 'max' => 255],
+            [['address', 'version', 'tariff_id', 'user_id'], 'required'],
+            [['version', 'tariff_id', 'user_id'], 'integer'],
+            [['address'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']],
+            [['tariff_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tariff::class,
+                'targetAttribute' => ['tariff_id' => 'id']],
         ];
     }
 
@@ -60,8 +66,9 @@ class Shops extends ActiveRecord {
     public function attributeLabels(){
         return [
             'id' => 'ID',
-            'name' => 'Название магазина',
             'address' => 'Адрес магазина',
+            'version' => 'Версия продукта',
+            'tariff_id' => 'Привязка к тарифу',
             'user_id' => 'Привязка к бренду',
         ];
     }
@@ -71,5 +78,25 @@ class Shops extends ActiveRecord {
      */
     public function getUser() {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTariff() {
+        return $this->hasOne(Tariff::class, ['id' => 'tariff_id']);
+    }
+
+    const VERSION_LIGHT = 1;
+    const VERSION_BASIC = 2;
+    const VERSION_EXTRA = 3;
+
+    public static function getVersion($i = null) {
+        $array = [
+            self::VERSION_LIGHT => 'Light',
+            self::VERSION_BASIC => 'Basic',
+            self::VERSION_EXTRA => 'Extra',
+        ];
+        return $i === null ? $array : (isset($array[$i]) ? $array[$i] : false);
     }
 }

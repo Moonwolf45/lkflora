@@ -1,5 +1,6 @@
 <?php
 
+use app\models\shops\Shops;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
@@ -7,7 +8,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\shops\Shops */
 
-$this->title = $model->name;
+$this->title = $model->address;
 $this->params['breadcrumbs'][] = ['label' => 'Магазины', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 YiiAsset::register($this); ?>
@@ -30,8 +31,21 @@ YiiAsset::register($this); ?>
         'model' => $model,
         'attributes' => [
             'id',
-            'name',
             'address',
+            [
+                'attribute' => 'version',
+                'format' => 'html',
+                'value' => function($data) {
+                    return Shops::getVersion($data->version);
+                },
+            ],
+            [
+                'attribute' => 'tariff_id',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->tariff->name;
+                },
+            ],
             [
                 'attribute' => 'user_id',
                 'format' => 'html',

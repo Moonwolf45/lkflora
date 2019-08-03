@@ -2,6 +2,8 @@
 
 namespace app\controllers;
 
+use app\models\shops\Shops;
+use app\models\tariff\Tariff;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -15,7 +17,6 @@ use app\models\form\UploadAvatarForm;
 use yii\web\UploadedFile;
 
 class UserController extends Controller {
-    public $layout = 'user';
 
     public function behaviors() {
         return [
@@ -40,11 +41,42 @@ class UserController extends Controller {
 
     /**
      * Главная страница пользователя
-     * Данные организации, банка
      *
      * @return string
      */
     public function actionIndex() {
+        $shops = Shops::find()->with('tariff')->where(['user_id' => Yii::$app->user->id])->asArray()->all();
+        $tariffs = Tariff::find()->asArray()->all();
+
+        $modelShop = new Shops();
+        if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
+            return $this->refresh();
+        }
+
+        return $this->render('index', compact('shops', 'modelShop', 'modelUpdateShop', 'tariffs'));
+    }
+
+    /**
+     * Просто action для обновления тарифа магазина
+     *
+     * @return \yii\web\Response
+     */
+    public function actionUpdateShop() {
+        $updateShop = Yii::$app->request->post();
+        $shop = Shops::findOne($updateShop['Shops']['id']);
+        $shop->tariff_id = $updateShop['Shops']['tariff_id'];
+        $shop->save();
+
+        return $this->redirect(['/user/index']);
+    }
+
+    /**
+     * Анкета пользователя
+     * Данные организации, банка
+     *
+     * @return string
+     */
+    public function actionAccount() {
         if (Yii::$app->user->isGuest) {
             $this->render('auth');
         }
@@ -60,10 +92,7 @@ class UserController extends Controller {
         $userId = Yii::$app->user->id;
         $profileSettings = UserSettings::findOne(['user_id' => $userId]);
 
-        return $this->render('index', [
-            'model'           => $model,
-            'profileSettings' => $profileSettings,
-        ]);
+        return $this->render('account', ['model' => $model, 'profileSettings' => $profileSettings]);
     }
 
     /**
@@ -74,7 +103,7 @@ class UserController extends Controller {
     public function actionAuth() {
         $model = new AuthForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->redirect(['user/index']);
+            return $this->redirect(['/user/index']);
         } else {
             $model->password = '';
 
@@ -115,16 +144,13 @@ class UserController extends Controller {
                 }
             }
 
-            return $this->redirect(['user/settings']);
+            return $this->redirect(['/user/settings']);
         }
 
         $model->loadData();
 
-        return $this->render('settings', [
-            'userSettingsData' => $userSettingsData,
-            'profileSettings'  => $profileSettings,
-            'model'            => $model,
-        ]);
+        return $this->render('settings', ['userSettingsData' => $userSettingsData,
+            'profileSettings' => $profileSettings, 'model' => $model]);
     }
 
     /**
@@ -146,12 +172,10 @@ class UserController extends Controller {
                 $user->save();
             }
 
-            return $this->redirect(['user/ava-upload']);
+            return $this->redirect(['/user/ava-upload']);
         }
 
-        return $this->render('avaUpload', [
-            'model' => $model,
-        ]);
+        return $this->render('avaUpload', ['model' => $model]);
     }
 
     /**

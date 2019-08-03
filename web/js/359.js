@@ -5,7 +5,7 @@
   /**
    * Обработка da-data
    */
-  function join(arr /*, separator */) {
+  function join(arr) {
     var separator = arguments.length > 1 ? arguments[1] : ", ";
     return arr.filter(function (n) {
       return n
@@ -17,11 +17,11 @@
       'INDIVIDUAL': 'Индивидуальный предприниматель',
       'LEGAL': 'Организация'
     };
+
     return TYPES[type];
   }
 
   function showSuggestion(suggestion) {
-    console.log(suggestion);
     var data = suggestion.data;
     if (!data)
       return;
@@ -70,11 +70,9 @@
     type: "BANK",
     onSelect: function (suggestion) {
       var info = suggestion.data;
-      //console.log(info.correspondent_account);
+
       $("#usersettingsform-kor_schet").val(info.correspondent_account);
       $("#usersettingsform-bank_bic").val(info.bic);
     }
   });
-
-
 })(jQuery);

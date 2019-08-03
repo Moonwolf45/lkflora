@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         $shop_string = '';
                         $i = 1;
                         foreach ($data->shops as $shop) {
-                            $shop_string .= $i . ': ' . $shop->name . '<br>';
+                            $shop_string .= $i . ': ' . $shop->address . '<br>';
                             $i++;
                         }
 

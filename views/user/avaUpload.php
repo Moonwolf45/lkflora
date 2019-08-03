@@ -3,9 +3,18 @@
 
 /** @var $profileSettings \app\models\db\User */
 
+use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-$this->title = 'Ваше фото'; ?>
+$this->title = 'Ваше фото';
+
+$avatar = '';
+if (Yii::$app->user->identity->avatar) {
+    $avatar = Yii::$app->user->identity->avatar;
+} else {
+    $avatar = 'images/user-photo.png';
+}
+?>
 
 <div class="content">
     <h2 class="content__title">Ваше фото</h2>
@@ -16,12 +25,8 @@ $this->title = 'Ваше фото'; ?>
                     <?php $form = ActiveForm::begin(); ?>
                     <div style="text-align:center;">
                         <b>Ваше текущее фото:</b><br><br>
-                        <img src="/<?php
-                        if (Yii::$app->user->identity->avatar) {
-                            echo Yii::$app->user->identity->avatar;
-                        } else {
-                            echo 'images/user-photo.png'; } ?>" alt="Ваше фото"
-                             style="width:150px;height:150px;border-radius:50%;">
+                        <?=Html::img('@web/' . $avatar, ['alt' => 'Ваше фото',
+                            'style' => 'width:150px;height:150px;border-radius:50%;']); ?>
                         <br><br>
                         <?= $form->field($model, 'image')->fileInput() ?>
 
@@ -37,12 +42,8 @@ $this->title = 'Ваше фото'; ?>
                         <div class="unloadAvaInp">
                             <div class="form-group">
                                 <label class="label">
-                                    <img src="/<?php
-                                    if (Yii::$app->user->identity->avatar) {
-                                        echo Yii::$app->user->identity->avatar;
-                                    } else {
-                                        echo 'images/user-photo.png'; } ?>" alt="Ваше фото"
-                                         style="width:150px;height:150px;border-radius:50%;">
+                                    <?=Html::img('@web/' . $avatar, ['alt' => 'Ваше фото',
+                                        'style' => 'width:150px;height:150px;border-radius:50%;']); ?>
                                     <input type="file">
                                 </label>
                             </div>

@@ -46,7 +46,7 @@ mihaildev\elfinder\Assets::noConflict($this);
         ]
     ); ?>
 
-    <?= $form->field($model, 'term')->widget(DatePicker::class); ?>
+    <?= $form->field($model, 'term')->textInput(['maxlength' => true]); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>

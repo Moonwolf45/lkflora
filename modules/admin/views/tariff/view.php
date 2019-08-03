@@ -60,7 +60,7 @@ YiiAsset::register($this); ?>
                     }
                 }
             ],
-            'term:date',
+            'term',
         ],
     ]); ?>
 </div>

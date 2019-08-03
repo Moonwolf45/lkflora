@@ -5,16 +5,13 @@ namespace app\models;
 use app\models\db\User;
 use yii\base\Model;
 
-class RegistrationForm extends Model
-{
+class RegistrationForm extends Model {
+
     public $email;
-
     public $name;
-
     public $pass;
 
-    public function rules()
-    {
+    public function rules() {
         return [
             ['email', 'required', 'message' => 'Поле E-mail обязательно к заполнению'],
             ['name', 'required', 'message' => 'Поле имя обязательно к заполнению'],
@@ -32,8 +29,7 @@ class RegistrationForm extends Model
      * @return User|bool
      * @throws \yii\base\Exception
      */
-    public function save()
-    {
+    public function save() {
         if ($this->validate()) {
             $user = new User();
             $user->company_name = $this->name;
