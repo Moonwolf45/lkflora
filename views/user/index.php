@@ -1,6 +1,5 @@
 <?php
 
-use app\models\shops\Shops;
 use yii\helpers\Html;
 use yii\widgets\Pjax;
 
@@ -34,25 +33,25 @@ $this->title = 'Главная'; ?>
                             </div>
                             <?php foreach ($shops as $shop): ?>
                                 <ul class="shops__list">
-                                    <?php $id_modal_version = md5($shop['id'] . '_' . $shop['version']);
-                                        $version = $shop['version']; ?>
+                                    <?php $id_modal_tariff = md5($shop['id'] . '_' . $shop['tariff']['id']);
+                                        $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id']; ?>
                                     <li class="shops__item-mobile">
-                                        <div class="shops__item-box s-di-vertical-m shops__item-title">версия</div>
-                                        <div class="shops__item-box shops__item-box-mobile s-di-vertical-m" data-jsx-modal-target="version-change_<?=$id_modal_version; ?>">
+                                        <div class="shops__item-box s-di-vertical-m shops__item-title">Тарифф</div>
+                                        <div class="shops__item-box shops__item-box-mobile s-di-vertical-m" data-jsx-modal-target="tariff_<?=$id_modal_tariff; ?>">
                                             <a href="#" class="shops__item-box-link shops__item-name">
-                                                <?=Shops::getVersion($version); ?>
+                                                <?=$shop['tariff']['name']; ?>
                                             </a>
                                         </div>
                                     </li>
                                     <li class="shops__item">
                                         <div class="shops__item-box shops__item-title">Адрес</div>
-                                        <div class="shops__item-box shops__item-box_mw115 shops__item-title">версия</div>
+                                        <div class="shops__item-box shops__item-box_mw115 shops__item-title">Тарифф</div>
                                     </li>
                                     <li class="shops__item shops__item_p2">
                                         <div class="shops__item-box shops__item-name"><?=$shop['address']; ?></div>
-                                        <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="version-change_<?=$id_modal_version; ?>">
+                                        <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="tariff_<?=$id_modal_tariff; ?>">
                                             <a href="#" class="shops__item-box-link shops__item-name">
-                                                <?=Shops::getVersion($version); ?>
+                                                <?=$shop['tariff']['name']; ?>
                                             </a>
                                         </div>
                                     </li>
@@ -63,8 +62,7 @@ $this->title = 'Главная'; ?>
                                             </div>
                                             <p class="shops__item-box-text">Техподдержка:
                                             </p>
-                                            <?php $id_modal_tariff = md5($shop['id'] . '_' . $shop['tariff']['id']);
-                                                $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id']; ?>
+
                                             <div class="shops__item-tariff" data-jsx-modal-target="tariff_<?=$id_modal_tariff; ?>">
                                                 <a href="#" class="shops__item-tariff-text">
                                                     <?=$shop['tariff']['name']; ?> (<?=Yii::$app->formatter->asDecimal($shop['tariff']['cost'], 2); ?> руб/мес)
@@ -84,8 +82,6 @@ $this->title = 'Главная'; ?>
                                 </ul>
                                 <?php echo $this->render('modal/tariff', compact('modelShop', 'tariffs',
                                     'id_modal_tariff', 'tariff_id', 'shop_id')); ?>
-                                <?php echo $this->render('modal/version-change', compact('version',
-                                    'id_modal_version')); ?>
                             <?php endforeach; ?>
                         <?php Pjax::end(); ?>
                     </div>
@@ -170,5 +166,5 @@ $this->title = 'Главная'; ?>
 </div>
 
 
-<?php echo $this->render('modal/store', compact('modelShop', 'tariffs')); ?>
+<?php echo $this->render('modal/store', compact('modelShop', 'tariffs', 'additions')); ?>
 <?php echo $this->render('modal/appeal'); ?>

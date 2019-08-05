@@ -9,7 +9,7 @@ use yii\db\Migration;
  * - `{{%tariff}}`
  * - `{{%addition}}`
  */
-class m190731_173534_create_junction_table_for_shops_and_addition_tables extends Migration {
+class m190731_173534_create_junction_table_for_tariff_and_addition_tables extends Migration {
     /**
      * {@inheritdoc}
      */

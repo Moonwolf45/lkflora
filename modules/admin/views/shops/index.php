@@ -1,7 +1,6 @@
 <?php
 
 use app\models\db\User;
-use app\models\shops\Shops;
 use app\models\tariff\Tariff;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -33,15 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             'address',
             [
-                'attribute' => 'version',
-                'filter' => Shops::getVersion(),
-                'format' => 'html',
-                'value' => function($data) {
-                    return Shops::getVersion($data->version);
-                },
-            ],
-            [
-                'attribute' => 'user_id',
+                'attribute' => 'tariff_id',
                 'filter' => ArrayHelper::map(Tariff::find()->all(), 'id', 'name'),
                 'format' => 'html',
                 'value' => function($data) {

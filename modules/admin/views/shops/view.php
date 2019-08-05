@@ -1,6 +1,5 @@
 <?php
 
-use app\models\shops\Shops;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
@@ -32,13 +31,6 @@ YiiAsset::register($this); ?>
         'attributes' => [
             'id',
             'address',
-            [
-                'attribute' => 'version',
-                'format' => 'html',
-                'value' => function($data) {
-                    return Shops::getVersion($data->version);
-                },
-            ],
             [
                 'attribute' => 'tariff_id',
                 'format' => 'html',

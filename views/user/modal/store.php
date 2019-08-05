@@ -7,6 +7,7 @@ use yii\widgets\ActiveForm;
 
 
 /** @var TYPE_NAME $tariffs */
+/** @var TYPE_NAME $additions */
 
 ?>
 
@@ -29,8 +30,9 @@ use yii\widgets\ActiveForm;
                             'labelOptions' => ['class' => 'field__text']
                         ],
                     ]); ?>
+
                     <?= $form->field($modelShop, 'user_id')->hiddenInput(['value' => Yii::$app->user->id])
-                            ->label(false); ?>
+                        ->label(false); ?>
                         <div class="add-store__row">
                             <div class="add-store__col">
                                 <div class="add-store__box">
@@ -50,30 +52,25 @@ use yii\widgets\ActiveForm;
                             </div>
                             <div class="add-store__col">
                                 <div class="add-store__box">
-                                    <?= $form->field($modelShop, 'version')->dropDownList(
-                                        Shops::getVersion(),
-                                        ['prompt' => 'Выберите версию', 'class' => 'jsx-select input choose__name']); ?>
-                                </div>
-                            </div>
-                            <div class="add-store__col">
-                                <div class="add-store__box">
-                                    <div class="field">
-                                        <p class="field__text">Доп услуги</p>
-                                    </div>
-                                    <div class="jsx-select input choose__name">
-                                        <span class="jsx-select__selected">Выберите одну или несколько</span>
-                                        <ul class="jsx-select__list choose__list">
-                                            <li class="choose__item">
-                                                POS терминал
-                                            </li>
-                                            <li class="choose__item">
-                                                Кассовый апарат
-                                            </li>
-                                            <li class="choose__item">
-                                                Еще что-то
-                                            </li>
-                                        </ul>
-                                    </div>
+                                    <?= $form->field($modelShop, 'addition[]')->dropDownList(
+                                        ArrayHelper::map($additions, 'id', 'name'),
+                                        ['prompt' => 'Выберите одну или несколько услуг', 'multiple' => true, 'size' => 1,
+                                            'class' => 'jsx-select input choose__name']); ?>
+
+<!--                                    <div class="jsx-select input choose__name">-->
+<!--                                        <span class="jsx-select__selected">Выберите одну или несколько</span>-->
+<!--                                        <ul class="jsx-select__list choose__list">-->
+<!--                                            <li class="choose__item">-->
+<!--                                                POS терминал-->
+<!--                                            </li>-->
+<!--                                            <li class="choose__item">-->
+<!--                                                Кассовый апарат-->
+<!--                                            </li>-->
+<!--                                            <li class="choose__item">-->
+<!--                                                Еще что-то-->
+<!--                                            </li>-->
+<!--                                        </ul>-->
+<!--                                    </div>-->
                                 </div>
                             </div>
                         </div>

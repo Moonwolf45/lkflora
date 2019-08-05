@@ -3,6 +3,7 @@
 namespace app\models\addition;
 
 use app\models\services\Services;
+use app\models\shops\Shops;
 use app\models\tariff\Tariff;
 use app\models\TariffAddition;
 use Yii;
@@ -85,5 +86,13 @@ class Addition extends ActiveRecord {
      */
     public function getTariffs() {
         return $this->hasMany(Tariff::class, ['id' => 'tariff_id'])->viaTable('{{%tariff_addition}}', ['addition_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getShops() {
+        return $this->hasMany(Shops::class, ['id' => 'shop_id'])->viaTable('{{%shops_addition}}', ['addition_id' => 'id']);
     }
 }

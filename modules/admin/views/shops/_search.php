@@ -1,7 +1,6 @@
 <?php
 
 use app\models\db\User;
-use app\models\shops\Shops;
 use app\models\tariff\Tariff;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -22,8 +21,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'id'); ?>
 
     <?= $form->field($model, 'address'); ?>
-
-    <?= $form->field($model, 'version')->dropDownList(Shops::getVersion(), ['prompt' => 'Выберите версию']); ?>
 
     <?= $form->field($model, 'tariff_id')->dropDownList(ArrayHelper::map(Tariff::find()->all(), 'id',
         'name'), ['prompt' => 'Выберите тариф']); ?>

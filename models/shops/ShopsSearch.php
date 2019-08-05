@@ -14,7 +14,7 @@ class ShopsSearch extends Shops {
      */
     public function rules() {
         return [
-            [['id', 'version', 'tariff_id', 'user_id'], 'integer'],
+            [['id', 'tariff_id', 'user_id'], 'integer'],
             [['address'], 'safe'],
         ];
     }
@@ -48,7 +48,6 @@ class ShopsSearch extends Shops {
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'version' => $this->version,
             'tariff_id' => $this->tariff_id,
             'user_id' => $this->user_id,
         ]);

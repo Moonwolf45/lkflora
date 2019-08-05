@@ -16,7 +16,6 @@ class m190730_124619_create_shops_table extends Migration {
             'created_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
             'updated_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
             'address' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Адрес магазина"',
-            'version' => Schema::TYPE_INTEGER . '(2) NOT NULL COMMENT "Версия программы"',
             'tariff_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Привязка к тарифу"',
             'user_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Привязка к бренду"',
         ]);

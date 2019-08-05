@@ -2,6 +2,7 @@
 
 namespace app\models\shops;
 
+use app\models\addition\Addition;
 use app\models\db\User;
 use app\models\tariff\Tariff;
 use yii\behaviors\TimestampBehavior;
@@ -14,7 +15,6 @@ use yii\db\ActiveRecord;
  * @property int $created_at
  * @property int $updated_at
  * @property string $address Адрес магазина
- * @property string $version Версия продукта
  * @property int $tariff_id Привязка к тарифу
  * @property int $user_id Привязка к пользователю
  *
@@ -22,6 +22,8 @@ use yii\db\ActiveRecord;
  * @property Tariff $tariff
  */
 class Shops extends ActiveRecord {
+
+    public $addition = [];
 
     /**
      * {@inheritdoc}
@@ -50,8 +52,8 @@ class Shops extends ActiveRecord {
      */
     public function rules() {
         return [
-            [['address', 'version', 'tariff_id', 'user_id'], 'required'],
-            [['version', 'tariff_id', 'user_id'], 'integer'],
+            [['address', 'tariff_id', 'user_id'], 'required'],
+            [['tariff_id', 'user_id'], 'integer'],
             [['address'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']],
@@ -67,9 +69,9 @@ class Shops extends ActiveRecord {
         return [
             'id' => 'ID',
             'address' => 'Адрес магазина',
-            'version' => 'Версия продукта',
             'tariff_id' => 'Привязка к тарифу',
             'user_id' => 'Привязка к бренду',
+            'addition' => 'Доп. услуги',
         ];
     }
 
@@ -87,16 +89,11 @@ class Shops extends ActiveRecord {
         return $this->hasOne(Tariff::class, ['id' => 'tariff_id']);
     }
 
-    const VERSION_LIGHT = 1;
-    const VERSION_BASIC = 2;
-    const VERSION_EXTRA = 3;
-
-    public static function getVersion($i = null) {
-        $array = [
-            self::VERSION_LIGHT => 'Light',
-            self::VERSION_BASIC => 'Basic',
-            self::VERSION_EXTRA => 'Extra',
-        ];
-        return $i === null ? $array : (isset($array[$i]) ? $array[$i] : false);
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getAdditions() {
+        return $this->hasMany(Addition::class, ['id' => 'addition_id'])->viaTable('{{%shops_addition}}', ['shop_id' => 'id']);
     }
 }

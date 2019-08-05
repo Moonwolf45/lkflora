@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\addition\Addition;
 use app\models\shops\Shops;
 use app\models\tariff\Tariff;
 use Yii;
@@ -47,13 +48,20 @@ class UserController extends Controller {
     public function actionIndex() {
         $shops = Shops::find()->with('tariff')->where(['user_id' => Yii::$app->user->id])->asArray()->all();
         $tariffs = Tariff::find()->asArray()->all();
+        $additions = Addition::find()->asArray()->all();
 
         $modelShop = new Shops();
         if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
+            $additionArr = Addition::find()->where(['id' => $modelShop->addition])->asArray()->all();
+            foreach ($modelShop->addition as $key => $addition) {
+                $modelShop->link('addition', $additionArr[$key]);
+            }
+
             return $this->refresh();
         }
 
-        return $this->render('index', compact('shops', 'modelShop', 'modelUpdateShop', 'tariffs'));
+        return $this->render('index', compact('shops', 'modelShop', 'modelUpdateShop', 'tariffs',
+            'additions'));
     }
 
     /**
