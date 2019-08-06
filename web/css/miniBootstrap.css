@@ -1,0 +1,34 @@
+.has-success .help-block,
+.has-success .control-label {
+    color: #3c763d;
+}
+
+.has-error .help-block,
+.has-error .control-label {
+    color: #a94442;
+}
+
+.help-block {
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    color: #737373;
+}
+
+.multiple{
+    height: auto;
+}
+
+.text-success {
+    color: #3c763d;
+}
+
+.input-checkbox {
+    display: inline-block;
+    margin-left: 15px;
+    width: 70px;
+}
+
+input[type=checkbox] {
+    margin-left: -15px;
+}

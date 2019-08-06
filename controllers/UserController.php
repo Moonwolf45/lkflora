@@ -4,7 +4,9 @@ namespace app\controllers;
 
 use app\models\addition\Addition;
 use app\models\shops\Shops;
+use app\models\ShopsAddition;
 use app\models\tariff\Tariff;
+use app\models\shops\ShopsEdit;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -46,21 +48,25 @@ class UserController extends Controller {
      * @return string
      */
     public function actionIndex() {
-        $shops = Shops::find()->with('tariff')->where(['user_id' => Yii::$app->user->id])->asArray()->all();
+        $shops = Shops::find()->joinWith('tariff')->joinWith('additions')
+            ->where(['user_id' => Yii::$app->user->id])->asArray()->all();
         $tariffs = Tariff::find()->asArray()->all();
         $additions = Addition::find()->asArray()->all();
 
         $modelShop = new Shops();
         if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
-            $additionArr = Addition::find()->where(['id' => $modelShop->addition])->asArray()->all();
-            foreach ($modelShop->addition as $key => $addition) {
-                $modelShop->link('addition', $additionArr[$key]);
+            foreach ($modelShop->addition as $addition_one) {
+                $shopAddition = new ShopsAddition();
+                $shopAddition->shop_id = $modelShop['id'];
+                $shopAddition->addition_id = $addition_one;
+                $shopAddition->quantity = 1;
+                $shopAddition->save();
             }
 
             return $this->refresh();
         }
 
-        return $this->render('index', compact('shops', 'modelShop', 'modelUpdateShop', 'tariffs',
+        return $this->render('index', compact('shops', 'modelShop', 'tariffs',
             'additions'));
     }
 
@@ -74,6 +80,28 @@ class UserController extends Controller {
         $shop = Shops::findOne($updateShop['Shops']['id']);
         $shop->tariff_id = $updateShop['Shops']['tariff_id'];
         $shop->save();
+
+        return $this->redirect(['/user/index']);
+    }
+
+    /**
+     * Просто action для изменения услуг магазина
+     *
+     * @return \yii\web\Response
+     */
+    public function actionShopEditService() {
+        $shopEditService = Yii::$app->request->post();
+        ShopsAddition::deleteAll(['shop_id' => $shopEditService['Shops']['id']]);
+
+        foreach ($shopEditService['Shops']['addition'] as $key => $service) {
+            if ($service != 0) {
+                $shopAddition = new ShopsAddition();
+                $shopAddition->shop_id = $shopEditService['Shops']['id'];
+                $shopAddition->addition_id = $key;
+                $shopAddition->quantity = $shopEditService['Shops']['quantityArr'][$key];
+                $shopAddition->save();
+            }
+        }
 
         return $this->redirect(['/user/index']);
     }

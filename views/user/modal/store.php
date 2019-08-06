@@ -1,11 +1,12 @@
 <?php
 
-use app\models\shops\Shops;
+use kartik\select2\Select2;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 
+/** @var TYPE_NAME $modelShop */
 /** @var TYPE_NAME $tariffs */
 /** @var TYPE_NAME $additions */
 
@@ -54,23 +55,8 @@ use yii\widgets\ActiveForm;
                                 <div class="add-store__box">
                                     <?= $form->field($modelShop, 'addition[]')->dropDownList(
                                         ArrayHelper::map($additions, 'id', 'name'),
-                                        ['prompt' => 'Выберите одну или несколько услуг', 'multiple' => true, 'size' => 1,
-                                            'class' => 'jsx-select input choose__name']); ?>
-
-<!--                                    <div class="jsx-select input choose__name">-->
-<!--                                        <span class="jsx-select__selected">Выберите одну или несколько</span>-->
-<!--                                        <ul class="jsx-select__list choose__list">-->
-<!--                                            <li class="choose__item">-->
-<!--                                                POS терминал-->
-<!--                                            </li>-->
-<!--                                            <li class="choose__item">-->
-<!--                                                Кассовый апарат-->
-<!--                                            </li>-->
-<!--                                            <li class="choose__item">-->
-<!--                                                Еще что-то-->
-<!--                                            </li>-->
-<!--                                        </ul>-->
-<!--                                    </div>-->
+                                        ['prompt' => 'Выберите одну или несколько услуг', 'multiple' => true,
+                                            'class' => 'jsx-select input choose__name multiple', 'size' => 3]); ?>
                                 </div>
                             </div>
                         </div>

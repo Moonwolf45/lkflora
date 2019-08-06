@@ -31,7 +31,7 @@ class ShopsAddition extends ActiveRecord {
     {
         return [
             [['shop_id', 'addition_id'], 'required'],
-            [['shop_id', 'addition_id'], 'integer'],
+            [['shop_id', 'addition_id', 'quantity'], 'integer'],
             [['shop_id', 'addition_id'], 'unique', 'targetAttribute' => ['shop_id', 'addition_id']],
             [['addition_id'], 'exist', 'skipOnError' => true, 'targetClass' => Addition::class,
                 'targetAttribute' => ['addition_id' => 'id']],
@@ -47,6 +47,7 @@ class ShopsAddition extends ActiveRecord {
         return [
             'shop_id' => 'Shop ID',
             'addition_id' => 'Addition ID',
+            'quantity' => 'Количество',
         ];
     }
 

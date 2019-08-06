@@ -33,11 +33,11 @@ $this->title = 'Главная'; ?>
                             </div>
                             <?php foreach ($shops as $shop): ?>
                                 <ul class="shops__list">
-                                    <?php $id_modal_tariff = md5($shop['id'] . '_' . $shop['tariff']['id']);
+                                    <?php $id_modal = md5($shop['id'] . '_' . $shop['tariff']['id']);
                                         $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id']; ?>
                                     <li class="shops__item-mobile">
-                                        <div class="shops__item-box s-di-vertical-m shops__item-title">Тарифф</div>
-                                        <div class="shops__item-box shops__item-box-mobile s-di-vertical-m" data-jsx-modal-target="tariff_<?=$id_modal_tariff; ?>">
+                                        <div class="shops__item-box s-di-vertical-m shops__item-title">Тариф</div>
+                                        <div class="shops__item-box shops__item-box-mobile s-di-vertical-m" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
                                             <a href="#" class="shops__item-box-link shops__item-name">
                                                 <?=$shop['tariff']['name']; ?>
                                             </a>
@@ -45,43 +45,60 @@ $this->title = 'Главная'; ?>
                                     </li>
                                     <li class="shops__item">
                                         <div class="shops__item-box shops__item-title">Адрес</div>
-                                        <div class="shops__item-box shops__item-box_mw115 shops__item-title">Тарифф</div>
+                                        <div class="shops__item-box shops__item-box_mw115 shops__item-title">Тариф</div>
                                     </li>
                                     <li class="shops__item shops__item_p2">
                                         <div class="shops__item-box shops__item-name"><?=$shop['address']; ?></div>
-                                        <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="tariff_<?=$id_modal_tariff; ?>">
+                                        <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
                                             <a href="#" class="shops__item-box-link shops__item-name">
                                                 <?=$shop['tariff']['name']; ?>
                                             </a>
                                         </div>
                                     </li>
-                                    <li class="shops__item shops__item_pb12">
-                                        <div class="shops__item-box shops__item-box_df">
-                                            <div class="shops__item-icon">
-                                                <?=Html::img('@web/images/icon/icon-lifebuoy.svg'); ?>
-                                            </div>
-                                            <p class="shops__item-box-text">Техподдержка:
-                                            </p>
+                                    <?php $shopsAdditions = []; if (!empty($shop['additions'])):
+                                        foreach ($shop['shopsAdditions'] as $key => $shopAddition) {
+                                            $shopsAdditions[$shopAddition['shop_id'] . '_' . $shopAddition['addition_id']] = $shop['shopsAdditions'][$key];
+                                        }
 
-                                            <div class="shops__item-tariff" data-jsx-modal-target="tariff_<?=$id_modal_tariff; ?>">
-                                                <a href="#" class="shops__item-tariff-text">
-                                                    <?=$shop['tariff']['name']; ?> (<?=Yii::$app->formatter->asDecimal($shop['tariff']['cost'], 2); ?> руб/мес)
-                                                </a>
-                                                <a href="#" class="shops__item-tariff-icon">
-                                                    <?=Html::img('@web/images/icon/icon-list-arrow.svg'); ?>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </li>
+                                        foreach ($shop['additions'] as $key => $addition): ?>
+                                            <li class="shops__item shops__item_pb12">
+                                                <div class="shops__item-box shops__item-box_df">
+                                                    <div class="shops__item-icon">
+                                                        <?=Html::img('@web/images/icon/icon-lifebuoy.svg'); ?>
+                                                    </div>
+                                                    <p class="shops__item-box-text"><?= $addition['name']; ?>: </p>
+
+                                                    <div class="shops__item-tariff">
+                                                        <p class="shops__item-tariff-text">
+                                                            <?=Yii::$app->formatter->asDecimal($addition['cost'], 2); ?>
+                                                            <?php if ($addition['type'] == 1): ?>
+                                                                руб
+                                                            <?php else: ?>
+                                                                руб/мес
+                                                            <?php endif; ?>
+                                                        </p>
+                                                        <p class="shops__item-box-text" style="margin-right:10px;">
+                                                            Количество: <?= $shop['shopsAdditions'][$key]['quantity']; ?>
+                                                        </p>
+                                                        <p class="shops__item-tariff-icon">
+                                                            <?=Html::img('@web/images/icon/icon-list-arrow.svg'); ?>
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
                                     <li class="shops__item">
-                                        <div class="add-something">
+                                        <div class="add-something" data-jsx-modal-target="addService_<?=$id_modal; ?>">
                                             <div class="add-something__plus s-di-vertical-m"></div>
                                             <p class="add-something__text s-di-vertical-m">добавить услугу</p>
                                         </div>
                                     </li>
                                 </ul>
                                 <?php echo $this->render('modal/tariff', compact('modelShop', 'tariffs',
-                                    'id_modal_tariff', 'tariff_id', 'shop_id')); ?>
+                                    'id_modal', 'tariff_id', 'shop_id')); ?>
+                                <?php echo $this->render('modal/add_service', compact('modelShop', 'id_modal',
+                                    'shop_id', 'additions', 'shopsAdditions')); ?>
                             <?php endforeach; ?>
                         <?php Pjax::end(); ?>
                     </div>

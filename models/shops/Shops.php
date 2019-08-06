@@ -4,6 +4,7 @@ namespace app\models\shops;
 
 use app\models\addition\Addition;
 use app\models\db\User;
+use app\models\ShopsAddition;
 use app\models\tariff\Tariff;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -24,6 +25,7 @@ use yii\db\ActiveRecord;
 class Shops extends ActiveRecord {
 
     public $addition = [];
+    public $quantity = 1;
 
     /**
      * {@inheritdoc}
@@ -54,6 +56,9 @@ class Shops extends ActiveRecord {
         return [
             [['address', 'tariff_id', 'user_id'], 'required'],
             [['tariff_id', 'user_id'], 'integer'],
+            [['addition'], 'each', 'rule' => ['integer', 'max' => 100]],
+            ['quantity', 'number', 'min' => 0, 'max' => 9999],
+            ['quantity', 'default', 'value' => 0],
             [['address'], 'string', 'max' => 255],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']],
@@ -72,6 +77,8 @@ class Shops extends ActiveRecord {
             'tariff_id' => 'Привязка к тарифу',
             'user_id' => 'Привязка к бренду',
             'addition' => 'Доп. услуги',
+            'quantity' => 'Количество',
+            'quantityArr' => 'Количество',
         ];
     }
 
@@ -94,6 +101,10 @@ class Shops extends ActiveRecord {
      * @throws \yii\base\InvalidConfigException
      */
     public function getAdditions() {
-        return $this->hasMany(Addition::class, ['id' => 'addition_id'])->viaTable('{{%shops_addition}}', ['shop_id' => 'id']);
+        return $this->hasMany(Addition::class, ['id' => 'addition_id'])->via('shopsAdditions');
+    }
+
+    public function getShopsAdditions() {
+        return $this->hasMany(ShopsAddition::class, ['shop_id' => 'id']);
     }
 }

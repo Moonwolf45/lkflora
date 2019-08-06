@@ -1,6 +1,6 @@
 <?php
 
-/** @var TYPE_NAME $id_modal_tariff */
+/** @var TYPE_NAME $id_modal */
 /** @var TYPE_NAME $modelShop */
 /** @var TYPE_NAME $tariffs */
 /** @var TYPE_NAME $tariff_id */
@@ -11,7 +11,7 @@ use yii\helpers\Url;
 use yii\web\View;
 use yii\widgets\ActiveForm; ?>
 
-<div class="jsx-modal" data-jsx-modal-id="tariff_<?=$id_modal_tariff; ?>">
+<div class="jsx-modal" data-jsx-modal-id="tariff_<?=$id_modal; ?>">
     <div class="jsx-modal__block jsx-modal-popup jsx-modal-popup_tariff">
         <div class="close close-add-store jsx-modal__close"></div>
         <div class="tariff">

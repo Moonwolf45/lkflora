@@ -14,19 +14,19 @@ use yii\widgets\Breadcrumbs;
 
 AdminAsset::register($this); ?>
 
-<?php $this->beginPage() ?>
+<?php $this->beginPage(); ?>
 <!DOCTYPE html>
-<html lang="<?= Yii::$app->language ?>">
+<html lang="<?= Yii::$app->language; ?>">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=<?= Yii::$app->charset; ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <?= Html::csrfMetaTags() ?>
-    <title><?= Html::encode($this->title) ?></title>
-    <?php $this->head() ?>
+    <?= Html::csrfMetaTags(); ?>
+    <title><?= Html::encode($this->title); ?></title>
+    <?php $this->head(); ?>
 </head>
 <body>
-<?php $this->beginBody() ?>
+<?php $this->beginBody(); ?>
 
 <div class="wrap">
     <?php NavBar::begin([
@@ -37,18 +37,18 @@ AdminAsset::register($this); ?>
         ],
     ]);
 
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
-        'items'   => [
-            ['label' => 'Главная админки', 'url' => ['/admin']],
-            ['label' => 'Пользователи', 'url' => ['/admin/user']],
-            ['label' => 'Тарифы', 'url' => ['/admin/tariff']],
-            ['label' => 'Магазины', 'url' => ['/admin/shops']],
-        ],
-    ]);
+        echo Nav::widget([
+            'options' => ['class' => 'navbar-nav navbar-right'],
+            'items' => [
+                ['label' => 'Главная админки', 'url' => ['/admin']],
+                ['label' => 'Пользователи', 'url' => ['/admin/user']],
+                ['label' => 'Тарифы', 'url' => ['/admin/tariff']],
+                ['label' => 'Магазины', 'url' => ['/admin/shops']],
+                ['label' => 'Доп. услуги', 'url' => ['/admin/addition']],
+            ],
+        ]);
 
-    NavBar::end();
-    ?>
+    NavBar::end(); ?>
 
     <div class="container">
         <?= Breadcrumbs::widget([
@@ -56,7 +56,7 @@ AdminAsset::register($this); ?>
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]); ?>
         <?= Alert::widget(); ?>
-        <?= $content ?>
+        <?= $content; ?>
     </div>
 </div>
 
@@ -68,7 +68,7 @@ AdminAsset::register($this); ?>
     </div>
 </footer>
 
-<?php $this->endBody() ?>
+<?php $this->endBody(); ?>
 </body>
 </html>
-<?php $this->endPage() ?>
+<?php $this->endPage(); ?>

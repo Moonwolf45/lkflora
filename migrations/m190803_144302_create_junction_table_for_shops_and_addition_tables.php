@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use yii\db\Schema;
 
 /**
  * Handles the creation of table `{{%shops_addition}}`.
@@ -17,6 +18,7 @@ class m190803_144302_create_junction_table_for_shops_and_addition_tables extends
         $this->createTable('{{%shops_addition}}', [
             'shop_id' => $this->integer(),
             'addition_id' => $this->integer(),
+            'quantity' => Schema::TYPE_INTEGER . ' NULL DEFAULT 1 COMMENT "Количество"',
             'PRIMARY KEY(shop_id, addition_id)',
         ]);
 

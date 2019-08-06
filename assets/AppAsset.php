@@ -16,6 +16,7 @@ class AppAsset extends AssetBundle {
     public $css = [
         'css/dadata.css',
         'css/style.css',
+        'css/miniBootstrap.css',
     ];
 
     public $js = [

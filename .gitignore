@@ -14,9 +14,9 @@ Thumbs.db
 
 # composer vendor dir
 /vendor
-runtime/cache
-runtime/debug
-runtime/logs
+/runtime/cache
+/runtime/debug
+/runtime/logs
 
 # composer itself is not needed
 composer.phar
@@ -29,11 +29,13 @@ phpunit.phar
 # local phpunit config
 /phpunit.xml
 
-tests/_output/*
-tests/_support/_generated
+/tests
+/tests/_output
+/tests/_support/_generated
 
 #vagrant folder
-/.vagrant
+/vagrant
 
 #node_modules
 /web/node_modules
+web/upload/

@@ -8,11 +8,12 @@ use kartik\number\NumberControl;
 mihaildev\elfinder\Assets::noConflict($this);
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Tariff */
+/* @var $model app\models\addition\Addition */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="tariff-form">
+<div class="addition-form">
+
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]); ?>
@@ -25,31 +26,23 @@ mihaildev\elfinder\Assets::noConflict($this);
             'digits' => 2,
         ],
         'displayOptions' => ['class' => 'form-control kv-monospace'],
-    ])->label('Стоимость обслуживания (ежемесячно)'); ?>
+    ]); ?>
 
     <?php echo $form->field($model, 'about')->widget(CKEditor::class, [
         'editorOptions' => ElFinder::ckeditorOptions('elfinder', [])
     ]); ?>
 
-    <?= $form->field($model, 'drop')->dropDownList([0 => 'Нет', 1 => 'Да'], [
-            'options' => [
-                '0' => ['Selected' => true]
-            ]
-        ]
-    ); ?>
-
-    <?= $form->field($model, 'status')->dropDownList([0 => 'Выключен', 1 => 'Включен'], [
+    <?= $form->field($model, 'type')->dropDownList([0 => 'Фиксированный', 1 => 'Ежемесячный'], [
             'options' => [
                 '1' => ['Selected' => true]
             ]
         ]
     ); ?>
 
-    <?= $form->field($model, 'term')->textInput(['maxlength' => true]); ?>
-
     <div class="form-group">
-        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>
+        <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
+
 </div>

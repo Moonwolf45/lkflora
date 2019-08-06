@@ -33,31 +33,31 @@ $active_five = '';
 $active_six = '';
 $active_seven = '';
 switch ($currentPage) {
-    case('index'):
+    case('/user/index'):
         $active_one = 'active';
     break;
 
-    case('account'):
+    case('/user/account'):
         $active_two = 'active';
     break;
 
-    case('index'):
+    case('/user/'):
         $active_tree = 'active';
     break;
 
-    case('index'):
+    case('/user/'):
         $active_four = 'active';
     break;
 
-    case('index'):
+    case('/user/'):
         $active_five = 'active';
     break;
 
-    case('settings'):
+    case('/user/settings'):
         $active_six = 'active';
     break;
 
-    case('index'):
+    case('/user/'):
         $active_seven = 'active';
     break;
 
