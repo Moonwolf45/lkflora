@@ -2,7 +2,9 @@
 
 namespace app\models\db;
 
+use app\models\addition\Addition;
 use app\models\shops\Shops;
+use app\models\ShopsAddition;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -27,7 +29,9 @@ use yii\web\IdentityInterface;
  * @property string  $password write-only password
  */
 class User extends ActiveRecord implements IdentityInterface {
+
     public $passForMail;
+    public $shops;
 
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
@@ -248,6 +252,9 @@ class User extends ActiveRecord implements IdentityInterface {
         return true;
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getShops() {
         return $this->hasMany(Shops::class, ['user_id' => 'id']);
     }

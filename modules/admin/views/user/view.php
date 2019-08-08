@@ -45,10 +45,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         $shop_string = '';
                         $i = 1;
                         foreach ($data->shops as $shop) {
-                            $shop_string .= $i . ': ' . $shop->address . '<br>';
+                            $shop_string .= $i . ': ' . $shop['address'] . ', Тариф: ' . $shop['tariff']['name'] . '<br>';
+
+                            if (!empty($shop['shopsAdditions']) && !empty($shop['additions'])) {
+                                $shops_addition = [];
+                                foreach ($shop['shopsAdditions'] as $shop_ad) {
+                                    $shops_addition[$shop_ad['shop_id'] . '_' . $shop_ad['addition_id']] = $shop_ad;
+                                }
+                                foreach ($shop['additions'] as $addition) {
+                                    $shop_string .= '&nbsp;&nbsp;- ' . $addition['name'] . ', Кол-во: ' . $shops_addition[$shop['id'] . '_' . $addition['id']]['quantity'] .  '<br>';
+                                }
+                            }
                             $i++;
                         }
-
                         return '<p class="text-success">' . $shop_string . '</p>';
                     } else {
                         return '<p class="text-danger">Не найдено не одного магазина</p>';
@@ -57,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ]
         ],
     ]); ?>
+
     <?= DetailView::widget([
         'model' => $userSettingsData,
         'attributes' => [

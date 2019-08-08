@@ -3,10 +3,10 @@
 namespace app\controllers;
 
 use app\models\addition\Addition;
+use app\models\service\Service;
 use app\models\shops\Shops;
 use app\models\ShopsAddition;
 use app\models\tariff\Tariff;
-use app\models\shops\ShopsEdit;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -54,13 +54,18 @@ class UserController extends Controller {
         $additions = Addition::find()->asArray()->all();
 
         $modelShop = new Shops();
+        $service = new Service();
+
         if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
+            $service->saveTariff($modelShop->tariff_id , Yii::$app->user->identity->id);
             foreach ($modelShop->addition as $addition_one) {
                 $shopAddition = new ShopsAddition();
                 $shopAddition->shop_id = $modelShop['id'];
                 $shopAddition->addition_id = $addition_one;
                 $shopAddition->quantity = 1;
                 $shopAddition->save();
+
+                $service->saveAddition($addition_one, 1, Yii::$app->user->identity->id);
             }
 
             return $this->refresh();
@@ -78,8 +83,12 @@ class UserController extends Controller {
     public function actionUpdateShop() {
         $updateShop = Yii::$app->request->post();
         $shop = Shops::findOne($updateShop['Shops']['id']);
+        $oldTariff_id = $shop->tariff_id;
         $shop->tariff_id = $updateShop['Shops']['tariff_id'];
         $shop->save();
+
+        $service = new Service();
+        $service->saveTariff($updateShop['Shops']['tariff_id'] , Yii::$app->user->identity->id, $oldTariff_id, true);
 
         return $this->redirect(['/user/index']);
     }
@@ -91,6 +100,14 @@ class UserController extends Controller {
      */
     public function actionShopEditService() {
         $shopEditService = Yii::$app->request->post();
+        $service = new Service();
+
+        $delete_id = [];
+        $additions = ShopsAddition::find()->where(['shop_id' => $shopEditService['Shops']['id']])->asArray()->all();
+        foreach ($additions as $addition) {
+            $delete_id[] = $addition['addition_id'];
+        }
+        $service->updateAdditionFalse(Yii::$app->user->identity->id, $delete_id);
         ShopsAddition::deleteAll(['shop_id' => $shopEditService['Shops']['id']]);
 
         foreach ($shopEditService['Shops']['addition'] as $key => $service) {
@@ -100,6 +117,8 @@ class UserController extends Controller {
                 $shopAddition->addition_id = $key;
                 $shopAddition->quantity = $shopEditService['Shops']['quantityArr'][$key];
                 $shopAddition->save();
+
+                $service->updateAddition($key, $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->identity->id);
             }
         }
 

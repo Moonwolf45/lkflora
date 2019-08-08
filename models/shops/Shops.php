@@ -25,6 +25,7 @@ use yii\db\ActiveRecord;
 class Shops extends ActiveRecord {
 
     public $addition = [];
+    public $quantityArr = [];
     public $quantity = 1;
 
     /**
@@ -56,7 +57,7 @@ class Shops extends ActiveRecord {
         return [
             [['address', 'tariff_id', 'user_id'], 'required'],
             [['tariff_id', 'user_id'], 'integer'],
-            [['addition'], 'each', 'rule' => ['integer', 'max' => 100]],
+            [['addition', 'quantityArr'], 'each', 'rule' => ['integer', 'max' => 100]],
             ['quantity', 'number', 'min' => 0, 'max' => 9999],
             ['quantity', 'default', 'value' => 0],
             [['address'], 'string', 'max' => 255],
@@ -98,12 +99,14 @@ class Shops extends ActiveRecord {
 
     /**
      * @return \yii\db\ActiveQuery
-     * @throws \yii\base\InvalidConfigException
      */
     public function getAdditions() {
         return $this->hasMany(Addition::class, ['id' => 'addition_id'])->via('shopsAdditions');
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getShopsAdditions() {
         return $this->hasMany(ShopsAddition::class, ['shop_id' => 'id']);
     }

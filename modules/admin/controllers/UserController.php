@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\models\db\UserSettings;
+use app\models\shops\Shops;
 use Yii;
 use app\models\db\User;
 use app\models\db\UserSearch;
@@ -56,9 +57,14 @@ class UserController extends Controller {
      */
     public function actionView($id) {
         $userSettingsData = UserSettings::findOne(['user_id' => $id]);
+        $model = $this->findModel($id);
+        $shops = Shops::find()->joinWith('additions')->joinWith('tariff')->where(['user_id' => $id])
+            ->asArray()->all();
+
+        $model->shops = $shops;
 
         return $this->render('view', [
-            'model'            => $this->findModel($id),
+            'model' => $model,
             'userSettingsData' => $userSettingsData,
         ]);
     }
@@ -161,7 +167,7 @@ class UserController extends Controller {
      * @throws NotFoundHttpException
      */
     protected function findModel($id) {
-        if (($model = User::find()->with('shops')->where(['id' => $id])->one()) !== null) {
+        if (($model = User::find()->where(['id' => $id])->one()) !== null) {
             return $model;
         }
 

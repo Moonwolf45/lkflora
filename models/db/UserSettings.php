@@ -27,14 +27,13 @@ class UserSettings extends ActiveRecord {
      * {@inheritdoc}
      */
     public static function tableName() {
-        return 'user_settings';
+        return '{{%user_settings}}';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             [['user_id'], 'integer'],
             [['ur_addr_org'], 'string'],
@@ -45,8 +44,7 @@ class UserSettings extends ActiveRecord {
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels() {
         return [
             'id'          => 'ID',
             'user_id'     => 'ID пользователя',

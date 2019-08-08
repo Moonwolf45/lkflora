@@ -44,9 +44,9 @@ YiiAsset::register($this); ?>
                 'headerOptions' => ['width' => '140'],
                 'value' => function($data) {
                     if ($data->type) {
-                        return '<p>Фиксированный платёж</p>';
-                    } else {
                         return '<p>Ежемесячный платёж</p>';
+                    } else {
+                        return '<p>Фиксированный платёж</p>';
                     }
                 }
             ],
