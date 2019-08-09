@@ -126,6 +126,16 @@ class UserController extends Controller {
     }
 
     /**
+     * Страница детализации баланса
+     *
+     * @return string
+     */
+    public function actionPayment() {
+
+        return $this->render('payment');
+    }
+
+    /**
      * Анкета пользователя
      * Данные организации, банка
      *

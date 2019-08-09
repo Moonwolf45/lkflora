@@ -18,8 +18,9 @@ class m190808_114201_create_payments_table extends Migration {
             'type' => Schema::TYPE_INTEGER . '(1) NOT NULL COMMENT "Тип операции"',
             'way' => Schema::TYPE_INTEGER . '(1) NOT NULL COMMENT "Способ оплаты"',
             'date' => Schema::TYPE_DATE . ' NOT NULL COMMENT "Дата платежа"',
-            'invoice_number' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Номер счета"',
+            'invoice_number' => Schema::TYPE_INTEGER . ' NULL COMMENT "Номер счета"',
             'invoice_date' => Schema::TYPE_DATE . ' NOT NULL COMMENT "Дата выставления счета"',
+            'description' => Schema::TYPE_TEXT . ' NULL COMMENT "Описание"',
             'status' => Schema::TYPE_INTEGER . '(1) NOT NULL COMMENT "Статус платежа"',
         ]);
 

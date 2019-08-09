@@ -64,8 +64,8 @@ class Service extends ActiveRecord {
             'user_id' => 'ID Бренда',
             'type_service' => 'Тип услуги',
             'type_serviceId' => 'ID Услуги на которую планируется списание',
-            'write-off_date' => 'Дата списания',
-            'write-off_amount' => 'Цена списания',
+            'writeoff_date' => 'Дата списания',
+            'writeoff_amount' => 'Цена списания',
             'quantity' => 'Количество',
             'repeat' => 'Повторяющийся',
             'completed' => 'Выполнен',
@@ -89,8 +89,15 @@ class Service extends ActiveRecord {
      */
     public function saveTariff($tariff_id = 0, $user_id = 0, $old_id = 0, $updateTariff = false) {
         if ($tariff_id != 0 || $user_id != 0) {
-            $saveService = new Service();
+            if ($updateTariff && $old_id != 0) {
+                $oldServiceTariff = Service::find()->where(['user_id' => $user_id, 'type_service' => self::TYPE_TARIFF,
+                    'type_serviceId' => $old_id, 'completed' => self::COMPLETED_FALSE])->asArray()->limit(1)->one();
+                $oldServiceTariff['repeat'] = self::REPEAT_FALSE;
+                $oldServiceTariff->save();
+            }
+
             $tariff = Tariff::find()->where(['id' => $tariff_id])->asArray()->limit(1)->one();
+            $saveService = new Service();
             $saveService->user_id = $user_id;
             $saveService->type_service = self::TYPE_TARIFF;
             $saveService->type_serviceId = $tariff_id;
@@ -100,13 +107,6 @@ class Service extends ActiveRecord {
             $saveService->repeat = self::REPEAT_TRUE;
             $saveService->completed = self::COMPLETED_FALSE;
             $saveService->save();
-
-            if ($updateTariff && $old_id != 0) {
-                $oldServiceTariff = Service::find()->where(['user_id' => $user_id, 'type_service' => self::TYPE_TARIFF,
-                    'type_serviceId' => $old_id, 'completed' => self::COMPLETED_FALSE])->asArray()->limit(1)->one();
-                $oldServiceTariff->repeat = self::REPEAT_FALSE;
-                $oldServiceTariff->save();
-            }
 
             return true;
         }
@@ -123,8 +123,8 @@ class Service extends ActiveRecord {
      */
     public function saveAddition($addition_id = 0, $quantity = 1, $user_id = 0) {
         if ($addition_id != 0 || $user_id != 0) {
-            $saveService = new Service();
             $addition = Addition::find()->where(['id' => $addition_id])->asArray()->limit(1)->one();
+            $saveService = new Service();
             $saveService->user_id = $user_id;
             $saveService->type_service = self::TYPE_ADDITION;
             $saveService->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
@@ -155,7 +155,7 @@ class Service extends ActiveRecord {
             $oldServiceAdditions = Service::find()->where(['user_id' => $user_id, 'type_service' => self::TYPE_ADDITION,
                 'type_serviceId' => $id, 'completed' => self::COMPLETED_FALSE])->asArray()->all();
             foreach ($oldServiceAdditions as $addition) {
-                $addition->repeat = self::REPEAT_FALSE;
+                $addition['repeat'] = self::REPEAT_FALSE;
                 $addition->save();
             }
 
@@ -176,37 +176,42 @@ class Service extends ActiveRecord {
         if ($user_id != 0 && $id != 0) {
             $oldServiceAddition = Service::find()->where(['user_id' => $user_id, 'type_service' => self::TYPE_ADDITION,
                 'type_serviceId' => $id, 'completed' => self::COMPLETED_FALSE])->asArray()->limit(1)->one();
-            $addition = Addition::find()->where(['id' => $id])->asArray()->limit(1)->one();
 
-            if ($quantity > $oldServiceAddition['quantity']) {
-                $oldServiceAddition['quantity'] = $quantity;
-                if ($addition['type']) {
-                    $oldServiceAddition['repeat'] = self::REPEAT_TRUE;
+            if (!empty($oldServiceAddition)) {
+                $addition = Addition::find()->where(['id' => $id])->asArray()->limit(1)->one();
+
+                if ($quantity > $oldServiceAddition['quantity']) {
+                    $oldServiceAddition['quantity'] = $quantity;
+                    if ($addition['type']) {
+                        $oldServiceAddition['repeat'] = self::REPEAT_TRUE;
+                    } else {
+                        $oldServiceAddition['repeat'] = self::REPEAT_FALSE;
+                    }
+                    $oldServiceAddition->save();
+                } elseif ($quantity < $oldServiceAddition['quantity']) {
+                    $next_payment = new Service();
+                    $next_payment->user_id = $user_id;
+                    $next_payment->type_service = self::TYPE_ADDITION;
+                    $next_payment->writeoff_date = date('Y-m-d', strtotime($oldServiceAddition['writeoff_date'] . '+30 day'));
+                    $next_payment->writeoff_amount = $addition['cost'];
+                    $next_payment->quantity = $quantity;
+                    if ($addition['type']) {
+                        $next_payment->repeat = self::REPEAT_TRUE;
+                    } else {
+                        $next_payment->repeat = self::REPEAT_FALSE;
+                    }
+                    $next_payment->completed = self::COMPLETED_FALSE;
+                    $next_payment->save();
                 } else {
-                    $oldServiceAddition['repeat'] = self::REPEAT_FALSE;
+                    if ($addition['type']) {
+                        $oldServiceAddition['repeat'] = self::REPEAT_TRUE;
+                    } else {
+                        $oldServiceAddition['repeat'] = self::REPEAT_FALSE;
+                    }
+                    $oldServiceAddition->save();
                 }
-                $oldServiceAddition->save();
-            } elseif ($quantity < $oldServiceAddition['quantity']) {
-                $next_payment = new Service();
-                $next_payment->user_id = $user_id;
-                $next_payment->type_service = self::TYPE_ADDITION;
-                $next_payment->writeoff_date = date('Y-m-d', strtotime($oldServiceAddition['writeoff_date'] . '+30 day'));
-                $next_payment->writeoff_amount = $addition['cost'];
-                $next_payment->quantity = $quantity;
-                if ($addition['type']) {
-                    $next_payment->repeat = self::REPEAT_TRUE;
-                } else {
-                    $next_payment->repeat = self::REPEAT_FALSE;
-                }
-                $next_payment->completed = self::COMPLETED_FALSE;
-                $next_payment->save();
             } else {
-                if ($addition['type']) {
-                    $oldServiceAddition['repeat'] = self::REPEAT_TRUE;
-                } else {
-                    $oldServiceAddition['repeat'] = self::REPEAT_FALSE;
-                }
-                $oldServiceAddition->save();
+                $this->saveAddition($id, $quantity, $user_id);
             }
 
             return true;

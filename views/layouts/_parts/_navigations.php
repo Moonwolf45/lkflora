@@ -104,7 +104,7 @@ switch ($currentPage) {
                         <p class="user-data__name"><?php echo $company_name; ?></p>
                         <div class="user-data__balance">
                             <p class="user-data__cash">баланс:
-                                <span><?php echo Yii::$app->user->identity->balance; ?> руб</span>
+                                <span><?= Yii::$app->formatter->asDecimal(Yii::$app->user->identity->balance, 2); ?> руб</span>
                             </p>
                             <a href="" class="user-data__add-cash">
                                 <?=Html::img('@web/images/icon/icon-add.svg'); ?>

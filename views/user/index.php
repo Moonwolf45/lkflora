@@ -1,11 +1,12 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 $this->title = 'Главная'; ?>
 
-<div class="content  content-main content-advertising">
+<div class="content content-main content-advertising">
     <div class="content__row content__row_main">
         <div class="content__col-6 content__col_shops">
             <div class="content__box content__box_pb85">
@@ -108,32 +109,34 @@ $this->title = 'Главная'; ?>
 
         <div class="content__col-3 content__col_add-services">
             <div class="content__box">
-                <div class="add-services">
-                    <div class="add-services__wrapp">
-                        <p class="sub-title">
-                            Подключено услуг на
-                        </p>
-                        <p class="add-services__total">2 450 руб/мес</p>
-                        <p class="add-services__detalization">детализация</p>
-                        <p class="sub-title">
-                            Созданные счета
-                        </p>
-                        <div class="check-status">
-                            <div class="check-status__block">
-                                <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
-                                <p class="check-status__condition check-status__condition_off">Не оплачен</p>
-                            </div>
-                            <div class="check-status__block">
-                                <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
-                                <p class="check-status__condition check-status__condition_off">Не оплачен</p>
-                            </div>
-                            <div class="check-status__block">
-                                <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
-                                <p class="check-status__condition check-status__condition_on">Оплачен</p>
+                <?php Pjax::begin(); ?>
+                    <div class="add-services">
+                        <div class="add-services__wrapp">
+                            <p class="sub-title">
+                                Подключено услуг на
+                            </p>
+                            <p class="add-services__total"><?=Yii::$app->formatter->asDecimal('2450', 2); ?> руб/мес</p>
+                            <a href="<?=Url::to(['/user/payment']); ?>" class="add-services__detalization">детализация</a>
+                            <p class="sub-title">
+                                Созданные счета
+                            </p>
+                            <div class="check-status">
+                                <div class="check-status__block">
+                                    <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
+                                    <p class="check-status__condition check-status__condition_off">Не оплачен</p>
+                                </div>
+                                <div class="check-status__block">
+                                    <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
+                                    <p class="check-status__condition check-status__condition_off">Не оплачен</p>
+                                </div>
+                                <div class="check-status__block">
+                                    <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
+                                    <p class="check-status__condition check-status__condition_on">Оплачен</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                <?php Pjax::end(); ?>
             </div>
         </div>
 
@@ -149,32 +152,34 @@ $this->title = 'Главная'; ?>
                                 Создать обращение
                             </button>
                         </div>
-                        <div class="support__block">
-                            <div class="support__box">
-                                <p class="support__box-title support__box-title_circle">
-                                    Как собрать букет ?
-                                </p>
-                                <p class="support__box-text">
-                                    Вы можете пройти в разделе там
-                                </p>
+                        <?php Pjax::begin(); ?>
+                            <div class="support__block">
+                                <div class="support__box">
+                                    <p class="support__box-title support__box-title_circle">
+                                        Как собрать букет ?
+                                    </p>
+                                    <p class="support__box-text">
+                                        Вы можете пройти в разделе там
+                                    </p>
+                                </div>
+                                <div class="support__box">
+                                    <p class="support__box-title">
+                                        Хочу построить от ?
+                                    </p>
+                                    <p class="support__box-text">
+                                        То что Вы ищете нахо
+                                    </p>
+                                </div>
+                                <div class="support__box">
+                                    <p class="support__box-title">
+                                        Как собрать букет на подарок ?
+                                    </p>
+                                    <p class="support__box-text">
+                                        Вы можете пройти в разделе там
+                                    </p>
+                                </div>
                             </div>
-                            <div class="support__box">
-                                <p class="support__box-title">
-                                    Хочу построить от ?
-                                </p>
-                                <p class="support__box-text">
-                                    То что Вы ищете нахо
-                                </p>
-                            </div>
-                            <div class="support__box">
-                                <p class="support__box-title">
-                                    Как собрать букет на подарок ?
-                                </p>
-                                <p class="support__box-text">
-                                    Вы можете пройти в разделе там
-                                </p>
-                            </div>
-                        </div>
+                        <?php Pjax::end(); ?>
                     </div>
                 </div>
             </div>

@@ -10,8 +10,7 @@ use app\components\senders\UniSender;
  *
  * @package app\components
  */
-class Notifications
-{
+class Notifications {
     /**
      * @param string      $subject
      * @param bool|string $viewFile
@@ -20,8 +19,7 @@ class Notifications
      * @return bool
      * @throws \yii\base\Exception
      */
-    public static function sendMailToAuthUser($subject = '', $viewFile = false, $params = [])
-    {
+    public static function sendMailToAuthUser($subject = '', $viewFile = false, $params = []) {
         $user = Yii::$app->user->identity;
         if (!$user) return false;
 
@@ -58,8 +56,7 @@ class Notifications
      * @return bool
      * @throws \yii\base\Exception
      */
-    public static function sendMailToUser($email = 'admin@admin.ru', $subject = 'Тема', $viewFile = false, $params = [])
-    {
+    public static function sendMailToUser($email = 'admin@admin.ru', $subject = 'Тема', $viewFile = false, $params = []) {
         if (!$email) return false;
 
         if (!$viewFile) return false;

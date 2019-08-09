@@ -11,8 +11,7 @@ use yii\console\ExitCode;
  *
  * 359 v8-CV
  */
-class SystemTestController extends Controller
-{
+class SystemTestController extends Controller {
     public $status = 'Система работает стабильно';
 
     public $error = null;
@@ -22,8 +21,7 @@ class SystemTestController extends Controller
      *
      * @return int Exit code
      */
-    public function actionIndex()
-    {
+    public function actionIndex() {
         echo "Версия системы: " . $this->getVersion() . "\n";
 
         $this->checkStatusBase();
@@ -44,8 +42,7 @@ class SystemTestController extends Controller
      *
      * @return bool
      */
-    private function checkStatusBase()
-    {
+    private function checkStatusBase() {
         if (Yii::$app->request && Yii::$app->response && Yii::$app->formatter && Yii::$app->security && Yii::$app->basePath) {
             return true;
         } else {
@@ -61,8 +58,7 @@ class SystemTestController extends Controller
      *
      * @return string
      */
-    public function getVersion()
-    {
+    public function getVersion() {
         return Yii::getVersion();
     }
 
@@ -72,8 +68,7 @@ class SystemTestController extends Controller
      *
      * @return bool
      */
-    private function getClassMap()
-    {
+    private function getClassMap() {
         var_dump(Yii::$classMap);
 
         return true;
@@ -84,8 +79,7 @@ class SystemTestController extends Controller
      *
      * @return bool
      */
-    private function checkSettingsBD()
-    {
+    private function checkSettingsBD() {
         if (Yii::$app->db->enableLogging && Yii::$app->db->shuffleMasters && Yii::$app->db->enableSlaves) {
             return true;
         }

@@ -1,43 +1,38 @@
 <?php
 
 use yii\db\Migration;
+use yii\db\Schema;
 
 /**
  * Handles the creation of table `user`.
  */
 class m180819_140916_create_user_table extends Migration {
+
     /**
      * {@inheritdoc}
      */
-    public function safeUp()
-    {
+    public function safeUp() {
         $this->createTable('{{%user}}', [
-            'id'                   => $this->primaryKey(),
-            'email'                => $this->string()->notNull()->unique(),
-            'username'             => $this->string()->notNull(),
-            'password_hash'        => $this->string()->notNull(),
-            'password_reset_token' => $this->string()->unique(),
-            'auth_key'             => $this->string(32)->notNull(),
-            'status'               => $this->smallInteger()->notNull()->defaultValue(10),
-            'city'                 => $this->string()->null(),
-            'created_at'           => $this->integer()->notNull(),
-            'updated_at'           => $this->integer()->notNull(),
+            'id' => Schema::TYPE_PK,
+            'created_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
+            'updated_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
+            'company_name' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Название бренда"',
+            'email' => Schema::TYPE_STRING . ' UNIQUE NOT NULL COMMENT "E-mail"',
+            'password_hash' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Пароль"',
+            'password_reset_token' => Schema::TYPE_STRING . ' UNIQUE COMMENT "Токен для восстановление пароля"',
+            'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL COMMENT "Ключ авторизации"',
+            'avatar' => Schema::TYPE_STRING . ' NOT NULL DEFAULT "images/group.svg" COMMENT "Аватар"',
+            'balance' => Schema::TYPE_DECIMAL . '(12,2) NOT NULL COMMENT "Баланс"',
+            'status' => Schema::TYPE_SMALLINT . ' NOT NULL DEFAULT 10 COMMENT "Статус пользователя"',
         ]);
 
-        $this->addCommentOnColumn('{{%user}}', 'email', 'E-mail');
-        $this->addCommentOnColumn('{{%user}}', 'username', 'Имя пользователя');
-        $this->addCommentOnColumn('{{%user}}', 'password_hash', 'Пароль пользователя');
-        $this->addCommentOnColumn('{{%user}}', 'password_reset_token', 'Токен на восстановление пароля');
-        $this->addCommentOnColumn('{{%user}}', 'city', 'Город пользователя');
-        $this->addCommentOnColumn('{{%user}}', 'status', 'Статус пользователя');
-        $this->addCommentOnColumn('{{%user}}', 'auth_key', 'Уникальный ключ авторизации');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function safeDown()
-    {
+    public function safeDown() {
         $this->dropTable('{{%user}}');
     }
+
 }

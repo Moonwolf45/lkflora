@@ -13,6 +13,7 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'ru-RU',
     'layout' => 'user',
+    'timeZone' => 'Europe/Moscow',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
