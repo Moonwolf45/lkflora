@@ -85,7 +85,6 @@ class UserSettingsForm extends Model {
         $userSettings->rass_schet = $this->rass_schet;
 
         return $userSettings->save();
-
     }
 
     /**

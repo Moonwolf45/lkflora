@@ -3,6 +3,8 @@
  * Flora Point - ЛК
  */
 
+use kartik\mpdf\Pdf;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -13,7 +15,6 @@ $config = [
     'bootstrap' => ['log'],
     'language' => 'ru-RU',
     'layout' => 'user',
-    'timeZone' => 'Europe/Moscow',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
@@ -28,7 +29,9 @@ $config = [
         'formatter' => [
             'class' => 'yii\i18n\Formatter',
             'locale' => 'ru_RU',
+            'timeZone' => 'Europe/Moscow',
             'dateFormat' => 'dd.MM.yyyy',
+            'timeFormat' => 'H:mm:ss',
             'decimalSeparator' => ',',
             'thousandSeparator' => ' ',
             'currencyCode' => 'RUB',
@@ -71,9 +74,18 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-
+//                'user/payment/deposit_<d:\d+>/invoice_<i:\d+>' => 'user/payment',
+//                'user/payment/deposit_<d:\d+>' => 'user/payment-deposit',
+//                'user/payment/invoice_<i:\d+>' => 'user/payment-invoice',
             ],
         ],
+        'pdf' => [
+            'class' => Pdf::class,
+            'mode' => Pdf::MODE_UTF8,
+            'format' => Pdf::FORMAT_A4,
+            'orientation' => Pdf::ORIENT_PORTRAIT,
+            'destination' => Pdf::DEST_FILE,
+        ]
     ],
     'controllerMap' => [
         'elfinder' => [

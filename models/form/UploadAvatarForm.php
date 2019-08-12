@@ -26,7 +26,7 @@ class UploadAvatarForm extends Model {
     /**
      * Метод загрузки аватарки
      *
-     * @return bool
+     * @return bool|string
      */
     public function upload() {
         if ($this->validate()) {

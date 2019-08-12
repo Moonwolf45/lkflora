@@ -116,7 +116,7 @@ $this->title = 'Главная'; ?>
                                 Подключено услуг на
                             </p>
                             <p class="add-services__total"><?=Yii::$app->formatter->asDecimal('2450', 2); ?> руб/мес</p>
-                            <a href="<?=Url::to(['/user/payment']); ?>" class="add-services__detalization">детализация</a>
+                            <p class="add-services__detalization">детализация</p>
                             <p class="sub-title">
                                 Созданные счета
                             </p>

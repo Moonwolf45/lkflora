@@ -2,7 +2,10 @@
 
 namespace app\models\payments;
 
+use app\models\addition\Addition;
 use app\models\db\User;
+use app\models\shops\Shops;
+use app\models\tariff\Tariff;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -11,12 +14,14 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property int $user_id ID Бренда
+ * @property int $shop_id ID Магазина
  * @property int $service_id ID услуги
  * @property int $type Тип операции
  * @property int $way Способ оплаты
  * @property string $date Дата платежа
  * @property int $invoice_number Номер счета
  * @property string $invoice_date Дата выставления счета
+ * @property float|int amount
  * @property string $description Описание
  * @property int $status Статус платежа
  *
@@ -46,11 +51,13 @@ class Payments extends ActiveRecord {
      */
     public function rules() {
         return [
-            [['user_id', 'service_id', 'type', 'way', 'date', 'invoice_date', 'status'], 'required'],
-            [['user_id', 'service_id', 'type', 'way', 'invoice_number', 'status'], 'integer'],
+            [['user_id', 'shop_id', 'service_id', 'type', 'way', 'date', 'invoice_date', 'status'], 'required'],
+            [['user_id', 'shop_id', 'service_id', 'type', 'way', 'invoice_number', 'status'], 'integer'],
+            ['amount', 'number'],
             [['date', 'invoice_date'], 'safe'],
             [['description'], 'string'],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
+                'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
@@ -60,13 +67,15 @@ class Payments extends ActiveRecord {
     public function attributeLabels() {
         return [
             'id' => 'ID',
-            'user_id' => 'ID Бренда',
+            'user_id' => 'Пользователь',
+            'shop_id' => 'Магазин',
             'service_id' => 'ID услуги',
             'type' => 'Тип операции',
             'way' => 'Способ оплаты',
             'date' => 'Дата платежа',
             'invoice_number' => 'Номер счета',
             'invoice_date' => 'Дата выставления счета',
+            'amount' => 'Сумма',
             'description' => 'Описание',
             'status' => 'Статус платежа',
         ];
@@ -77,5 +86,26 @@ class Payments extends ActiveRecord {
      */
     public function getUser() {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShop() {
+        return $this->hasOne(Shops::class, ['id' => 'shop_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTariff() {
+        return $this->hasOne(Tariff::class, ['id' => 'service_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAddition() {
+        return $this->hasOne(Addition::class, ['id' => 'service_id']);
     }
 }

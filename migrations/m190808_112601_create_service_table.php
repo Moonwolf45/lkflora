@@ -14,6 +14,7 @@ class m190808_112601_create_service_table extends Migration {
         $this->createTable('{{%service}}', [
             'id' => Schema::TYPE_PK,
             'user_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID Бренда"',
+            'shop_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID Магазина"',
             'type_service' => Schema::TYPE_INTEGER . '(1) NOT NULL COMMENT "Тип услуги"',
             'type_serviceId' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID Услуги на которую планируется списание"',
             'writeoff_date' => Schema::TYPE_DATE . ' NOT NULL COMMENT "Дата списания"',
@@ -25,12 +26,16 @@ class m190808_112601_create_service_table extends Migration {
 
         $this->addForeignKey('serviceUserId', '{{%service}}', 'user_id', '{{%user}}',
             'id', 'CASCADE');
+
+        $this->addForeignKey('serviceShopId', '{{%service}}', 'shop_id', '{{%shops}}',
+            'id');
     }
 
     /**
      * {@inheritdoc}
      */
     public function safeDown() {
+        $this->dropForeignKey('serviceShopId', '{{%service}}');
         $this->dropForeignKey('serviceUserId', '{{%service}}');
 
         $this->dropTable('{{%service}}');

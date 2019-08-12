@@ -41,7 +41,7 @@ switch ($currentPage) {
         $active_two = 'active';
     break;
 
-    case('/user/'):
+    case('/user/payment'):
         $active_tree = 'active';
     break;
 
@@ -143,7 +143,7 @@ switch ($currentPage) {
             </div>
             <div class="user-data__balance">
                 <p class="user-data__cash">баланс:
-                    <span><?php echo Yii::$app->user->identity->balance; ?> руб</span>
+                    <span><?= Yii::$app->formatter->asDecimal(Yii::$app->user->identity->balance, 2); ?> руб</span>
                 </p>
                 <a href="" class="user-data__add-cash">
                     <?=Html::img('@web/images/icon/icon-add.svg'); ?>
@@ -178,7 +178,7 @@ switch ($currentPage) {
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="<?php echo Url::to(['']); ?>" class="menu__link <?= $active_tree; ?>" title="Финансы">
+                    <a href="<?php echo Url::to(['/user/payment']); ?>" class="menu__link <?= $active_tree; ?>" title="Финансы">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <?=Html::img('@web/images/icon/icon-finance.svg'); ?>

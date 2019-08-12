@@ -45,6 +45,8 @@ AdminAsset::register($this); ?>
                 ['label' => 'Тарифы', 'url' => ['/admin/tariff']],
                 ['label' => 'Магазины', 'url' => ['/admin/shops']],
                 ['label' => 'Доп. услуги', 'url' => ['/admin/addition']],
+                ['label' => 'Реестр фин. оп.', 'url' => ['/admin/finance']],
+                ['label' => 'Выставленные счета', 'url' => ['/admin/schet']],
             ],
         ]);
 

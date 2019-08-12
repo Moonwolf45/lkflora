@@ -3,6 +3,8 @@
 namespace app\controllers;
 
 use app\models\addition\Addition;
+use app\models\payments\NewPaid;
+use app\models\payments\Payments;
 use app\models\service\Service;
 use app\models\shops\Shops;
 use app\models\ShopsAddition;
@@ -57,7 +59,7 @@ class UserController extends Controller {
         $service = new Service();
 
         if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
-            $service->saveTariff($modelShop->tariff_id , Yii::$app->user->identity->id);
+            $service->saveTariff($modelShop->tariff_id, $modelShop['id'], Yii::$app->user->identity->id);
             foreach ($modelShop->addition as $addition_one) {
                 $shopAddition = new ShopsAddition();
                 $shopAddition->shop_id = $modelShop['id'];
@@ -65,7 +67,7 @@ class UserController extends Controller {
                 $shopAddition->quantity = 1;
                 $shopAddition->save();
 
-                $service->saveAddition($addition_one, 1, Yii::$app->user->identity->id);
+                $service->saveAddition($addition_one, $modelShop['id'], 1, Yii::$app->user->identity->id);
             }
 
             return $this->refresh();
@@ -88,7 +90,8 @@ class UserController extends Controller {
         $shop->save();
 
         $service = new Service();
-        $service->saveTariff($updateShop['Shops']['tariff_id'] , Yii::$app->user->identity->id, $oldTariff_id, true);
+        $service->saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'],
+            Yii::$app->user->identity->id, $oldTariff_id, true);
 
         return $this->redirect(['/user/index']);
     }
@@ -107,7 +110,7 @@ class UserController extends Controller {
         foreach ($additions as $addition) {
             $delete_id[] = $addition['addition_id'];
         }
-        $service->updateAdditionFalse(Yii::$app->user->identity->id, $delete_id);
+        $service->updateAdditionFalse(Yii::$app->user->identity->id, $shopEditService['Shops']['id'], $delete_id);
         ShopsAddition::deleteAll(['shop_id' => $shopEditService['Shops']['id']]);
 
         foreach ($shopEditService['Shops']['addition'] as $key => $service) {
@@ -118,7 +121,8 @@ class UserController extends Controller {
                 $shopAddition->quantity = $shopEditService['Shops']['quantityArr'][$key];
                 $shopAddition->save();
 
-                $service->updateAddition($key, $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->identity->id);
+                $service->updateAddition($key, $shopEditService['Shops']['id'],
+                    $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->identity->id);
             }
         }
 
@@ -131,8 +135,98 @@ class UserController extends Controller {
      * @return string
      */
     public function actionPayment() {
+        $modelPaid = new NewPaid();
+        $payments = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_WRITEOFF,
+            'status' => Payments::STATUS_PAID])->with('shop')->with('tariff')->with('addition')
+            ->orderBy(['id' => SORT_DESC])->asArray()->all();
 
-        return $this->render('payment');
+        $deposit = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
+            'status' => Payments::STATUS_PAID])->limit(3)->asArray()->all();
+
+        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
+            'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->limit(3)->asArray()->all();
+
+        return $this->render('payment', compact('d', 'i', 'modelPaid', 'payments', 'deposit', 'invoice'));
+    }
+
+    /**
+     * Получаем расширенный список "Истории оплат"
+     *
+     * @param $d
+     *
+     * @return string
+     */
+    public function actionPaymentDeposit($d) {
+        if ($d == '') {
+            $d = 1;
+        }
+
+        $modelPaid = new NewPaid();
+        $payments = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_WRITEOFF,
+            'status' => Payments::STATUS_PAID])->with('shop')->with('tariff')->with('addition')
+            ->orderBy(['id' => SORT_DESC])->asArray()->all();
+
+        $deposit = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
+            'status' => Payments::STATUS_PAID])->limit(3 * $d)->asArray()->all();
+
+        return $this->render('payment', compact('d', 'deposit', 'modelPaid', 'payments'));
+    }
+
+    /**
+     * Получаем расширенный список "Счетов"
+     *
+     * @param $i
+     *
+     * @return string
+     */
+    public function actionPaymentInvoice($i) {
+        if ($i == '') {
+            $i = 1;
+        }
+
+        $modelPaid = new NewPaid();
+        $payments = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_WRITEOFF,
+            'status' => Payments::STATUS_PAID])->with('shop')->with('tariff')->with('addition')
+            ->orderBy(['id' => SORT_DESC])->asArray()->all();
+
+        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
+            'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->limit(3 * $i)->asArray()->all();
+
+        return $this->render('payment', compact('i','invoice', 'modelPaid', 'payments'));
+    }
+
+    /**
+     * Выставление счета
+     *
+     * @return string
+     */
+    public function actionSavePdf() {
+//        echo "<pre>";
+//        print_r($_REQUEST);
+//        echo "</pre>";
+
+        $content = $this->renderPartial('_reportPDF');
+
+        $date = date('d.m.Y');
+        $number = 111;
+        $pdf = Yii::$app->pdf;
+        $mpdf = $pdf->api;
+        $mpdf->SetHeader('Счёт №' . $number . ' от ' . $date);
+        $mpdf->SetTitle('Счёт №' . $number . ' от ' . $date);
+        $mpdf->WriteHtml($content);
+        $filename = 'Счёт №' . $number . ' от ' . $date . '.pdf';
+        return $mpdf->Output($filename, 'D');
+    }
+
+    /**
+     * Оплата с карты
+     *
+     * @return string
+     */
+    public function actionPaidCard() {
+        echo "<pre>";
+        print_r($_REQUEST);
+        echo "</pre>";
     }
 
     /**

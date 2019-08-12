@@ -13,6 +13,7 @@ use yii\filters\VerbFilter;
  * AdditionController implements the CRUD actions for Addition model.
  */
 class AdditionController extends Controller {
+
     /**
      * {@inheritdoc}
      */
