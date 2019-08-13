@@ -1,8 +1,11 @@
 <?php
 
+use app\models\payments\Payments;
 use yii\helpers\Html;
-use yii\helpers\Url;
 use yii\widgets\Pjax;
+
+/** @var TYPE_NAME $shops */
+/** @var TYPE_NAME $invoice */
 
 $this->title = 'Главная'; ?>
 
@@ -18,7 +21,7 @@ $this->title = 'Главная'; ?>
                                     <div class="shops__image">
                                         <?=Html::img('@web/images/shops-image.png', ['class' => 'shops__img']); ?>
                                         <div class="shops-count">
-                                            <p class="shops-count__number"><?=count($shops); ?></p>
+                                            <p class="shops-count__number"><?= count($shops); ?></p>
                                         </div>
                                     </div>
                                 </div>
@@ -121,18 +124,29 @@ $this->title = 'Главная'; ?>
                                 Созданные счета
                             </p>
                             <div class="check-status">
-                                <div class="check-status__block">
-                                    <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
-                                    <p class="check-status__condition check-status__condition_off">Не оплачен</p>
-                                </div>
-                                <div class="check-status__block">
-                                    <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
-                                    <p class="check-status__condition check-status__condition_off">Не оплачен</p>
-                                </div>
-                                <div class="check-status__block">
-                                    <p class="check-status__text">Счет № <span class="check-status__span">11283</span></p>
-                                    <p class="check-status__condition check-status__condition_on">Оплачен</p>
-                                </div>
+                                <?php if(!empty($invoice)): ?>
+                                    <?php foreach($invoice as $inv): ?>
+                                        <div class="check-status__block">
+                                            <p class="check-status__text">Счет №
+                                                <span class="check-status__span"><?= $inv['invoice_number']; ?></span>
+                                                от <span class="check-status__span">
+                                                    <?=Yii::$app->formatter->asDate($inv['invoice_date']); ?>
+                                                </span>
+                                            </p>
+                                            <?php if ($inv['status'] == Payments::STATUS_PAID): ?>
+                                                <p class="check-status__condition check-status__condition_on">Оплачен</p>
+                                            <?php else: ?>
+                                                <p class="check-status__condition check-status__condition_off">Не оплачен</p>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="check-status__block">
+                                        <div class="empty_res">
+                                            Пополнений еще не было
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>

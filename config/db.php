@@ -2,9 +2,9 @@
 
 return [
     'class'    => 'yii\db\Connection',
-    'dsn'      => 'mysql:host=localhost;dbname=host1611393_lkflora',
-    'username' => 'host1611393_max',
-    'password' => 'eX4xIhSf',
+    'dsn'      => 'mysql:host=localhost;dbname=host1777291',
+    'username' => 'host1777291',
+    'password' => '90476e71',
     'charset'  => 'utf8',
 
     'enableSchemaCache'   => true,

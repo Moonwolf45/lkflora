@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  *
  * @property int $shop_id
  * @property int $addition_id
+ * @property int $quantity
  *
  * @property Addition $addition
  * @property Shops $shop

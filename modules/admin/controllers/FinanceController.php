@@ -47,7 +47,8 @@ class FinanceController extends Controller {
      * @return string
      */
     public function actionView($id) {
-        $model = Payments::find()->where(['id' => $id])->with('shop')->with('tariff')->with('addition')->limit(1)->one();
+        $model = Payments::find()->where(['payments.id' => $id])->joinWith('user')->joinWith('shop')
+            ->joinWith('tariff')->joinWith('addition')->limit(1)->one();
 
         return $this->render('view', ['model' => $model]);
     }

@@ -40,8 +40,7 @@ class User extends ActiveRecord implements IdentityInterface {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName() {
         return '{{%user}}';
     }
 
@@ -52,8 +51,7 @@ class User extends ActiveRecord implements IdentityInterface {
      *
      * @return null|static
      */
-    public static function findByEmail($email)
-    {
+    public static function findByEmail($email) {
         return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
     }
 
@@ -69,8 +67,7 @@ class User extends ActiveRecord implements IdentityInterface {
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
@@ -80,8 +77,7 @@ class User extends ActiveRecord implements IdentityInterface {
     /**
      * {@inheritdoc}
      */
-    public static function findIdentity($id)
-    {
+    public static function findIdentity($id) {
         return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
@@ -92,8 +88,7 @@ class User extends ActiveRecord implements IdentityInterface {
      * @return void|IdentityInterface
      * @throws NotSupportedException
      */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
+    public static function findIdentityByAccessToken($token, $type = null) {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
 
@@ -104,8 +99,7 @@ class User extends ActiveRecord implements IdentityInterface {
      *
      * @return static|null
      */
-    public static function findBycompany_name($company_name)
-    {
+    public static function findByCompany_name($company_name){
         return static::findOne(['company_name' => $company_name, 'status' => self::STATUS_ACTIVE]);
     }
 
@@ -116,12 +110,8 @@ class User extends ActiveRecord implements IdentityInterface {
      *
      * @return static|null
      */
-    public static function findByPasswordResetToken($token)
-    {
-        return static::findOne([
-            'password_reset_token' => $token,
-            'status'               => self::STATUS_ACTIVE,
-        ]);
+    public static function findByPasswordResetToken($token) {
+        return static::findOne(['password_reset_token' => $token, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -131,12 +121,8 @@ class User extends ActiveRecord implements IdentityInterface {
      *
      * @return static|null
      */
-    public static function findByVerificationToken($token)
-    {
-        return static::findOne([
-            'verification_token' => $token,
-            'status'             => self::STATUS_INACTIVE,
-        ]);
+    public static function findByVerificationToken($token) {
+        return static::findOne(['verification_token' => $token, 'status' => self::STATUS_INACTIVE]);
     }
 
     /**
@@ -146,11 +132,11 @@ class User extends ActiveRecord implements IdentityInterface {
      *
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token)
-    {
+    public static function isPasswordResetTokenValid($token) {
         if (empty($token)) {
             return false;
         }
+
         $timestamp = (int)substr($token, strrpos($token, '_') + 1);
         $expire = Yii::$app->params['user.passwordResetTokenExpire'];
 

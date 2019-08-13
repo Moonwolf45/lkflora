@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\addition\AdditionSearch */
+/* @var $searchModel app\models\payments\PaymentsFinanceSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Реестр финансовых операций';
@@ -19,15 +19,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title); ?></h1>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            [
+                'attribute' => 'id',
+                'headerOptions' => ['width' => '40'],
+            ],
             [
                 'attribute' => 'user_id',
                 'filter' => ArrayHelper::map(User::find()->all(), 'id', 'company_name'),
@@ -56,6 +57,8 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $data->addition->name;
                         }
                     }
+
+                    return '';
                 },
             ],
             [
@@ -89,14 +92,17 @@ $this->params['breadcrumbs'][] = $this->title;
             'date:date',
             [
                 'attribute' => 'status',
-                'filter' => [Payments::STATUS_PAID => "Оплачен", Payments::STATUS_NOTPAID => "Неоплачен"],
+                'filter' => [Payments::STATUS_PAID => "Оплачен", Payments::STATUS_CANCEL => "Отменён",
+                    Payments::STATUS_EXPOSED => "Выставлен"],
                 'format' => 'html',
                 'headerOptions' => ['width' => '140'],
                 'value' => function($data) {
-                    if ($data->status) {
+                    if ($data->status == Payments::STATUS_PAID) {
                         return '<p class="text-success">Оплачен</p>';
+                    } elseif ($data->status == Payments::STATUS_EXPOSED) {
+                        return '<p class="text-warning">Выставлен</p>';
                     } else {
-                        return '<p class="text-danger">Неоплачен</p>';
+                        return '<p class="text-danger">Отменён</p>';
                     }
                 }
             ],

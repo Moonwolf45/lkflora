@@ -15,7 +15,7 @@ $this->title = 'Админ-панель FloraPoint'; ?>
                 ['label' => 'Магазины', 'url' => ['/admin/shops']],
                 ['label' => 'Доп. услуги', 'url' => ['/admin/addition']],
                 ['label' => 'Реестр финансовых операций', 'url' => ['/admin/finance']],
-                ['label' => 'Выставленные счета', 'url' => ['/admin/schets']],
+                ['label' => 'Выставленные счета', 'url' => ['/admin/schet']],
             ],
         ]);
     NavBar::end(); ?>

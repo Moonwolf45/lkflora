@@ -55,6 +55,10 @@ class UserController extends Controller {
         $tariffs = Tariff::find()->asArray()->all();
         $additions = Addition::find()->asArray()->all();
 
+        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
+            'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->orderBy('id DESC')
+            ->limit(3)->asArray()->all();
+
         $modelShop = new Shops();
         $service = new Service();
 
@@ -74,7 +78,7 @@ class UserController extends Controller {
         }
 
         return $this->render('index', compact('shops', 'modelShop', 'tariffs',
-            'additions'));
+            'additions', 'invoice'));
     }
 
     /**
@@ -141,10 +145,10 @@ class UserController extends Controller {
             ->orderBy(['id' => SORT_DESC])->asArray()->all();
 
         $deposit = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
-            'status' => Payments::STATUS_PAID])->limit(3)->asArray()->all();
+            'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->limit(3)->asArray()->all();
 
-        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
-            'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->limit(3)->asArray()->all();
+        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL])
+            ->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])->limit(3)->asArray()->all();
 
         return $this->render('payment', compact('d', 'i', 'modelPaid', 'payments', 'deposit', 'invoice'));
     }
@@ -167,7 +171,7 @@ class UserController extends Controller {
             ->orderBy(['id' => SORT_DESC])->asArray()->all();
 
         $deposit = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
-            'status' => Payments::STATUS_PAID])->limit(3 * $d)->asArray()->all();
+            'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->limit(3 * $d)->asArray()->all();
 
         return $this->render('payment', compact('d', 'deposit', 'modelPaid', 'payments'));
     }
@@ -189,8 +193,8 @@ class UserController extends Controller {
             'status' => Payments::STATUS_PAID])->with('shop')->with('tariff')->with('addition')
             ->orderBy(['id' => SORT_DESC])->asArray()->all();
 
-        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
-            'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->limit(3 * $i)->asArray()->all();
+        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL])
+            ->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])->limit(3 * $i)->asArray()->all();
 
         return $this->render('payment', compact('i','invoice', 'modelPaid', 'payments'));
     }

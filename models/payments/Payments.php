@@ -21,11 +21,14 @@ use yii\db\ActiveRecord;
  * @property string $date Дата платежа
  * @property int $invoice_number Номер счета
  * @property string $invoice_date Дата выставления счета
- * @property float|int amount
+ * @property float|int amount Сумма
  * @property string $description Описание
  * @property int $status Статус платежа
  *
  * @property User $user
+ * @property Shops $shop
+ * @property Tariff $tariff
+ * @property Addition $addition
  */
 class Payments extends ActiveRecord {
 
@@ -36,8 +39,9 @@ class Payments extends ActiveRecord {
     const WAY_SCHET = 1;
     const WAY_BALANCE = 2;
 
-    const STATUS_NOTPAID = 0;
+    const STATUS_CANCEL = 0;
     const STATUS_PAID = 1;
+    const STATUS_EXPOSED = 2;
 
     /**
      * {@inheritdoc}

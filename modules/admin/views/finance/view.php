@@ -6,9 +6,9 @@ use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\addition\Addition */
+/* @var $model app\models\payments\Payments */
 
-$this->title = $model->id;
+$this->title = $model->id . ' - ' . $model->user->company_name . ' - ' . $model->shop->address;
 $this->params['breadcrumbs'][] = ['label' => 'Реестр финансовых операций', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 YiiAsset::register($this); ?>
@@ -56,6 +56,8 @@ YiiAsset::register($this); ?>
                             return $data->addition->name;
                         }
                     }
+
+                    return '';
                 },
             ],
             [
@@ -87,6 +89,13 @@ YiiAsset::register($this); ?>
             'date:date',
             'invoice_date:date',
             [
+                'attribute' => 'amount',
+                'format' => 'html',
+                'value' => function($data) {
+                    return Yii::$app->formatter->asDecimal($data->amount, 2);
+                },
+            ],
+            [
                 'attribute' => 'description',
                 'format' => 'html',
                 'headerOptions' => ['width' => '140'],
@@ -98,18 +107,23 @@ YiiAsset::register($this); ?>
                             return $data->description . ': ' . $data->addition->name;
                         }
                     }
+
+                    return '';
                 }
             ],
             [
                 'attribute' => 'status',
-                'filter' => [Payments::STATUS_PAID => "Оплачен", Payments::STATUS_NOTPAID => "Неоплачен"],
+                'filter' => [Payments::STATUS_PAID => "Оплачен", Payments::STATUS_CANCEL => "Отменён",
+                    Payments::STATUS_EXPOSED => "Выставлен"],
                 'format' => 'html',
                 'headerOptions' => ['width' => '140'],
                 'value' => function($data) {
-                    if ($data->status) {
+                    if ($data->status == Payments::STATUS_PAID) {
                         return '<p class="text-success">Оплачен</p>';
+                    } elseif ($data->status == Payments::STATUS_EXPOSED) {
+                        return '<p class="text-warning">Выставлен</p>';
                     } else {
-                        return '<p class="text-danger">Неоплачен</p>';
+                        return '<p class="text-danger">Отменён</p>';
                     }
                 }
             ],

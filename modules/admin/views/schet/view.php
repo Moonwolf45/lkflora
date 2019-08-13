@@ -1,37 +1,39 @@
 <?php
 
-use app\models\db\User;
 use app\models\payments\Payments;
-use yii\grid\ActionColumn;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\grid\GridView;
+use yii\web\YiiAsset;
+use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\payments\PaymentsSchetSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $model app\models\payments\Payments */
 
-$this->title = 'Выставленные счета';
+$this->title = $model->id . ' - ' . $model->user->company_name . ' - ' . $model->shop->address;
+$this->params['breadcrumbs'][] = ['label' => 'Выставленные счета', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-?>
-<div class="addition-index">
+YiiAsset::register($this); ?>
+
+<div class="addition-view">
 
     <h1><?= Html::encode($this->title); ?></h1>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            [
-                'attribute' => 'id',
-                'headerOptions' => ['width' => '40'],
+    <p>
+        <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Вы точно хотите удалить данный элемент?',
+                'method' => 'post',
             ],
+        ]); ?>
+    </p>
+
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            'id',
             'invoice_number',
             [
                 'attribute' => 'user_id',
-                'filter' => ArrayHelper::map(User::find()->all(), 'id', 'company_name'),
                 'format' => 'html',
                 'value' => function($data) {
                     return $data->user->company_name;
@@ -62,12 +64,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 }
             ],
-            [
-                'class' => ActionColumn::class,
-                'template' => '{view} {delete}',
-            ]
         ],
-    ]); ?>
+    ]) ?>
 
+    <p>
+        <?php if($model->status == Payments::STATUS_EXPOSED): ?>
+            <?= Html::a('Оплачен', ['update', 'id' => $model->id, 'status' => Payments::STATUS_PAID], [
+                'class' => 'btn btn-success'
+            ]); ?>
+
+            <?= Html::a('Отменить', ['update', 'id' => $model->id, 'status' => Payments::STATUS_CANCEL], [
+                'class' => 'btn btn-danger'
+            ]); ?>
+        <?php endif; ?>
+    </p>
 
 </div>
