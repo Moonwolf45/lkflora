@@ -136,33 +136,18 @@ class UserController extends Controller {
     /**
      * Страница детализации баланса
      *
-     * @return string
-     */
-    public function actionPayment() {
-        $modelPaid = new NewPaid();
-        $payments = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_WRITEOFF,
-            'status' => Payments::STATUS_PAID])->with('shop')->with('tariff')->with('addition')
-            ->orderBy(['id' => SORT_DESC])->asArray()->all();
-
-        $deposit = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
-            'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->limit(3)->asArray()->all();
-
-        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL])
-            ->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])->limit(3)->asArray()->all();
-
-        return $this->render('payment', compact('d', 'i', 'modelPaid', 'payments', 'deposit', 'invoice'));
-    }
-
-    /**
-     * Получаем расширенный список "Истории оплат"
-     *
      * @param $d
+     * @param $i
      *
      * @return string
      */
-    public function actionPaymentDeposit($d) {
+    public function actionPayment($d, $i) {
         if ($d == '') {
             $d = 1;
+        }
+
+        if ($i == '') {
+            $i = 1;
         }
 
         $modelPaid = new NewPaid();
@@ -173,30 +158,10 @@ class UserController extends Controller {
         $deposit = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
             'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->limit(3 * $d)->asArray()->all();
 
-        return $this->render('payment', compact('d', 'deposit', 'modelPaid', 'payments'));
-    }
-
-    /**
-     * Получаем расширенный список "Счетов"
-     *
-     * @param $i
-     *
-     * @return string
-     */
-    public function actionPaymentInvoice($i) {
-        if ($i == '') {
-            $i = 1;
-        }
-
-        $modelPaid = new NewPaid();
-        $payments = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_WRITEOFF,
-            'status' => Payments::STATUS_PAID])->with('shop')->with('tariff')->with('addition')
-            ->orderBy(['id' => SORT_DESC])->asArray()->all();
-
         $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL])
             ->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])->limit(3 * $i)->asArray()->all();
 
-        return $this->render('payment', compact('i','invoice', 'modelPaid', 'payments'));
+        return $this->render('payment', compact('d', 'i', 'modelPaid', 'payments', 'deposit', 'invoice'));
     }
 
     /**

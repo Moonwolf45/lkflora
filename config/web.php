@@ -74,9 +74,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-//                'user/payment/deposit_<d:\d+>/invoice_<i:\d+>' => 'user/payment',
-//                'user/payment/deposit_<d:\d+>' => 'user/payment-deposit',
-//                'user/payment/invoice_<i:\d+>' => 'user/payment-invoice',
+                'user/payment/deposit_<d:\d+>/invoice_<i:\d+>' => 'user/payment',
             ],
         ],
         'pdf' => [

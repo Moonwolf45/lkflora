@@ -16,9 +16,8 @@ $this->title = 'Анкета'; ?>
         <div class="content__col-12">
             <div class="content__box">
                 <div class="profile">
-                    <?php $form = ActiveForm::begin(); ?>
                     <div class="little-title">Реквизиты</div>
-                    <form action="" class="profile__form">
+                    <?php $form = ActiveForm::begin(); ?>
                         <div class="profile__row">
                             <div class="profile__col">
                                 <div class="profile__box">
@@ -144,7 +143,7 @@ $this->title = 'Анкета'; ?>
                             </div>
                         </div>
                         <?= Html::submitButton('Сохранить', ['class' => 'button button_width-200px profile__button']) ?>
-                        <?php ActiveForm::end(); ?>
+                    <?php ActiveForm::end(); ?>
                 </div>
             </div>
         </div>

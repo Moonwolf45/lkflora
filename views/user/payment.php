@@ -64,7 +64,7 @@ $this->title = 'Детализация баланса'; ?>
                         <ul class="payment__tab">
                             <li class="payment__tab-item js__tab-item active">
                                 <p class="sub-title sub-title-mobile">
-                                    счета
+                                    Счета
                                 </p>
                             </li>
                             <li class="payment__tab-item js__tab-item">
@@ -74,14 +74,15 @@ $this->title = 'Детализация баланса'; ?>
                             </li>
                             <li class="payment__tab-item js__tab-item">
                                 <p class="sub-title sub-title-mobile">
-                                    детализация
+                                    Детализация
                                 </p>
                             </li>
                         </ul>
 
                         <ul class="payment__content">
-                            <li class="payment__content-item js__content-item">
-                                <?php Pjax::begin(); ?>
+                            <?php Pjax::begin(); ?>
+                                <?php $new_d = $d++; $new_i = $i++; ?>
+                                <li class="payment__content-item js__content-item">
                                     <table class="table">
                                         <?php if(!empty($invoice)): ?>
                                             <?php foreach($invoice as $inv): ?>
@@ -102,8 +103,10 @@ $this->title = 'Детализация баланса'; ?>
                                                     <td class="table__col">
                                                         <?php if ($inv['status'] == Payments::STATUS_PAID): ?>
                                                             <p class="table__status table__status_on">Оплачен</p>
+                                                        <?php elseif ($inv['status'] == Payments::STATUS_EXPOSED): ?>
+                                                            <p class="table__status table__status_off">Выставлен</p>
                                                         <?php else: ?>
-                                                            <p class="table__status table__status_off">Не оплачен</p>
+                                                            <p class="table__status table__status_off">Отменён</p>
                                                         <?php endif; ?>
                                                     </td>
                                                 </tr>
@@ -117,14 +120,12 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php endif; ?>
                                     </table>
 
-                                    <a href="<?=Url::to(['/user/payment-invoice', 'i' => $i++]); ?>" class="show-more">
+                                    <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i]); ?>" class="show-more">
                                         Показать ещё
                                     </a>
-                                <?php Pjax::end(); ?>
-                            </li>
+                                </li>
 
-                            <li class="payment__content-item js__content-item">
-                                <?php Pjax::begin(); ?>
+                                <li class="payment__content-item js__content-item">
                                     <ul class="fee-history__list fee-history__list_history">
                                         <?php if(!empty($deposit)): ?>
                                             <?php foreach($deposit as $dep): ?>
@@ -164,11 +165,11 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php endif; ?>
                                     </ul>
 
-                                    <a href="<?=Url::to(['/user/payment-deposit', 'd' => $d++]); ?>" class="show-more">
+                                    <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i]); ?>" class="show-more">
                                         Показать ещё
                                     </a>
-                                <?php Pjax::end(); ?>
-                            </li>
+                                </li>
+                            <?php Pjax::end(); ?>
 
                             <li class="payment__content-item js__content-item">
                                 <ul class="fee-history__list">
@@ -209,11 +210,11 @@ $this->title = 'Детализация баланса'; ?>
 
                     <div class="payment__row payment__row-desctop">
                         <div class="payment__col">
-                            <div class="check-status">
-                                <p class="sub-title">
-                                    Созданные счета
-                                </p>
-                                <?php Pjax::begin(); ?>
+                            <?php Pjax::begin(); ?>
+                                <div class="check-status">
+                                    <p class="sub-title">
+                                        Созданные счета
+                                    </p>
                                     <div class="check-status__wrapp">
                                         <?php if(!empty($invoice)): ?>
                                             <?php foreach($invoice as $inv): ?>
@@ -229,8 +230,10 @@ $this->title = 'Детализация баланса'; ?>
                                                     </p>
                                                     <?php if ($inv['status'] == Payments::STATUS_PAID): ?>
                                                         <p class="check-status__condition check-status__condition_on">Оплачен</p>
+                                                    <?php elseif ($inv['status'] == Payments::STATUS_EXPOSED): ?>
+                                                        <p class="check-status__condition check-status__condition_off">Выставлен</p>
                                                     <?php else: ?>
-                                                        <p class="check-status__condition check-status__condition_off">Не оплачен</p>
+                                                        <p class="check-status__condition check-status__condition_off">Отменён</p>
                                                     <?php endif; ?>
                                                 </div>
                                             <?php endforeach; ?>
@@ -243,17 +246,15 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php endif; ?>
                                     </div>
 
-                                    <a href="<?=Url::to(['/user/payment-invoice', 'i' => $i++]); ?>" class="show-more">
+                                    <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i]); ?>" class="show-more">
                                         Показать ещё
                                     </a>
-                                <?php Pjax::end(); ?>
-                            </div>
+                                </div>
 
-                            <div class="fee-history fee-history_pt60">
-                                <p class="sub-title">
-                                    История оплат
-                                </p>
-                                <?php Pjax::begin(); ?>
+                                <div class="fee-history fee-history_pt60">
+                                    <p class="sub-title">
+                                        История оплат
+                                    </p>
                                     <ul class="fee-history__list fee-history__list_history">
                                         <?php if(!empty($deposit)): ?>
                                             <?php foreach($deposit as $dep): ?>
@@ -293,16 +294,16 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php endif; ?>
                                     </ul>
 
-                                    <a href="<?=Url::to(['/user/payment-deposit', 'd' => $d++]); ?>" class="show-more">
+                                    <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i]); ?>" class="show-more">
                                         Показать ещё
                                     </a>
-                                <?php Pjax::end(); ?>
-                            </div>
+                                </div>
+                            <?php Pjax::end(); ?>
                         </div>
 
                         <div class="payment__col">
                             <p class="sub-title">
-                                детализация
+                                Детализация
                             </p>
                             <div class="fee-history">
                                 <ul class="fee-history__list">
@@ -376,8 +377,8 @@ $script = <<< JS
             $('.help-block').html('Поле не может быть пустым');
         }
     });
-
 JS;
+
 //маркер конца строки, обязательно сразу, без пробелов и табуляции
 $this->registerJs($script, View::POS_READY);
 

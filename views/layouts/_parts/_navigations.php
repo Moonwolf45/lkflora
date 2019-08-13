@@ -178,7 +178,7 @@ switch ($currentPage) {
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="<?php echo Url::to(['/user/payment']); ?>" class="menu__link <?= $active_tree; ?>" title="Финансы">
+                    <a href="<?php echo Url::to(['/user/payment', 'd' => 1, 'i' => 1]); ?>" class="menu__link <?= $active_tree; ?>" title="Финансы">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <?=Html::img('@web/images/icon/icon-finance.svg'); ?>
