@@ -6,6 +6,7 @@ use yii\widgets\Pjax;
 
 /** @var TYPE_NAME $shops */
 /** @var TYPE_NAME $invoice */
+/** @var TYPE_NAME $tickets */
 
 $this->title = 'Главная'; ?>
 
@@ -42,7 +43,7 @@ $this->title = 'Главная'; ?>
                                     <li class="shops__item-mobile">
                                         <div class="shops__item-box s-di-vertical-m shops__item-title">Тариф</div>
                                         <div class="shops__item-box shops__item-box-mobile s-di-vertical-m" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
-                                            <a href="#" class="shops__item-box-link shops__item-name">
+                                            <a class="shops__item-box-link shops__item-name">
                                                 <?=$shop['tariff']['name']; ?>
                                             </a>
                                         </div>
@@ -54,7 +55,7 @@ $this->title = 'Главная'; ?>
                                     <li class="shops__item shops__item_p2">
                                         <div class="shops__item-box shops__item-name"><?=$shop['address']; ?></div>
                                         <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
-                                            <a href="#" class="shops__item-box-link shops__item-name">
+                                            <a class="shops__item-box-link shops__item-name">
                                                 <?=$shop['tariff']['name']; ?>
                                             </a>
                                         </div>
@@ -81,11 +82,8 @@ $this->title = 'Главная'; ?>
                                                                 руб/мес
                                                             <?php endif; ?>
                                                         </p>
-                                                        <p class="shops__item-box-text" style="margin-right:10px;">
+                                                        <p class="shops__item-box-text">
                                                             Количество: <?= $shop['shopsAdditions'][$key]['quantity']; ?>
-                                                        </p>
-                                                        <p class="shops__item-tariff-icon">
-                                                            <?=Html::img('@web/images/icon/icon-list-arrow.svg'); ?>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -112,45 +110,40 @@ $this->title = 'Главная'; ?>
 
         <div class="content__col-3 content__col_add-services">
             <div class="content__box">
-                <?php Pjax::begin(); ?>
-                    <div class="add-services">
-                        <div class="add-services__wrapp">
-                            <p class="sub-title">
-                                Подключено услуг на
-                            </p>
-                            <p class="add-services__total"><?=Yii::$app->formatter->asDecimal('2450', 2); ?> руб/мес</p>
-                            <p class="add-services__detalization">детализация</p>
-                            <p class="sub-title">
-                                Созданные счета
-                            </p>
-                            <div class="check-status">
-                                <?php if(!empty($invoice)): ?>
-                                    <?php foreach($invoice as $inv): ?>
-                                        <div class="check-status__block">
-                                            <p class="check-status__text">Счет №
-                                                <span class="check-status__span"><?= $inv['invoice_number']; ?></span>
-                                                от <span class="check-status__span">
-                                                    <?=Yii::$app->formatter->asDate($inv['invoice_date']); ?>
-                                                </span>
-                                            </p>
-                                            <?php if ($inv['status'] == Payments::STATUS_PAID): ?>
-                                                <p class="check-status__condition check-status__condition_on">Оплачен</p>
-                                            <?php else: ?>
-                                                <p class="check-status__condition check-status__condition_off">Не оплачен</p>
-                                            <?php endif; ?>
-                                        </div>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
+                <div class="add-services">
+                    <div class="add-services__wrapp">
+                        <p class="sub-title">
+                            Подключено услуг на
+                        </p>
+                        <p class="add-services__total"><?=Yii::$app->formatter->asDecimal('2450', 2); ?> руб/мес</p>
+                        <p class="add-services__detalization">детализация</p>
+                        <p class="sub-title">
+                            Созданные счета
+                        </p>
+                        <div class="check-status">
+                            <?php if(!empty($invoice)): ?>
+                                <?php foreach($invoice as $inv): ?>
                                     <div class="check-status__block">
-                                        <div class="empty_res">
-                                            Пополнений еще не было
-                                        </div>
+                                        <p class="check-status__text">Счет №
+                                            <span class="check-status__span"><?= $inv['invoice_number']; ?></span>
+                                        </p>
+                                        <?php if ($inv['status'] == Payments::STATUS_PAID): ?>
+                                            <p class="check-status__condition check-status__condition_on">Оплачен</p>
+                                        <?php else: ?>
+                                            <p class="check-status__condition check-status__condition_off">Не оплачен</p>
+                                        <?php endif; ?>
                                     </div>
-                                <?php endif; ?>
-                            </div>
+                                <?php endforeach; ?>
+                            <?php else: ?>
+                                <div class="check-status__block">
+                                    <div class="empty_res">
+                                        Пополнений еще не было
+                                    </div>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                <?php Pjax::end(); ?>
+                </div>
             </div>
         </div>
 
@@ -168,30 +161,29 @@ $this->title = 'Главная'; ?>
                         </div>
                         <?php Pjax::begin(); ?>
                             <div class="support__block">
-                                <div class="support__box">
-                                    <p class="support__box-title support__box-title_circle">
-                                        Как собрать букет ?
-                                    </p>
-                                    <p class="support__box-text">
-                                        Вы можете пройти в разделе там
-                                    </p>
-                                </div>
-                                <div class="support__box">
-                                    <p class="support__box-title">
-                                        Хочу построить от ?
-                                    </p>
-                                    <p class="support__box-text">
-                                        То что Вы ищете нахо
-                                    </p>
-                                </div>
-                                <div class="support__box">
-                                    <p class="support__box-title">
-                                        Как собрать букет на подарок ?
-                                    </p>
-                                    <p class="support__box-text">
-                                        Вы можете пройти в разделе там
-                                    </p>
-                                </div>
+                                <?php if (!empty($tickets)): ?>
+                                    <?php foreach ($tickets as $ticket): ?>
+                                        <div class="support__box">
+                                            <?php if ($ticket['new_text']) {
+                                                $dop_class = 'support__box-title_circle';
+                                            } ?>
+                                            <p class="support__box-title <?php echo $dop_class; ?>">
+                                                <?= $ticket['subject']; ?>
+                                            </p>
+                                            <p class="support__box-text">
+                                                Вы можете пройти в разделе там
+                                            </p>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php else: ?>
+                                    <div class="support__box">
+                                        <p class="support__box-text">
+                                            Открытых обращений нет
+                                        </p>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?= Html::a('Все обращения', ['/user/tickets'], ['class' => 'support__box-text all-tickets']); ?>
                             </div>
                         <?php Pjax::end(); ?>
                     </div>
@@ -203,4 +195,4 @@ $this->title = 'Главная'; ?>
 
 
 <?php echo $this->render('modal/store', compact('modelShop', 'tariffs', 'additions')); ?>
-<?php echo $this->render('modal/appeal'); ?>
+<?php echo $this->render('modal/appeal', compact('newTicket')); ?>

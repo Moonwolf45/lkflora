@@ -45,7 +45,7 @@ switch ($currentPage) {
         $active_tree = 'active';
     break;
 
-    case('/user/'):
+    case('/user/tickets'):
         $active_four = 'active';
     break;
 
@@ -188,7 +188,7 @@ switch ($currentPage) {
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="<?php echo Url::to(['']); ?>" class="menu__link <?= $active_four; ?>" title="Тех. поддержка">
+                    <a href="<?php echo Url::to(['/user/tickets']); ?>" class="menu__link <?= $active_four; ?>" title="Тех. поддержка">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <?=Html::img('@web/images/icon/icon-question.svg'); ?>

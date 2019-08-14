@@ -28,7 +28,7 @@ use yii\db\ActiveRecord;
  * @property User $user
  * @property Shops $shop
  * @property Tariff $tariff
- * @property Addition $addition
+ * @property Addition[] $addition
  */
 class Payments extends ActiveRecord {
 

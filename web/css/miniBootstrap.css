@@ -6,11 +6,13 @@
 }
 
 .help-block.has-success,
+.has-success .help-block,
 .has-success .control-label {
     color: #3c763d;
 }
 
 .help-block.has-error,
+.has-error .help-block,
 .has-error .control-label {
     color: #a94442;
 }
@@ -38,4 +40,19 @@ input[type=checkbox] {
     padding: 10px;
     text-align: center;
     font-size: 14px;
+}
+
+.field-tickets-ticketsfiles {
+    display: inline-block;
+}
+
+.all-tickets {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 8px 10px;
+}
+
+.all-tickets:hover {
+    text-decoration: underline;
 }

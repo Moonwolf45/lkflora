@@ -3,25 +3,23 @@
 namespace app\models\form;
 
 use app\models\db\User;
-use Yii;
+use app\models\traits\MailToUserTrait;
 use yii\base\Model;
-use yii\db\Exception;
 use yii\helpers\Url;
-use app\components\Notifications;
 
 /**
  * Форма восстановления пароля
  * @package app\models\form
  */
-class ResetPasswordForm extends Model
-{
+class ResetPasswordForm extends Model {
+    use MailToUserTrait;
+
     public $email;
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules() {
         return [
             ['email', 'trim'],
             ['email', 'required'],
@@ -35,8 +33,7 @@ class ResetPasswordForm extends Model
      * @return bool
      * @throws \yii\base\Exception
      */
-    public function update()
-    {
+    public function update() {
         if (!$this->validate()) {
             return false;
         }
@@ -49,7 +46,8 @@ class ResetPasswordForm extends Model
 
         if ($user->save()) {
             $link = Url::to(['/site/reset-password-confirm', 'token' => $user->password_reset_token], true);
-            mail($this->email, 'Восстановление пароля на сайте Florapoint', $link);
+            $this->sendMailToUser($this->email, 'request', 'Восстановление пароля на сайте Florapoint',
+                ['link' => $link]);
 
             return true;
         }

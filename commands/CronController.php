@@ -6,10 +6,11 @@ use app\models\db\User;
 use app\models\payments\Payments;
 use app\models\service\Service;
 use Yii;
+use yii\console\Controller;
 
-class CronController {
+class CronController extends Controller {
 
-    public function actionUpdateUser() {
+    public function actionUpdate() {
         Yii::beginProfile('UpdateBalanceUser');
 
         $today = date('Y-m-d');

@@ -9,6 +9,7 @@ use app\models\service\Service;
 use app\models\shops\Shops;
 use app\models\ShopsAddition;
 use app\models\tariff\Tariff;
+use app\models\tickets\Tickets;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -52,6 +53,7 @@ class UserController extends Controller {
     public function actionIndex() {
         $shops = Shops::find()->joinWith('tariff')->joinWith('additions')
             ->where(['user_id' => Yii::$app->user->id])->asArray()->all();
+
         $tariffs = Tariff::find()->asArray()->all();
         $additions = Addition::find()->asArray()->all();
 
@@ -59,8 +61,12 @@ class UserController extends Controller {
             'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->orderBy('id DESC')
             ->limit(3)->asArray()->all();
 
+        $tickets = Tickets::find()->where(['user_id' => Yii::$app->user->identity->id,
+            'status' => Tickets::STATUS_OPEN_TICKET])->with('last-tickets-text')->limit(3)->asArray()->all();
+
         $modelShop = new Shops();
         $service = new Service();
+        $newTicket = new Tickets();
 
         if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
             $service->saveTariff($modelShop->tariff_id, $modelShop['id'], Yii::$app->user->identity->id);
@@ -77,8 +83,20 @@ class UserController extends Controller {
             return $this->refresh();
         }
 
+        if ($newTicket->load(Yii::$app->request->post())) {
+            echo "<pre>";
+            print_r($newTicket);
+            echo "</pre>";
+
+//            $newTicket->status = Tickets::STATUS_OPEN_TICKET;
+//            $newTicket->new_text = false;
+//            $newTicket->save();
+
+//            return $this->refresh();
+        }
+
         return $this->render('index', compact('shops', 'modelShop', 'tariffs',
-            'additions', 'invoice'));
+            'additions', 'invoice', 'newTicket', 'tickets'));
     }
 
     /**

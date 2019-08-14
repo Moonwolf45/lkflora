@@ -4,9 +4,9 @@ use yii\db\Migration;
 use yii\db\Schema;
 
 /**
- * Class m190729_160402_create_table_tariff
+ * Class m190729_160402_create__tariffTable
  */
-class m190729_160402_create_table_tariff extends Migration {
+class m190729_160402_create_tariff_table extends Migration {
     /**
      * {@inheritdoc}
      */
@@ -20,7 +20,7 @@ class m190729_160402_create_table_tariff extends Migration {
             'about' => Schema::TYPE_TEXT . ' COMMENT "Описание"',
             'drop' => Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 0 COMMENT "Параметр который запрещает подключать тариф ниже данного"',
             'status' => Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 1 COMMENT "Статус"',
-            'term' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Срок действия тарифа, после которого он не может быть повторно подключен"',
+            'term' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Срок действия тарифа, после которого он не может быть повторно подключен"'
         ]);
     }
 

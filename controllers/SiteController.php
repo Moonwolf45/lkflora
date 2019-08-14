@@ -96,8 +96,7 @@ class SiteController extends Controller {
      *
      * @return bool
      */
-    public function actionLogin()
-    {
+    public function actionLogin() {
         $this->redirect('/site/index');
 
         return true;
@@ -151,8 +150,7 @@ class SiteController extends Controller {
      *
      * @return Response
      */
-    public function actionLogout()
-    {
+    public function actionLogout() {
         Yii::$app->user->logout();
 
         return $this->goHome();

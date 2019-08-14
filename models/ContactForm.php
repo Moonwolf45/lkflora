@@ -39,35 +39,5 @@ class ContactForm extends Model {
         ];
     }
 
-    /**
-     *
-     * Sends an email to the specified email address using the information collected by this model.
-     *
-     * @param string $email the target email address
-     * @param $path
-     * @param $view
-     *
-     * @return bool whether the model passes validation
-     */
-    public function contact($email, $path, $view, $params = []) {
-        if ($this->validate()) {
-            Yii::$app->mailer->getView()->params['link'] = $params['link'];
 
-            $result = Yii::$app->mailer->compose([
-                'html' => 'views/' . $path . '/' . $view . '-html',
-                'text' => 'views/' . $path . '/' . $view . '-text',
-            ], $params);
-
-            $result->setTo($email);
-            $result->setFrom([Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']]);
-            $result->setReplyTo([$this->email => $this->name]);
-            $result->setSubject($this->subject);
-            $result->setTextBody($this->body);
-            $result->send();
-
-            Yii::$app->mailer->getView()->params['link'] = null;
-            return true;
-        }
-        return false;
-    }
 }

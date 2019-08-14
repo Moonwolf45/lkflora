@@ -2,6 +2,6 @@
 
 return [
     'adminEmail' => 'admin@example.com',
-    'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
+    'senderEmail' => 'info@lk.florapoint.ru',
+    'senderName' => 'Florapoint.tu',
 ];

@@ -2,9 +2,8 @@
 
 namespace app\models\db;
 
-use app\models\addition\Addition;
 use app\models\shops\Shops;
-use app\models\ShopsAddition;
+use app\models\traits\MailToUserTrait;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -29,6 +28,7 @@ use yii\web\IdentityInterface;
  * @property string  $password write-only password
  */
 class User extends ActiveRecord implements IdentityInterface {
+    use MailToUserTrait;
 
     public $passForMail;
     public $shops;
@@ -202,6 +202,9 @@ class User extends ActiveRecord implements IdentityInterface {
         $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
 
+    /**
+     * @throws \yii\base\Exception
+     */
     public function generateEmailVerificationToken() {
         $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
     }
@@ -229,11 +232,8 @@ class User extends ActiveRecord implements IdentityInterface {
      * @return string
      */
     public function sendMailForNewUser() {
-        $msg = "Адрес входа: http://{$_SERVER['HTTP_HOST']} \n";
-        $msg .= "Логин: {$this->email} \n";
-        $msg .= "Пароль: {$this->password_hash} \n";
-
-        mail($this->email, 'Для вас создана учетная запись', $msg);
+        $this->sendMailToUser($this->email, 'newUser', 'Для вас создана учетная запись на сайте Florapoint',
+            ['email' => $this->email, 'password_hash' => $this->password_hash]);
 
         return true;
     }
