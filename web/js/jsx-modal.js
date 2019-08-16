@@ -1,6 +1,6 @@
 	// PopUp
 
-$(document).ready(function() {
+  $(document).ready(function() {
   var jsxModalClick = $('[data-jsx-modal-target]');
   var jsxModal    = $('.jsx-modal');
   var jsxModalClose = $('.jsx-modal__close');

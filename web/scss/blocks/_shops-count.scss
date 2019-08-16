@@ -1,0 +1,20 @@
+.shops-count{
+	position: absolute;
+	top: 12px;
+	left: 0;
+	width: 60px;
+	height: 60px;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	background: rgba($white, 0.9);
+	box-shadow: 0px 2px 15px rgba(0, 0, 0, 0.12);
+}
+
+.shops-count__number{
+	font-family: Rubik;
+	font-weight: 300;
+	font-size: 28px;
+	color: $green;
+	text-align: center;
+	line-height: 60px;
+}

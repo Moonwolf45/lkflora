@@ -7,6 +7,7 @@ use yii\widgets\Pjax;
 /** @var TYPE_NAME $shops */
 /** @var TYPE_NAME $invoice */
 /** @var TYPE_NAME $tickets */
+/** @var TYPE_NAME $monthly_payment */
 
 $this->title = 'Главная'; ?>
 
@@ -110,13 +111,19 @@ $this->title = 'Главная'; ?>
 
         <div class="content__col-3 content__col_add-services">
             <div class="content__box">
-                <div class="add-services">
-                    <div class="add-services__wrapp">
+                <div class="services">
+                    <div class="services__wrapp">
                         <p class="sub-title">
                             Подключено услуг на
                         </p>
-                        <p class="add-services__total"><?=Yii::$app->formatter->asDecimal('2450', 2); ?> руб/мес</p>
-                        <p class="add-services__detalization">детализация</p>
+                        <?php $total_payment = 0;
+                        if (!empty($monthly_payment)) {
+                            foreach ($monthly_payment as $m_payment) {
+                                $total_payment += $m_payment['writeoff_amount'] * $m_payment['quantity'];
+                            }
+                        } ?>
+                        <p class="services__total"><?= Yii::$app->formatter->asDecimal($total_payment, 2); ?> руб/мес</p>
+                        <p class="services__detalization">детализация</p>
                         <p class="sub-title">
                             Созданные счета
                         </p>

@@ -112,4 +112,19 @@ class Payments extends ActiveRecord {
     public function getAddition() {
         return $this->hasOne(Addition::class, ['id' => 'service_id']);
     }
+
+    /**
+     * @return array|ActiveRecord|null
+     */
+    public static function getMaxId() {
+        return static::find()->select(['id'])->orderBy(['id' => SORT_DESC])->asArray()->limit(1)->one();
+    }
+
+    /**
+     * @return array|ActiveRecord|null
+     */
+    public static function getMaxNumberSchet() {
+        return static::find()->select(['invoice_number'])->andWhere(['!=', 'invoice_number', ''])
+            ->orderBy(['invoice_number' => SORT_DESC])->asArray()->limit(1)->one();
+    }
 }

@@ -29,7 +29,9 @@ body {
 	padding-left: 80px;
 	transition:0.3s;
 }
-
+.wrapper-padding{
+	padding-left: 0 !important; 
+}
 #footer {
 	width: 100%;
 	min-width: 1170px + 20px;

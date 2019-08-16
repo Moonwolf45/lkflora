@@ -75,6 +75,7 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'user/payment/deposit_<d:\d+>/invoice_<i:\d+>' => 'user/payment',
+                'user/download-act/id_<id:\d+>' => 'user/download-act',
             ],
         ],
         'pdf' => [
@@ -82,7 +83,7 @@ $config = [
             'mode' => Pdf::MODE_UTF8,
             'format' => Pdf::FORMAT_A4,
             'orientation' => Pdf::ORIENT_PORTRAIT,
-            'destination' => Pdf::DEST_FILE,
+            'destination' => Pdf::DEST_FILE
         ]
     ],
     'controllerMap' => [

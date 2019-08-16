@@ -1,0 +1,83 @@
+
+.add-service{
+	padding-top: 20px;
+}
+
+.add-service__form{
+	max-width: 680px;
+}
+
+.add-service__row{
+	display: flex;
+	margin: 0 -15px;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
+}
+
+.add-service__col{
+	width: 50%;
+	padding: 5px 15px;
+	
+}
+
+.add-service__box{
+	padding: 5px 15px 5px 5px;
+	display: flex;
+	-webkit-justify-content: space-between;
+	        justify-content: space-between;
+	transition:all 0.3s;
+	
+	&.active{
+		background: rgba($gray-4, 0.5);
+	}
+}
+
+.add-service__img{
+	position: absolute;
+	bottom: 0px;
+	right: 3px;
+}
+
+.add-service__button{
+	margin: 55px 0 0 1px;
+}
+
+
+@media (max-width:730px) {
+	.add-servicee__form{
+		padding: 0 15px 0 0;
+	}
+
+	.add-service__img{
+		bottom: 5px;
+	}
+
+	.add-service__row{
+	margin: 0 -5px;
+	}
+
+	.add-service__col{
+		padding: 0 5px;
+	}
+}
+
+@media (max-width:630px) {
+	.add-service__col{
+		width: 100%;
+	}
+}
+
+@media (max-width:560px) {
+
+	.add-service__img{
+		display: none;
+	}
+
+}
+
+@media (max-width:380px) {
+	.add-service__button{
+		margin: 25px auto 0 auto;
+	}
+}

@@ -1,0 +1,132 @@
+.discussion__content{
+	padding: 0 65px;
+	height: 445px;
+	overflow: hidden;
+	-ms-overflow-y: auto;
+	    overflow-y: auto;
+		background: rgba($gray-field, 0.3);
+}
+
+.discussion__content::-webkit-scrollbar {
+  	width: 4px;
+}
+
+.discussion__content::-webkit-scrollbar-thumb {
+  background: $light-gray; 
+  border-radius: 5px;
+}
+.discussion__list{
+	padding: 20px 0;
+	max-width: 555px;
+	width: 100%;
+	margin: 0 auto;
+}
+
+.discussion__item{
+	padding:5px 0px;
+}
+.discussion__item_right{
+	text-align: right;
+}
+.discussion__data-message{
+	display: inline-block;
+	text-align: left;
+}
+
+.discussion__message{
+	position: relative;
+}
+.discussion__sms{
+	position: relative;
+	padding: 20px 30px 30px 20px;
+	max-width: 455px;
+	p{
+		font-size: 15px;
+	}
+	&:before{
+		content: attr(data-time-sms);
+		position: absolute;
+		bottom: 10px;
+		right: 25px;
+		font-weight: 500;
+		font-size: 11px;
+		color: $gray-field;
+		letter-spacing: 2.2px;
+	}
+	&:after{
+		content: "";
+		position: absolute;
+	    width: 0;
+	    height: 0;
+	   	bottom: -7px;
+	   	border-top: 7px solid transparent;
+		    border-bottom: 7px solid transparent;
+	}
+}
+.discussion__name{
+	font-size: 14px;
+	color: #8097B1;
+	padding-bottom: 5px;
+}
+.discussion__avatar{
+	position: absolute;
+	bottom: -7px;
+	background: $gray;
+	width: 40px;
+	height: 40px;
+	-webkit-border-radius: 100%;
+	        border-radius: 100%;
+	overflow: hidden;
+	img{
+		top: 0;
+		left: 0;
+		position: absolute;
+		object-fit:cover;
+		width: 100%;
+		height: 100%;
+	}
+}
+.discussion__item_right{
+	.discussion__sms{
+		background: $green;
+		border-radius: 17px 17px 0px 17px;
+		p{
+			color: $white;
+		}
+		&:after{
+			right: 0;
+		    border-right: 8px solid $green;
+		    border-left: 6px solid transparent;
+			
+		}
+	}
+	.discussion__avatar{
+		right: -50px;
+	}
+	.discussion__name{
+		text-align: right;
+	}
+}
+
+.discussion__item_left{
+	.discussion__sms{
+		background: $white;
+		border-radius: 17px 17px 17px 0px;
+		p{
+			
+		}
+		&:after{
+			left: 0;
+			
+		    border-right: 6px solid transparent;
+		    border-left: 8px solid $white;
+			
+		}
+		&:before{
+			color: $gray-3;
+		}
+	}
+	.discussion__avatar{
+		left: -50px;
+	}
+}

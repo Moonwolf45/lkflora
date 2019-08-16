@@ -1,0 +1,45 @@
+.sub-title{
+	padding-bottom: 25px;
+	font-family: $rubik;
+	font-size: 13px;
+	text-transform: uppercase;
+	color: $gray;
+}
+
+.sub-title_pl20{
+	padding-left: 20px;
+}
+
+.sub-title-mobile{
+	cursor: pointer;
+	padding-bottom: 0;
+	&:hover{
+		color: darken($gray, 10%);
+	}
+}
+
+@media (max-width:1170px) {
+	.sub-title_pl20{
+		padding-left: 0px;
+	}
+}
+
+@media (max-width:991px) {
+	.sub-title_pl20{
+		padding-left: 20px;
+	}
+}
+
+@media (max-width:730px) {
+	
+}
+@media (max-width:580px) {
+	.sub-title_pl20{
+		padding-left: 0px;
+	}
+}
+
+@media (max-width:530px) {
+
+
+}

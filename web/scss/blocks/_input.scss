@@ -14,8 +14,13 @@
 
 	@include placeholder {
 		font-size: 15px;
-		color: $dark;
+		// color: $dark;
+		color: rgba($dark, 0.5)
 	}
+}
+
+.input-add-store{
+	max-width: 360px;
 }
 
 

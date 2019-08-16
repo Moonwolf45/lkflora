@@ -9,10 +9,29 @@
 	transition:0.3s;
 	margin: 0 auto;
 }
+// FOR MAIN
 
+.content-main{
+	padding-top: calc(80px + 45px);
+}
+
+// FOR MAIN
+
+
+//FOR ADVERTISING
+
+// .content-advertising{
+// 	padding-top: 35px;
+	
+// }
+
+//FOR ADVERTISING
 .content__row{
 	display: flex;
 	margin: 0 -10px;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
 }
 
 .content__title{
@@ -24,6 +43,7 @@
 }	
 
 .content__col-12,
+.content__col-9,
 .content__col-6,
 .content__col-3{
 	padding: 0 10px;
@@ -31,6 +51,10 @@
 
 .content__col-12{
 	width: 100%;
+}
+
+.content__col-9{
+	width: 75%;
 }
 
 
@@ -41,13 +65,28 @@
 	width: 25%;
 }
 
+.content__col-3-messages{
+	position: relative;
+	top: -63px;
+}
+
 .content__box{
 	background: #FFFFFF;
 	border: 1px solid rgba(149, 177, 158, 0.25);
 	box-shadow: 0px 10px 20px rgba(19, 86, 50, 0.07);
 	border-radius: 1px;
-	padding-bottom: 85px;
+	height: 100%;
 }
+
+.content__box_pb85{
+	padding-bottom: 85px;
+	
+}
+
+.content__box-messages{
+	height: calc(100% + 63px);
+}
+
 
 @media (max-width:991px) {
 	.content{
@@ -58,4 +97,32 @@
 	.content__title{
 		display: none;
 	}
+	
+	.content__row_main{
+		margin: 0 -5px;
+	}
+	.content__col_shops{
+		width: 100%;
+		padding: 0 5px;
+		margin-bottom: 10px;
+	}
+
+	.content__col_add-services,
+	.content__col_support{
+		width: 50%;
+		padding: 0 5px 10px 5px;
+	}
+
+	.content__col-9_messages{
+		width: 100%;
+	}
+}
+
+@media (max-width:530px){
+	.content__col_add-services,
+	.content__col_support{
+		width: 100%;
+	}
+
+	
 }

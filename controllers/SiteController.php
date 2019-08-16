@@ -75,7 +75,6 @@ class SiteController extends Controller {
      * @throws \yii\base\Exception
      */
     public function actionRegistration() {
-        exit; //todo: временно, отключенный контроллер регистрации
         $model = new RegistrationForm;
 
         $model->load(Yii::$app->request->post());

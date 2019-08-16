@@ -1,0 +1,50 @@
+.attach{
+	display: inline-block;
+	cursor: pointer;
+}
+
+.attach__nesting{
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 5;
+}
+
+.attach__icon{
+	
+}
+
+.attach__text{
+	
+}
+//
+.attach__input{
+	display: none;
+}
+
+.attach__wrapp-label{
+	position: relative;
+	width: 200px;
+	height: 25px;
+	margin-bottom: 20px;
+}
+
+.attach__label{
+	display: block;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	cursor: pointer;
+}
+.attach__icon{
+	width: 25px;
+	height: 22px;
+	background: url(images/icon/icon-attach.svg) no-repeat left/contain;
+	padding-left: 35px;
+}
+.attach__text{
+	font-size: 15px;
+	color:$gray;
+}

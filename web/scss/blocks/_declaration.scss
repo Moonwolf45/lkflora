@@ -1,0 +1,24 @@
+.declaration{
+	padding-top: 35px;
+}
+
+.declaration__text{
+	font-size: 15px;
+	color: $dark;
+	padding-bottom: 15px;
+}
+
+.declaration__link{
+	font-size: 12px;
+	text-transform: uppercase;
+	color: $clay;
+	&:hover{
+		text-decoration: underline;
+	}
+}
+
+@media (max-width:580px) {
+	.declaration__text{
+		font-size: 14px;
+	}
+}

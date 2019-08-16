@@ -1,0 +1,153 @@
+// .fee-history{
+// }
+
+// .fee-history_pt60{
+// 	padding-top: 60px;
+	
+// }
+
+// .fee-history__wrapp{
+// 	padding-bottom: 20px;
+// }
+
+// .fee-history__block{
+// 	display: flex;
+// 	-webkit-align-items: center;
+// 	        align-items: center;
+// 	    -webkit-justify-content: space-between;
+// 	            justify-content: space-between;
+// 	    position: relative;
+// 	    height: 50px;
+// 	&:nth-child(2n){
+// 	    &:before{
+// 	    	content: '';
+// 	    	position: absolute;
+// 	    	top: 0;
+// 	    	left: auto;
+// 	    	right: 0;
+// 	    	width: calc(100% + 10px);
+// 	    	height: 100%;
+// 	    	background:  rgba($clay, 0.1);
+// 	    }
+// 	}
+
+// }
+
+// .fee-history__text{
+// 	font-family: $rubik;
+// 	font-size: 15px;
+// 	color: $dark;
+// }
+
+// .fee-history__text_percent{
+// 	&:first-child{
+// 		width: 20%;
+// 	}
+// 	&:nth-child(2){
+// 		width: 20%;
+// 	} 
+// 	&:nth-child(3){
+// 		width: 28%;
+// 	}
+// 	&:nth-child(4){
+// 		width: 32%;
+// 	}       
+	
+// }
+
+// .fee-history__span{
+// 	font-weight: 500;
+// }
+
+// .fee-history__download{
+// 	font-size: 12px;
+// 	text-transform: uppercase;
+// 	color: $gray;
+// 	max-width: 95px;
+// 	width: 100%;
+// 	&:hover{
+// 		text-decoration: underline;
+// 	}
+// }
+
+
+.fee-history__list{
+	margin: 0 -10px;
+}
+.fee-history__item{
+	display: flex;
+	-webkit-align-items: center;
+	        align-items: center;
+	-webkit-flex-wrap: wrap;
+	    -ms-flex-wrap: wrap;
+	        flex-wrap: wrap;
+	
+	&:nth-child(odd){
+		background:  rgba($clay, 0.1);
+	}
+}
+.fee-history__col{
+	padding: 8px 10px;
+	width: 22%;
+	&:nth-child(3){
+		width: 26%;
+	}
+	&:last-child{
+		width: 30%;
+	}
+	p{
+		
+	}
+}
+
+
+.fee-history__link{
+	text-transform: uppercase;
+	color: $gray;
+}
+
+
+.fee-history__list_history{
+	padding-bottom: 20px;
+	.fee-history__col{
+		width: 26%;
+		&:nth-child(3){
+			width: 18%;
+		}
+		&:nth-child(4){
+			width: 30%;
+		}
+	}
+}
+
+.fee-history_pt60{
+	padding-top: 60px;
+}
+@media (max-width:1170px) {
+
+}
+
+@media (max-width:530px) {
+	.fee-history__col{
+		width: 50%;
+		&:nth-child(3),
+		&:last-child{
+			width: 50%;
+		}
+	}
+	.fee-history__list_history{
+		.fee-history__col{
+			width: 50%;
+			text-align: left;
+			&:nth-child(2){
+				width: 50%;
+			}
+			&:nth-child(3){
+			width: 50%;
+			}
+			&:nth-child(4){
+				width: 50%;
+			}
+		}
+	}
+}

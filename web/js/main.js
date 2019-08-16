@@ -1,20 +1,27 @@
 (function($) {
 
-	if(window.matchMedia('(min-width: 991px)').matches) {
+	if(window.matchMedia('(min-width: 991px)').matches){
 		var btn = $('.js_burger');
 
 		btn.click(function(event) {
 			$(this).toggleClass('active');
 			var bodyStyle = $(this).closest('body').toggleClass('js_active-sidebar');
 			if ($(this).hasClass('active')) {
+				
 				$.cookie('sidebar', '1', { expires: 365, path: '/' });
+				// console.log($.cookie());
 			}
 			if (!$(this).hasClass('active')) {
 				$.cookie('sidebar', '0', { expires: 365, path: '/' });
+
 			}
+			
 		});
 	}
+	
 
+
+// Edit Email
 	var editMail = $('.js_mail-edit');
 	var inputMail = $('.js_email-input-edit');
 
@@ -27,8 +34,12 @@
 		$(this).addClass('settings__input');
 	});
 
-	if(window.matchMedia('(max-width: 991px)').matches) {
+
+
+// Mobile Menu
+	if(window.matchMedia('(max-width: 991px)').matches){
 	var btn = $('.js_burger');
+
 		btn.on('click', function(event) {
 			event.preventDefault();
 
@@ -57,11 +68,16 @@
 		}
 	}
 
+  	// Attach file
   	$(".clip-input").change(function() {
         var filename = $(this).val().replace(/.*\\/, "");
         $(".clip-input-txt").text(filename);
     });
 
+
+
+
+    //Tab Tarife
     var $parentTab = $('.js_tab-parent');
     var $parentTabClick = $('.js_tab-parent .js__tab-item');
     var $parentTabContent = $('.js_tab-parent .js__content-item');
@@ -71,25 +87,115 @@
 
     	$parentTabClick.removeClass('active').find('.js__show-hide').text('Что входит в тариф?');
     	$(this).addClass('active').find('.js__show-hide').text('Скрыть');
-
+    	
     	if ($parentTabContent.eq($(this).index()).is(':visible')) {
     		$(this).removeClass('active').find('.js__show-hide').text('Что входит в тариф?');
     		$parentTabContent.eq($(this).index()).slideUp();
     		flag = true;
-    	} else {
+    	}
+    	else{
+    		
     		if (flag) {
     			flag = false;
     			$parentTabContent.eq($(this).index()).slideDown();
-    		} else {
+    		}
+    		else{
     			$parentTabContent.hide(0);
     			$parentTabContent.eq($(this).index()).fadeIn(0);
     		}
     	}
     });
 
-	$(".accordeon_inner .accordeon_inner_open").hide().prev().click(function(e) {
-		e.preventDefault();
-		$(this).parents(".accordeon_inner").find(".accordeon_inner_open").not(this).slideUp().prev();
-		$(this).next().not(":visible").slideDown().prev();
-	});
+$(".accordeon_inner .accordeon_inner_open").hide().prev().click(function(e) {
+      e.preventDefault();
+      $(this).parents(".accordeon_inner").find(".accordeon_inner_open").not(this).slideUp().prev();
+      $(this).next().not(":visible").slideDown().prev();
+    });
+
+
+
+//number
+$(function() {
+
+  (function quantityProducts() {
+    var $quantityArrowMinus = $(".js_number-minus");
+    var $quantityArrowPlus = $(".js_number-plus");
+
+    var $quantityNum;
+
+    $quantityArrowMinus.click(function(){
+    	quantityMinus(this);
+    });
+    $quantityArrowPlus.click(function(){
+    	quantityPlus(this);
+    });
+
+    function quantityMinus($this) {
+    	$quantityNum = $($this).closest('.js_number').find('.js_number-input');
+      if ($quantityNum.val() > 1) {
+        $quantityNum.val(+$quantityNum.val() - 1);
+      }
+    }
+
+    function quantityPlus($this) {
+      $quantityNum = $($this).closest('.js_number').find('.js_number-input');
+      $quantityNum.val(+$quantityNum.val() + 1);
+    }
+  })();
+
+});
+
+
+
+$('.js-add-checkbox-service').on('change', function(event) {
+	event.preventDefault();
+	if ($(this).is(':checked')) {
+		$(this).closest('.add-service__box').addClass('active');
+	}else{
+		$(this).closest('.add-service__box').removeClass('active');
+	}
+});
+
+
+
+
+
+    // TAB PAYMENT
+//  	var $parentTab = $('.js_tab-parent');
+//     var $parentTabClick = $('.js_tab-parent .payment__tab-item');
+//     var $parentTabContent = $('.js_tab-parent .payment__content-item');
+//     var flag = true;
+//     $parentTabClick.on('click', function(event) {
+//     	event.preventDefault();
+
+
+//     	// $parentTabClick.removeClass('active').find('.tariff__show-hide').text('Что входит в тариф?');
+//     	// $(this).addClass('active').find('.tariff__show-hide').text('Скрыть');
+    	
+//     	console.log();
+//     	if ($parentTabContent.eq($(this).index()).is(':visible')) {
+//     		$(this).removeClass('active');
+//     		$parentTabContent.eq($(this).index()).slideUp();
+//     		flag = true;
+//     	}
+//     	else{
+    		
+//     		if (flag) {
+//     			flag = false;
+//     			$parentTabContent.eq($(this).index()).slideDown();
+//     		}
+//     		else{
+//     			$parentTabContent.hide(0);
+//     			$parentTabContent.eq($(this).index()).fadeIn(0);
+//     		}
+//     	}
+
+    	
+//     });
+
+// $(".accordeon_inner .accordeon_inner_open").hide().prev().click(function(e) {
+//       e.preventDefault();
+//       $(this).parents(".accordeon_inner").find(".accordeon_inner_open").not(this).slideUp().prev();
+//       $(this).next().not(":visible").slideDown().prev();
+//     });
 })(jQuery);

@@ -1,0 +1,58 @@
+.popup{
+	background: $white;
+	text-align: left;
+}
+
+.popup__wrapp{
+	padding: 50px 0 85px 45px;
+}
+
+.popup__title{
+	font-weight: 300;
+	font-size: 28px;
+	color: $dark;
+}
+
+.popup__title-tariff{
+	padding: 0 0 20px 15px;
+}
+
+.popup__wrapp_add-service{
+	padding: 55px 0 35px 45px;
+}
+
+
+@media (max-width:730px) {
+	.popup__wrapp_add-store{
+		padding: 50px 0 85px 15px;
+	}
+
+	.popup__wrapp_add-service{
+		padding: 55px 15px 35px 15px;
+	}
+
+	
+}
+
+@media (max-width:580px) {
+	
+	.popup__title{
+		font-size: 26px;
+	}
+}
+
+@media (max-width:430px) {
+	.popup__title{
+		font-size: 18px;
+	}
+}
+
+@media (max-width:380px) {
+	.popup__title-tariff{
+		padding: 0 0 20px 6px;
+	}
+
+	.popup__wrapp_add-service{
+		padding: 45px 5px 15px 5px;
+	}
+}

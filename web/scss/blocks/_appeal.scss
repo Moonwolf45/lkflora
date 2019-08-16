@@ -1,0 +1,91 @@
+.appeal{
+	text-align: left;
+}
+
+.appeal__wrapp{
+	width: 100%;
+}
+
+.appeal__wrapp_mw435{
+	max-width: 435px;
+}
+
+.appeal__wrapp_mw635{
+	max-width: 635px;
+}
+
+.appeal__wrapp_mw655{
+	max-width: 655px;
+}
+
+.appeal__wrapp_m30{
+	margin: 30px 0 30px 25px;
+}
+
+.appeal__wrapp_p2{
+	padding: 45px 15px 35px 75px;
+}
+
+.appeal__wrapp_pt30{
+	margin: 0 auto;
+}
+
+
+.appeal__form{
+	padding-top: 35px;
+}
+
+.appeal__block{
+	
+}
+
+.textarea{
+	background: rgba($gray-field, 0.3);
+	border-radius: 5px;
+	font-size: 15px;
+	border: 1px solid rgba($clay, 0.3);
+	height: 150px;
+	display: block;
+	color: $dark;
+	width: 100%;
+	padding: 15px;
+	font-family: $rubik;
+	transition:0.5s;
+	resize:none;
+	width: 100%;
+	padding-top: 15px;
+
+	@include placeholder {
+		font-size: 14px;
+		color: $gray;
+	}
+}
+
+.textarea_mb20{
+	margin-bottom: 20px;
+}
+
+@media (max-width:991px) {
+	.appeal__wrapp_p2{
+		padding: 45px 15px 35px 15px;
+	}
+
+}
+
+@media (max-width:730px) {
+	
+}
+
+@media (max-width:500px) {
+	.appeal__wrapp_m30{
+		margin: 30px 0 30px 15px;
+	}
+	.appeal__block{
+		margin-right: 30px;
+	}
+}
+
+
+@media (max-width:430px) {
+	
+}

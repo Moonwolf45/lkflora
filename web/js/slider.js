@@ -1,3 +1,4 @@
+
 $(document).ready(function() {
   $('.slider-header').slick({
      arrows:true,
@@ -30,6 +31,9 @@ $(document).ready(function() {
           slidesToScroll: 1
         }
       }
+      
     ]
   });
+
 });
+

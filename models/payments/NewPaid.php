@@ -7,15 +7,15 @@ use yii\base\Model;
 
 class NewPaid extends Model {
 
-    public $newPaid;
+    public $amount;
 
     /**
      * {@inheritdoc}
      */
     public function rules() {
         return [
-            [['newPaid'], 'required'],
-            [['newPaid'], 'number'],
+            [['amount'], 'required'],
+            [['amount'], 'number']
         ];
     }
 
@@ -24,7 +24,7 @@ class NewPaid extends Model {
      */
     public function attributeLabels() {
         return [
-            'newPaid' => 'Пополнить баланс',
+            'amount' => 'Пополнить баланс',
         ];
     }
 

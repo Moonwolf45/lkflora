@@ -1,0 +1,63 @@
+.jsx-modal{
+	padding: 0 8px 0 10px;
+}
+
+.jsx-modal__block{
+	position: relative;
+}
+
+.jsx-modal-popup{
+	max-width: 800px;
+	background: #fff;
+}
+
+.jsx-modal-popup_appeal{
+	max-width: 560px;
+}
+
+.jsx-modal{
+	display: none;
+	overflow-y: auto;
+	position: fixed;
+	background: rgba(0,0,0,0.8);
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	text-align: center;
+	-webkit-overflow-scrolling: touch;
+	z-index: 99999;
+	
+}
+.jsx-modal:after{
+	height: 100%;
+	display: inline-block;
+	vertical-align: middle;
+	pointer-events: none;
+	content: "";
+}
+
+
+.jsx-modal__block{
+	position: relative;
+	display: inline-block;
+	vertical-align: middle;
+	width: calc(100% - 4px);
+}
+
+
+body.jsx-hidden{
+	overflow: hidden;
+}
+
+
+*{
+	padding: 0;
+	-webkit-box-sizing: border-box;
+	   -moz-box-sizing: border-box;
+	        box-sizing: border-box;
+	    margin: 0;
+}
+
+
+

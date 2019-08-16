@@ -1,0 +1,9 @@
+.show-more{
+	color: $green;
+	font-size: 12px;
+	text-transform: uppercase;
+	cursor: pointer;
+	&:hover{
+		text-decoration: underline;
+	}
+}

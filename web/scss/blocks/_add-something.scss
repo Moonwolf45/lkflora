@@ -1,0 +1,53 @@
+.add-something{
+	width: calc(100%);
+}
+
+.add-something__plus{
+	position: relative;
+	width: 18px;
+	height: 18px;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	background: #E4E8F0;
+	cursor: pointer;
+	&:before,&:after{
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform:translate(-50%, -50%);
+		width: 10px;
+		height: 2px;
+		background: $gray;
+		-webkit-border-radius: 1px;
+		        border-radius: 1px;
+	}
+	&:before{
+		transform:translate(-50%, -50%);
+	}
+	&:after{
+		transform:translate(-50%, -50%) rotate(-90deg);
+	}
+}
+
+.add-something__text{
+	font-family:$rubik;
+	font-size: 12px;
+	text-transform: uppercase;
+	color: $gray;
+	cursor: pointer;
+	padding-left: 8px;
+}
+
+.add-something__text_fs14{
+	font-size: 14px;
+}
+
+.add-something-support{
+	width: 100%;
+	padding: 0 40px 20px 40px;
+}
+
+.add-something__text-support{
+	padding-left: 0;
+}

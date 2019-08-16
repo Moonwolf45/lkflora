@@ -57,27 +57,30 @@ class UserController extends Controller {
         $tariffs = Tariff::find()->asArray()->all();
         $additions = Addition::find()->asArray()->all();
 
-        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
-            'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->orderBy('id DESC')
+        $date_month = date("Y-m-d", mktime(0, 0, 0, date("m") + 1, 31, date("Y")));
+        $monthly_payment = Service::find()->where(['user_id' => Yii::$app->user->id, 'completed' => Service::COMPLETED_FALSE])
+            ->andWhere(['<=', 'writeoff_date', $date_month])->asArray()->all();
+
+        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL,
+            'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])
             ->limit(3)->asArray()->all();
 
-        $tickets = Tickets::find()->where(['user_id' => Yii::$app->user->identity->id,
-            'status' => Tickets::STATUS_OPEN_TICKET])->with('last-tickets-text')->limit(3)->asArray()->all();
+        $tickets = Tickets::find()->where(['user_id' => Yii::$app->user->id, 'status' => Tickets::STATUS_OPEN_TICKET])
+            ->with('last-tickets-text')->limit(3)->asArray()->all();
 
         $modelShop = new Shops();
-        $service = new Service();
         $newTicket = new Tickets();
 
         if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
-            $service->saveTariff($modelShop->tariff_id, $modelShop['id'], Yii::$app->user->identity->id);
+            Service::saveTariff($modelShop->tariff_id, $modelShop->id, Yii::$app->user->id);
             foreach ($modelShop->addition as $addition_one) {
                 $shopAddition = new ShopsAddition();
-                $shopAddition->shop_id = $modelShop['id'];
+                $shopAddition->shop_id = $modelShop->id;
                 $shopAddition->addition_id = $addition_one;
                 $shopAddition->quantity = 1;
                 $shopAddition->save();
 
-                $service->saveAddition($addition_one, $modelShop['id'], 1, Yii::$app->user->identity->id);
+                Service::saveAddition($addition_one, $modelShop->id, 1, Yii::$app->user->id);
             }
 
             return $this->refresh();
@@ -96,24 +99,24 @@ class UserController extends Controller {
         }
 
         return $this->render('index', compact('shops', 'modelShop', 'tariffs',
-            'additions', 'invoice', 'newTicket', 'tickets'));
+            'additions', 'invoice', 'newTicket', 'tickets', 'monthly_payment'));
     }
 
     /**
+     *
      * Просто action для обновления тарифа магазина
      *
      * @return \yii\web\Response
      */
     public function actionUpdateShop() {
         $updateShop = Yii::$app->request->post();
+
         $shop = Shops::findOne($updateShop['Shops']['id']);
         $oldTariff_id = $shop->tariff_id;
         $shop->tariff_id = $updateShop['Shops']['tariff_id'];
-        $shop->save();
+        $shop->save(false);
 
-        $service = new Service();
-        $service->saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'],
-            Yii::$app->user->identity->id, $oldTariff_id, true);
+        Service::saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'], Yii::$app->user->id, $oldTariff_id, true);
 
         return $this->redirect(['/user/index']);
     }
@@ -125,14 +128,13 @@ class UserController extends Controller {
      */
     public function actionShopEditService() {
         $shopEditService = Yii::$app->request->post();
-        $service = new Service();
 
         $delete_id = [];
         $additions = ShopsAddition::find()->where(['shop_id' => $shopEditService['Shops']['id']])->asArray()->all();
         foreach ($additions as $addition) {
             $delete_id[] = $addition['addition_id'];
         }
-        $service->updateAdditionFalse(Yii::$app->user->identity->id, $shopEditService['Shops']['id'], $delete_id);
+        Service::updateAdditionFalse(Yii::$app->user->id, $shopEditService['Shops']['id'], $delete_id);
         ShopsAddition::deleteAll(['shop_id' => $shopEditService['Shops']['id']]);
 
         foreach ($shopEditService['Shops']['addition'] as $key => $service) {
@@ -143,8 +145,7 @@ class UserController extends Controller {
                 $shopAddition->quantity = $shopEditService['Shops']['quantityArr'][$key];
                 $shopAddition->save();
 
-                $service->updateAddition($key, $shopEditService['Shops']['id'],
-                    $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->identity->id);
+                Service::updateAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id);
             }
         }
 
@@ -169,17 +170,20 @@ class UserController extends Controller {
         }
 
         $modelPaid = new NewPaid();
-        $payments = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_WRITEOFF,
+        $payments = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_WRITEOFF,
             'status' => Payments::STATUS_PAID])->with('shop')->with('tariff')->with('addition')
             ->orderBy(['id' => SORT_DESC])->asArray()->all();
 
-        $deposit = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL,
+        $deposit = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL,
             'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->limit(3 * $d)->asArray()->all();
 
-        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->identity->id, 'type' => Payments::TYPE_REFILL])
+        $invoice = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL])
             ->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])->limit(3 * $i)->asArray()->all();
 
-        return $this->render('payment', compact('d', 'i', 'modelPaid', 'payments', 'deposit', 'invoice'));
+        $maxPaymentId = Payments::getMaxId();
+
+        return $this->render('payment', compact('d', 'i', 'modelPaid', 'payments', 'deposit', 'invoice',
+            'maxPaymentId'));
     }
 
     /**
@@ -192,14 +196,15 @@ class UserController extends Controller {
 //        print_r($_REQUEST);
 //        echo "</pre>";
 
-        $content = $this->renderPartial('_reportPDF');
-
+        $maxPaymentNumber = Payments::getMaxNumberSchet();
         $date = date('d.m.Y');
-        $number = 111;
-        $pdf = Yii::$app->pdf;
-        $mpdf = $pdf->api;
+        $number = $maxPaymentNumber['invoice_number'] + 1;
+        $pdfFile = Yii::$app->pdf;
+        $mpdf = $pdfFile->api;
         $mpdf->SetHeader('Счёт №' . $number . ' от ' . $date);
         $mpdf->SetTitle('Счёт №' . $number . ' от ' . $date);
+
+        $content = $this->renderPartial('_schetPDF', ['number' => $number, 'date' => $date]);
         $mpdf->WriteHtml($content);
         $filename = 'Счёт №' . $number . ' от ' . $date . '.pdf';
         return $mpdf->Output($filename, 'D');
@@ -208,12 +213,39 @@ class UserController extends Controller {
     /**
      * Оплата с карты
      *
+     * @param $id
+     *
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionDownloadAct($id) {
+        if ($id != '') {
+            $model = Payments::find()->where(['id' => $id])->limit(1)->one();
+
+           if (!empty($model)) {
+               $pdf = Yii::$app->pdf;
+               $mpdf = $pdf->api;
+               $content = $this->renderPartial('_actPDF', ['model' => $model]);
+               $mpdf->WriteHtml($content);
+
+               $number = $model['invoice_number'];
+               $date = Yii::$app->formatter->asDate($model['date']);
+               $mpdf->SetHeader('Акт №' . $number . ' от ' . $date);
+               $mpdf->SetTitle('Акт №' . $number . ' от ' . $date);
+               $filename = 'Акт №' . $number . ' от ' . $date . '.pdf';
+               return $mpdf->Output($filename, 'D');
+           }
+        }
+    }
+
+    /**
+     * Страница тех. потдержки
+     *
      * @return string
      */
-    public function actionPaidCard() {
-        echo "<pre>";
-        print_r($_REQUEST);
-        echo "</pre>";
+    public function actionTickets() {
+
+        return $this->render('tickets');
     }
 
     /**

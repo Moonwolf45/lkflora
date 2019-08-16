@@ -10,6 +10,23 @@ use yii\widgets\Pjax;
 /** @var TYPE_NAME $modelPaid */
 /** @var TYPE_NAME $d */
 /** @var TYPE_NAME $i */
+/** @var TYPE_NAME $maxPaymentId */
+
+//--
+$amount = 0;
+$client_email = Yii::$app->user->identity->email;
+$client_id = Yii::$app->user->identity->id;
+$description = 'Пополнение баланса с карты';
+$fail_url = 'https://pay.modulbank.ru/fail';
+$merchant = Yii::$app->params['idSite'];
+$order_id = $maxPaymentId['id'] + 1;
+$salt = Yii::$app->security->generateRandomString(32);
+$success_url = 'https://pay.modulbank.ru/success';
+$testing = 1;
+$unix_timestamp = time();
+
+$secretKey = Yii::$app->params['testSecretKey'];
+//--
 
 $this->title = 'Детализация баланса'; ?>
 
@@ -38,22 +55,33 @@ $this->title = 'Детализация баланса'; ?>
                                     <div class="bill-btn__icon">
                                         <?=Html::img('@web/images/icon/icon-bill-pdf.svg'); ?>
                                     </div>
-                                    <?php $form3 = ActiveForm::begin(['action' => Url::to(['/user/save-pdf']), 'id' => 'f3']); ?>
-                                        <?= $form3->field($modelPaid, 'newPaid')->hiddenInput(['value' => 0])
+                                    <?php $form1 = ActiveForm::begin(['action' => Url::to(['/user/save-pdf']), 'id' => 'f3']); ?>
+                                        <?= $form1->field($modelPaid, 'amount')->hiddenInput(['value' => 0])
                                             ->label(false)->error(false); ?>
                                         <?= Html::submitButton('Выставить счёт', ['class' => 'bill-btn__link']); ?>
-                                    <?php $form3 = ActiveForm::end(); ?>
+                                    <?php $form1 = ActiveForm::end(); ?>
                                 </div>
 
                                 <div class="bill-btn__box">
                                     <div class="bill-btn__icon">
                                         <?=Html::img('@web/images/icon/icon-bill-cards.svg'); ?>
                                     </div>
-                                    <?php $form4 = ActiveForm::begin(['action' => Url::to(['/user/paid-card']), 'id' => 'f4']); ?>
-                                        <?= $form4->field($modelPaid, 'newPaid')->hiddenInput(['value' => 0])
-                                            ->label(false)->error(false); ?>
+                                    <?php $form2 = ActiveForm::begin(['action' => Url::to('https://pay.modulbank.ru/pay'),
+                                        'id' => 'f4']); ?>
+                                        <input type="hidden" name="amount" value="<?= $amount; ?>">
+                                        <input type="hidden" name="merchant" value="<?= $merchant; ?>">
+                                        <input type="hidden" name="order_id" value="<?= $order_id; ?>">
+                                        <input type="hidden" name="description" value="<?= $description; ?>">
+                                        <input type="hidden" name="success_url" value="<?= $success_url; ?>">
+                                        <input type="hidden" name="fail_url" value="<?= $fail_url; ?>">
+                                        <input type="hidden" name="client_email" value="<?= $client_email; ?>">
+                                        <input type="hidden" name="client_id" value="<?= $client_id; ?>">
+                                        <input type="hidden" name="unix_timestamp" value="<?= $unix_timestamp; ?>">
+                                        <input type="hidden" name="salt" value="<?= $salt; ?>">
+                                        <input type="hidden" name="testing" value="<?= $testing; ?>">
+                                        <input type="hidden" name="signature" value="">
                                         <?= Html::submitButton('Оплатить картой', ['class' => 'bill-btn__link']); ?>
-                                    <?php $form4 = ActiveForm::end(); ?>
+                                    <?php $form2 = ActiveForm::end(); ?>
                                 </div>
                             </div>
 
@@ -279,7 +307,9 @@ $this->title = 'Детализация баланса'; ?>
                                                     <div class="fee-history__col">
                                                         <p class="s-fz12px">
                                                             <?php if ($dep['way'] == 1): ?>
-                                                                <a href="" class="fee-history__link">скачать акт</a>
+                                                                <a href="<?= Url::to(['/user/download-act', 'id' => $dep['id']]);?>" class="fee-history__link" data-pjax="0">
+                                                                    Скачать акт
+                                                                </a>
                                                             <?php endif; ?>
                                                         </p>
                                                     </div>
@@ -356,10 +386,32 @@ $this->title = 'Детализация баланса'; ?>
 
 <?php
 
+$amountEncode = base64_encode($amount);
+$client_emailEncode = base64_encode($client_email);
+$client_idEncode = base64_encode($client_id);
+$descriptionEncode = base64_encode($description);
+$fail_urlEncode = base64_encode($fail_url);
+$merchantEncode = base64_encode($merchant);
+$order_idEncode = base64_encode($order_id);
+$saltEncode = base64_encode($salt);
+$success_urlEncode = base64_encode($success_url);
+$testingEncode = base64_encode($testing);
+$unix_timestampEncode = base64_encode($unix_timestamp);
+
 $script = <<< JS
+    const stringOne = 'amount=$amountEncode';
+
+    let stringTwo = '&client_email=$client_emailEncode&client_id=$client_idEncode&description=$descriptionEncode';
+    stringTwo += '&fail_url=$fail_urlEncode&merchant=$merchantEncode&order_id=$order_idEncode&salt=$saltEncode';
+    stringTwo += '&success_url=$success_urlEncode&testing=$testingEncode&unix_timestamp=$unix_timestampEncode';
+    
+    let signatureOne = sha1('$secretKey' + stringOne + stringTwo);
+    let signatureTwo = sha1('$secretKey' + signatureOne);
+    $('#f4 input[name="signature"]').val(signatureTwo);
+    
     $('input[name="paid"]').on('change', function() {
-        $('#f3 input[name="NewPaid[newPaid]"]').val(this.value);
-        $('#f4 input[name="NewPaid[newPaid]"]').val(this.value);
+        $('#f3 input[name="NewPaid[amount]"]').val(this.value);
+        $('#f4 input[name="amount"]').val(this.value);
     });
     
     $('#f3 .bill-btn__link').val('click', function(e) {
@@ -371,8 +423,17 @@ $script = <<< JS
     });
     
     $('#f4 .bill-btn__link').on('click', function(e) {
-        if ($('input[name="paid"]').val() == '') {
-            e.preventDefault();
+        e.preventDefault();
+        if ($('input[name="paid"]').val() != '') {
+            let string = 'amount='+ btoa($('#f4 input[name="amount"]').val());
+            string += stringTwo;
+            
+            let signatureThree = sha1('$secretKey' + string);
+            let signatureFour = sha1('$secretKey' + signatureThree);
+
+            $('#f4 input[name="signature"]').val(signatureFour);
+            $('#f4').submit();
+        } else {
             $('.help-block').addClass('has-error');
             $('.help-block').html('Поле не может быть пустым');
         }

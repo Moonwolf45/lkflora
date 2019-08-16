@@ -27,6 +27,7 @@ class AppAsset extends AssetBundle {
         'js/jsx-select.js',
         'js/jsx-modal.js',
         'js/main.js',
+        'js/sha1.min.js',
     ];
 
     public $depends = [
