@@ -24,6 +24,13 @@ $config = [
             'class' => 'app\modules\admin\Module',
             'layout' => 'admin',
         ],
+        'debug' => [
+            'panels' => [
+                'httpclient' => [
+                    'class' => 'yii\\httpclient\\debug\\HttpClientPanel',
+                ],
+            ],
+        ],
     ],
     'components' => [
         'formatter' => [
@@ -52,12 +59,13 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => true,
+            'useFileTransport' => false,
             'viewPath' => '@app/mail',
             'htmlLayout' => 'layouts/main-html',
             'textLayout' => 'layouts/main-text',
             'messageConfig' => [
-                'charset' => 'UTF-8'
+                'charset' => 'UTF-8',
+                'from' => [Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']],
             ],
         ],
         'log' => [
@@ -76,6 +84,8 @@ $config = [
             'rules' => [
                 'user/payment/deposit_<d:\d+>/invoice_<i:\d+>' => 'user/payment',
                 'user/download-act/id_<id:\d+>' => 'user/download-act',
+                'user/success-payment/transaction_<transaction_id:\d+>' => 'user/success-payment',
+                'user/false-payment/transaction__<transaction_id:\d+>' => 'user/false-payment',
             ],
         ],
         'pdf' => [

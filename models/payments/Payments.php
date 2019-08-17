@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $user_id ID Бренда
  * @property int $shop_id ID Магазина
+ * @property int $type_service Тип услуги
  * @property int $service_id ID услуги
  * @property int $type Тип операции
  * @property int $way Способ оплаты
@@ -35,6 +36,9 @@ class Payments extends ActiveRecord {
     const TYPE_REFILL = 1;
     const TYPE_WRITEOFF = 0;
 
+    const TYPE_SERVICE_TARIFF = 1;
+    const TYPE_SERVICE_ADDITION = 2;
+
     const WAY_CARD = 0;
     const WAY_SCHET = 1;
     const WAY_BALANCE = 2;
@@ -42,6 +46,7 @@ class Payments extends ActiveRecord {
     const STATUS_CANCEL = 0;
     const STATUS_PAID = 1;
     const STATUS_EXPOSED = 2;
+    const STATUS_WAITING = 3;
 
     /**
      * {@inheritdoc}
@@ -55,8 +60,8 @@ class Payments extends ActiveRecord {
      */
     public function rules() {
         return [
-            [['user_id', 'shop_id', 'service_id', 'type', 'way', 'date', 'invoice_date', 'status'], 'required'],
-            [['user_id', 'shop_id', 'service_id', 'type', 'way', 'invoice_number', 'status'], 'integer'],
+            [['user_id', 'shop_id', 'type_service', 'service_id', 'type', 'way', 'date', 'invoice_date', 'status'], 'required'],
+            [['user_id', 'shop_id', 'type_service', 'service_id', 'type', 'way', 'invoice_number', 'status'], 'integer'],
             ['amount', 'number'],
             [['date', 'invoice_date'], 'safe'],
             [['description'], 'string'],
@@ -73,7 +78,8 @@ class Payments extends ActiveRecord {
             'id' => 'ID',
             'user_id' => 'Пользователь',
             'shop_id' => 'Магазин',
-            'service_id' => 'ID услуги',
+            'type_service' => 'Тип услуги',
+            'service_id' => 'Название услуги',
             'type' => 'Тип операции',
             'way' => 'Способ оплаты',
             'date' => 'Дата платежа',
@@ -126,5 +132,36 @@ class Payments extends ActiveRecord {
     public static function getMaxNumberSchet() {
         return static::find()->select(['invoice_number'])->andWhere(['!=', 'invoice_number', ''])
             ->orderBy(['invoice_number' => SORT_DESC])->asArray()->limit(1)->one();
+    }
+
+    /**
+     * Вычисляем криптографическую подпись
+     *
+     * @param array $data
+     *
+     * @return bool|string
+     */
+    public function getSignature($data = []) {
+        if (!empty($data)) {
+            $signature = '';
+
+            $keys = array_keys($data);
+            sort($keys);
+
+            $chunks = [];
+            foreach ($keys as $k) {
+                $v = (string)$data[$k];
+                if (($v !== '')) {
+                    $chunks[] = $k . '=' . base64_encode($v);
+                }
+            }
+            $data_string = implode('&', $chunks);
+            $signature_variable = sha1(Yii::$app->params['testSecretKey'] . $data_string);
+            $signature = sha1(Yii::$app->params['testSecretKey'] . $signature_variable);
+
+            return $signature;
+        }
+
+        return false;
     }
 }

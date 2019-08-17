@@ -10,8 +10,10 @@ use app\models\shops\Shops;
 use app\models\ShopsAddition;
 use app\models\tariff\Tariff;
 use app\models\tickets\Tickets;
+use app\models\Transaction;
 use Yii;
 use yii\filters\AccessControl;
+use yii\httpclient\Client;
 use yii\web\Controller;
 use app\models\AuthForm;
 
@@ -236,6 +238,106 @@ class UserController extends Controller {
                return $mpdf->Output($filename, 'D');
            }
         }
+
+        return false;
+    }
+
+    /**
+     * Псевдо страница успешной оплаты
+     *
+     * @param $transaction_id
+     *
+     * @return \yii\web\Response
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionSuccessPayment($transaction_id) {
+        if ($transaction_id != '') {
+            $time_now = time();
+            $salt = Yii::$app->security->generateRandomString(32);
+
+            $payments = new Payments();
+            $signature = $payments->getSignature(['transaction_id' => $transaction_id, 'unix_timestamp' => $time_now,
+                'merchant' => Yii::$app->params['idSite'], 'salt' => $salt]);
+
+            $client = new Client(['requestConfig' => ['format' => Client::FORMAT_URLENCODED],
+                'responseConfig' => ['format' => Client::FORMAT_JSON]]);
+
+            $response = $client->createRequest()->setMethod('GET')
+                ->setUrl('https://pay.modulbank.ru/api/v1/transaction/')
+                ->setData(['transaction_id' => $transaction_id, 'merchant' => Yii::$app->params['idSite'],
+                    'unix_timestamp' => $time_now, 'salt' => $salt,
+                    'signature' => $signature])->send();
+            if ($response->isOk) {
+                $resp_array = json_decode($response->content);
+
+                if ($resp_array->status == 'ok') {
+                    $user = User::findByEmail($resp_array->transaction->client_email);
+                    $payments->user_id = $user->id;
+                    $payments->shop_id = 0;
+                    $payments->type_service = 0;
+                    $payments->service_id = 0;
+                    $payments->type = Payments::TYPE_REFILL;
+                    $payments->way = Payments::WAY_CARD;
+                    $payments->date = date('Y-m-d');
+                    $payments->invoice_date = date('Y-m-d');
+                    $payments->amount = $resp_array->transaction->amount;
+                    $payments->description = $resp_array->transaction->description;
+
+                    if ($resp_array->transaction->state == 'COMPLETE') {
+                        $user->balance += $resp_array->transaction->amount;
+                        $user->save(false);
+
+                        Yii::$app->session->setFlash('success', 'Оплата на ' . Yii::$app->formatter
+                                ->asDecimal($resp_array->transaction->amount, 2) . 'руб прошла успешно.');
+
+                        $payments->status = Payments::STATUS_PAID;
+                    } elseif ($resp_array->transaction->state == 'PROCESSING' || $resp_array->transaction->state == 'WAITING_FOR_3DS') {
+                        Yii::$app->session->setFlash('success', 'Оплата находится в процессе, как только статус изменится деньги тут же постуят на ваш счет');
+
+                        $payments->status = Payments::STATUS_WAITING;
+                    }  elseif ($resp_array->transaction->state == 'FAILED') {
+                        Yii::$app->session->setFlash('error', 'Извините, но во время оплаты произошла какая-то неизвестная ошибка');
+
+                        $payments->status = Payments::STATUS_CANCEL;
+                    }
+                    $payments->save(false);
+
+                    if ($resp_array->transaction->state == 'PROCESSING' || $resp_array->transaction->state == 'WAITING_FOR_3DS') {
+                        $transaction = new Transaction();
+                        $transaction->user_id = $user->id;
+                        $transaction->transaction_id = $transaction_id;
+                        $transaction->payment_id = $payments->id;
+                        $transaction->status = Transaction::STATUS_REPEAT;
+                        $transaction->save(false);
+                    }
+
+                    return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
+                }
+            } else {
+                Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
+                return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
+            }
+        } else {
+            Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
+            return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
+        }
+    }
+
+    /**
+     * Псевдо страница плохой оплаты
+     *
+     * @param $transaction_id
+     *
+     * @return \yii\web\Response
+     */
+    public function actionFalsePayment($transaction_id) {
+        if ($transaction_id != '') {
+            Yii::$app->session->setFlash('error', 'Извините, но во время оплаты произошла какая-то неизвестная ошибка');
+        }
+
+        Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
+        return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
     }
 
     /**

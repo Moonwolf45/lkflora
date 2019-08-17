@@ -13,7 +13,7 @@ class PaymentsFinanceSearch extends Payments {
      */
     public function rules() {
         return [
-            [['id', 'user_id', 'shop_id', 'service_id', 'type', 'way', 'invoice_number', 'status'], 'integer'],
+            [['id', 'user_id', 'shop_id', 'type_service', 'service_id', 'type', 'way', 'invoice_number', 'status'], 'integer'],
             [['amount'], 'number'],
             [['date', 'invoice_date'], 'date'],
         ];
@@ -51,6 +51,7 @@ class PaymentsFinanceSearch extends Payments {
             'id' => $this->id,
             'user_id' => $this->user_id,
             'shop_id' => $this->shop_id,
+            'type_service' => $this->type_service,
             'service_id' => $this->service_id,
             'type' => $this->type,
             'way' => $this->way,

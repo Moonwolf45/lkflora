@@ -14,8 +14,9 @@ class m190808_114201_create_payments_table extends Migration {
         $this->createTable('{{%payments}}', [
             'id' => Schema::TYPE_PK,
             'user_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID Бренда"',
-            'shop_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID Магазина"',
-            'service_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID услуги"',
+            'shop_id' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0 COMMENT "ID Магазина"',
+            'type_service' => Schema::TYPE_INTEGER . '(1) NOT NULL DEFAULT 0 COMMENT "Тип услуги"',
+            'service_id' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0 COMMENT "ID услуги"',
             'type' => Schema::TYPE_INTEGER . '(1) NOT NULL COMMENT "Тип операции"',
             'way' => Schema::TYPE_INTEGER . '(1) NOT NULL COMMENT "Способ оплаты"',
             'date' => Schema::TYPE_DATE . ' NOT NULL COMMENT "Дата платежа"',
@@ -28,16 +29,12 @@ class m190808_114201_create_payments_table extends Migration {
 
         $this->addForeignKey('paymentsUserId', '{{%payments}}', 'user_id', '{{%user}}',
             'id');
-
-        $this->addForeignKey('paymentsShopId', '{{%payments}}', 'shop_id', '{{%shops}}',
-            'id');
     }
 
     /**
      * {@inheritdoc}
      */
     public function safeDown() {
-        $this->dropForeignKey('paymentsShopId', '{{%payments}}');
         $this->dropForeignKey('paymentsUserId', '{{%payments}}');
 
         $this->dropTable('{{%payments}}');

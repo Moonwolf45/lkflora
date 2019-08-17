@@ -46,13 +46,28 @@ YiiAsset::register($this); ?>
                 },
             ],
             [
+                'attribute' => 'type_service',
+                'format' => 'html',
+                'value' => function($data) {
+                    if ($data->type == Payments::TYPE_WRITEOFF) {
+                        if ($data->type_service == Payments::TYPE_SERVICE_TARIFF) {
+                            return 'Тарифф';
+                        } elseif ($data->type_service == Payments::TYPE_SERVICE_ADDITION) {
+                            return 'Доп. Услуга';
+                        }
+                    }
+
+                    return '';
+                },
+            ],
+            [
                 'attribute' => 'service_id',
                 'format' => 'html',
                 'value' => function($data) {
                     if ($data->type == Payments::TYPE_WRITEOFF) {
-                        if (!empty($data->tariff)) {
+                        if ($data->type_service == Payments::TYPE_SERVICE_TARIFF) {
                             return $data->tariff->name;
-                        } else {
+                        } elseif ($data->type_service == Payments::TYPE_SERVICE_ADDITION) {
                             return $data->addition->name;
                         }
                     }

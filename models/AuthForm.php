@@ -55,7 +55,7 @@ class AuthForm extends Model {
             $key->generateAuthKey();
             $key->save();
 
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            return Yii::$app->user->login($this->getUser(), 3600 * 12 * 30);
         }
         return false;
     }

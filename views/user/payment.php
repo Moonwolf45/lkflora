@@ -15,13 +15,17 @@ use yii\widgets\Pjax;
 //--
 $amount = 0;
 $client_email = Yii::$app->user->identity->email;
-$client_id = Yii::$app->user->identity->id;
+if (iconv_strlen((string)Yii::$app->user->id) == 1) {
+    $client_id = 'aa' . (string)Yii::$app->user->id;
+} elseif (iconv_strlen((string)Yii::$app->user->id) == 2) {
+    $client_id = 'a' . (string)Yii::$app->user->id;
+}
 $description = 'Пополнение баланса с карты';
-$fail_url = 'https://pay.modulbank.ru/fail';
+$fail_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/user/false-payment';
 $merchant = Yii::$app->params['idSite'];
 $order_id = $maxPaymentId['id'] + 1;
 $salt = Yii::$app->security->generateRandomString(32);
-$success_url = 'https://pay.modulbank.ru/success';
+$success_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/user/success-payment';
 $testing = 1;
 $unix_timestamp = time();
 
@@ -34,6 +38,21 @@ $this->title = 'Детализация баланса'; ?>
     <h2 class="content__title">Баланс</h2>
     <div class="content__row">
         <div class="content__col-12">
+            <?php if(Yii::$app->session->hasFlash('success')): ?>
+                <div class="alert alert-success" role="alert">
+                    <h4>Успех</h4>
+                    <hr>
+                    <p class="mb-0"><?php echo Yii::$app->session->getFlash('success'); ?></p>
+                </div>
+            <?php endif; ?>
+            <?php if(Yii::$app->session->hasFlash('error')): ?>
+                <div class="alert alert-danger" role="alert">
+                    <h4>Ошибка</h4>
+                    <hr>
+                    <p class="mb-0"><?php echo Yii::$app->session->getFlash('error'); ?></p>
+                </div>
+            <?php endif; ?>
+
             <div class="content__box">
                 <div class="payment">
                     <div class="payment__row">
@@ -352,9 +371,9 @@ $this->title = 'Детализация баланса'; ?>
                                                 </div>
                                                 <div class="fee-history__col">
                                                     <?php $name = '';
-                                                    if (!empty($payment['tariff'])) {
+                                                    if ($payment['type_service'] == 1) {
                                                         $name = $payment['tariff']['name'];
-                                                    } else {
+                                                    } elseif ($payment['type_service'] == 2) {
                                                         $name = $payment['addition']['name'];
                                                     }
                                                     ?>
