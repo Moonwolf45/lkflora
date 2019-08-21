@@ -3,8 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$currentPage = $_SERVER['REQUEST_URI'];
-$currentPage = end(explode('%2F', $currentPage));
+$currentPage = Yii::$app->requestedRoute;
 
 $avatar = '';
 if (Yii::$app->user->identity->avatar) {
@@ -33,37 +32,45 @@ $active_five = '';
 $active_six = '';
 $active_seven = '';
 switch ($currentPage) {
-    case('/user/index'):
+    case('user/index'):
         $active_one = 'active';
     break;
 
-    case('/user/account'):
+    case('user/account'):
         $active_two = 'active';
     break;
 
-    case('/user/payment'):
+    case('user/payment'):
         $active_tree = 'active';
     break;
 
-    case('/user/tickets'):
+    case('user/tickets'):
         $active_four = 'active';
     break;
 
-    case('/user/'):
+    case('user/'):
         $active_five = 'active';
     break;
 
-    case('/user/settings'):
+    case('user/settings'):
         $active_six = 'active';
     break;
 
-    case('/user/'):
+    case('user/'):
         $active_seven = 'active';
     break;
 
     default:
     break;
 }
+
+?>
+
+<?php
+
+    echo "<pre>";
+    print_r($request);
+    echo "</pre>";
 
 ?>
 

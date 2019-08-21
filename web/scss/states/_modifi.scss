@@ -63,6 +63,18 @@
 .s-t-a-left{
 	text-align: left;
 }
+
+
+// IMAGE
+
+.s-img-cover{
+	object-fit:cover;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
 	
 // @media (max-width:991px) {
 // 	.user-log__col_mobile{

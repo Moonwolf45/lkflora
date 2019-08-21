@@ -1,6 +1,12 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\widgets\ActiveForm;
+use yii\widgets\Pjax;
+
+/** @var TYPE_NAME $newTicket */
+/** @var TYPE_NAME $newTicketText */
 
 ?>
 
@@ -8,167 +14,133 @@ use yii\helpers\Html;
     <h2 class="content__title">Сообщения</h2>
     <div class="content__row">
         <div class="content__col-9 content__col-9_messages">
-            <!-- СОЗДАНИЕ ОБРАЩЕНИЯ В ТЕХПОДДЕРЖКУ -->
-<!--            <div class="content__box">-->
-<!--                <div class="appeal">-->
-<!--                    <div class="appeal__wrapp appeal__wrapp_mw635 appeal__wrapp_p2">-->
-<!--                        <div class="little-title">Создание обращения в техподдержку</div>-->
-<!--                        <div class="declaration">-->
-<!--                            <p class="declaration__text">На бесплатном тарифе Техподдержка работает с пн-пт с 10.00 до 19.00</p>-->
-<!--                            <a href="#" class="declaration__link">перейти на платный тариф</a>-->
-<!--                        </div>-->
-<!--                        <form action="" class="appeal__form">-->
-<!--                            <div class="appeal__block">-->
-<!--                                <div class="field">-->
-<!--                                    <p class="field__text">тема обращения</p>-->
-<!--                                </div>-->
-<!--                                <input type="text">-->
-<!--                                <div class="jsx-select input choose__name choose__name-appeal">-->
-<!--                                    <span class="jsx-select__selected">Выберите тему</span>-->
-<!--                                    <ul class="jsx-select__list choose__list">-->
-<!--                                        <li class="choose__item">-->
-<!--                                            Как собрать букет-->
-<!--                                        </li>-->
-<!--                                        <li class="choose__item">-->
-<!--                                            Как букет выбрать-->
-<!--                                        </li>-->
-<!--                                        <li class="choose__item">-->
-<!--                                            Какие есть виды букетов-->
-<!--                                        </li>-->
-<!--                                    </ul>-->
-<!--                                </div>-->
-<!--                                <textarea name="" class="textarea textarea_mb20" cols="30" rows="20" placeholder="Введите текст сообщения"></textarea>-->
-<!--                                <div class="attach">-->
-<!--                                    <div class="attach__wrapp-label">-->
-<!--                                        <label class="attach__label"  id="label-file1" for="file1"><input class="left clip-input attach__input" type="file" name="file_name" id="file1">-->
-<!--                                        <span class="attach__icon s-di-vertical-m"></span>-->
-<!--                                        <span class="attach__text s-di-vertical-m clip-input-txt">Прикрепить файл</span>-->
-<!--                                        </label>-->
-<!--                                    </div>-->
-<!--                                </div>-->
-<!--                            </div>-->
-<!--                            <button class="button button_width-200px appeal__button">Отправить</button>-->
-<!--                        </form>-->
-<!--                    </div>-->
-<!--                </div>-->
-<!--            </div>-->
-
-            <!-- СОЗДАНИЕ ОБРАЩЕНИЯ В ТЕХПОДДЕРЖКУ -->
-
             <div class="content__box">
                 <div class="discussion">
                     <div class="discussion__content">
-                        <ul class="discussion__list">
-                            <li class="discussion__item discussion__item_right">
-                                <div class="discussion__data-message">
-                                    <p class="discussion__name">ИП Петров Алексей Викторович</p>
-                                    <div class="discussion__message" >
-                                        <div class="discussion__sms" data-time-sms="18:54">
-                                            <p>
-                                                Hello John, thank you for calling Provide Support. How may I help you?
-                                            </p>
-                                        </div>
-                                        <div class="discussion__avatar">
-                                            <?= Html::img('@web/images/user-photo.png', ['class' => 'discussion__img']); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="discussion__item discussion__item_left">
-                                <div class="discussion__data-message">
-                                    <p class="discussion__name">Техподдержка</p>
-                                    <div class="discussion__message" >
-                                        <div class="discussion__sms" data-time-sms="18:56">
-                                            <p>
-                                                Please hold for one moment, I'll check with my manager.
-                                            </p>
-                                        </div>
-                                        <div class="discussion__avatar">
-                                            <?= Html::img('@web/images/icon/icon_QA.png', ['class' => 'discussion__img']); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="discussion__item discussion__item_right">
-                                <div class="discussion__data-message">
-                                    <p class="discussion__name">ИП Петров Алексей Викторович</p>
-                                    <div class="discussion__message" >
-                                        <div class="discussion__sms" data-time-sms="18:54">
-                                            <p>
-                                                I'm sorry, I don't have the answer to that question. May I put you on hold for a few minutes while I check with my manager?
-                                            </p>
-                                        </div>
-                                        <div class="discussion__avatar">
-                                            <?= Html::img('@web/images/user-photo.png', ['class' => 'discussion__img']); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="discussion__item discussion__item_left">
-                                <div class="discussion__data-message">
-                                    <p class="discussion__name">Техподдержка</p>
-                                    <div class="discussion__message" >
-                                        <div class="discussion__sms" data-time-sms="18:56">
-                                            <p>
-                                                Please hold for one moment, I'll check with my manager.
-                                            </p>
-                                        </div>
-                                        <div class="discussion__avatar">
-                                            <?= Html::img('@web/images/icon/icon_QA.png', ['class' => 'discussion__img']); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="discussion__item discussion__item_left">
-                                <div class="discussion__data-message">
-                                    <p class="discussion__name">Техподдержка</p>
-                                    <div class="discussion__message" >
-                                        <div class="discussion__sms" data-time-sms="18:56">
-                                            <p>
-                                                Please hold for one moment, I'll check with my manager.
-                                            </p>
-                                        </div>
-                                        <div class="discussion__avatar">
-                                            <?= Html::img('@web/images/icon/icon_QA.png', ['class' => 'discussion__img']); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li class="discussion__item discussion__item_right">
-                                <div class="discussion__data-message">
-                                    <p class="discussion__name">ИП Петров Алексей Викторович</p>
-                                    <div class="discussion__message" >
-                                        <div class="discussion__sms" data-time-sms="18:54">
-                                            <p>
-                                                I'm sorry, I don't have the answer to that question. May I put you on hold for a few minutes while I check with my manager?
-                                            </p>
-                                        </div>
-                                        <div class="discussion__avatar">
-                                            <?= Html::img('@web/images/user-photo.png', ['class' => 'discussion__img']); ?>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                        <?php Pjax::begin(); ?>
+                            <ul class="discussion__list">
+                                <?php if (!empty($openTicket)): ?>
+                                    <?php foreach($openTicket['ticketsText'] as $textTicket): ?>
+                                        <?php if ($textTicket['user_type'] == 0): ?>
+                                            <li class="discussion__item discussion__item_right">
+                                                <div class="discussion__data-message">
+                                                    <?php if (!empty($textTicket['ticketsFiles'])): ?>
+                                                        <div class="discussion__uploaded-photos">
+                                                            <?php $countFile = count($textTicket['ticketsFiles']);
+                                                                if ($countFile == 1) {
+                                                                    $class = "discussion__col-12";
+                                                                } elseif ($countFile == 2) {
+                                                                    $class = "discussion__col-6";
+                                                                } elseif ($countFile == 3) {
+                                                                    $class = "discussion__col-4";
+                                                                } else {
+                                                                    $class = "discussion__col-3";
+                                                                } ?>
+
+                                                            <?php foreach($textTicket['ticketsFiles'] as $file): ?>
+                                                                <div class="<?= $class; ?>">
+                                                                    <div class="discussion__uploaded-photo">
+                                                                        <?= Html::img('@web/' . $file['file'], ['class' => 'discussion__img']); ?>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <p class="discussion__name"><?= $openTicket['user']['company_name']; ?></p>
+                                                    <div class="discussion__message" >
+                                                        <div class="discussion__sms" data-time-sms="<?= Yii::$app->
+                                                            formatter->asDatetime($textTicket['date_time']); ?>">
+                                                            <p><?= $textTicket['text']; ?></p>
+                                                        </div>
+                                                        <div class="discussion__avatar">
+                                                            <?php if ($user['avatar'] != ''): ?>
+                                                                <?= Html::img('@web/' . $user['avatar'], ['class' => 'discussion__img']); ?>
+                                                            <?php else: ?>
+                                                                <?= Html::img('@web/images/user-photo.png', ['class' => 'discussion__img']); ?>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        <?php else: ?>
+                                            <li class="discussion__item discussion__item_left">
+                                                <div class="discussion__data-message">
+                                                    <?php if (!empty($textTicket['ticketsFiles'])): ?>
+                                                        <div class="discussion__uploaded-photos">
+                                                            <?php $countFile = count($textTicket['ticketsFiles']);
+                                                            if ($countFile == 1) {
+                                                                $class = "discussion__col-12";
+                                                            } elseif ($countFile == 2) {
+                                                                $class = "discussion__col-6";
+                                                            } elseif ($countFile == 3) {
+                                                                $class = "discussion__col-4";
+                                                            } else {
+                                                                $class = "discussion__col-3";
+                                                            } ?>
+
+                                                            <?php foreach($textTicket['ticketsFiles'] as $file): ?>
+                                                                <div class="<?= $class; ?>">
+                                                                    <div class="discussion__uploaded-photo">
+                                                                        <?= Html::img('@web/' . $file['file'], ['class' => 'discussion__img']); ?>
+                                                                    </div>
+                                                                </div>
+                                                            <?php endforeach; ?>
+                                                        </div>
+                                                    <?php endif; ?>
+                                                    <p class="discussion__name">Техподдержка</p>
+                                                    <div class="discussion__message" >
+                                                        <div class="discussion__sms" data-time-sms="<?= Yii::$app->
+                                                            formatter->asDatetime($textTicket['date_time']); ?>">
+                                                            <p><?= $textTicket['text']; ?></p>
+                                                        </div>
+                                                        <div class="discussion__avatar">
+                                                            <?= Html::img('@web/images/icon/icon_QA.png', ['class' => 'discussion__img']); ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </li>
+                                        <?php endif; ?>
+
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+                            </ul>
+                        <?php Pjax::end();?>
                     </div>
 
                 </div>
                 <div class="appeal">
                     <div class="appeal__wrapp appeal__wrapp_pt30 appeal__wrapp_mw655 appeal__wrapp_mb30">
-                        <form action="" class="appeal__form">
-                            <div class="appeal__block">
-                                <textarea name="" class="textarea textarea_mb20" cols="30" rows="20" placeholder="Введите текст сообщения"></textarea>
-                                <div class="attach">
-                                    <div class="attach__wrapp-label">
-                                        <label class="attach__label"  id="label-file1" for="file1"><input class="left clip-input attach__input" type="file" name="file_name" id="file1">
-                                            <span class="attach__icon s-di-vertical-m"></span>
-                                            <span class="attach__text s-di-vertical-m clip-input-txt">Прикрепить файл</span>
-                                        </label>
+                        <?php if (!empty($openTicket)): ?>
+                            <?php $form2 = ActiveForm::begin(['options' => ['class' => 'appeal__form',
+//                                'data' => ['pjax' => true],
+                                'enctype' => 'multipart/form-data']]); ?>
+                                <div class="appeal__block">
+                                    <?= $form2->field($newTicketText, 'user_id')->hiddenInput(['value' => Yii::$app->user->id])
+                                        ->label(false); ?>
+
+                                    <?= $form2->field($newTicketText, 'ticket_id')->hiddenInput(['value' => $openTicket['id']])
+                                        ->label(false); ?>
+
+                                    <?= $form2->field($newTicketText, 'text')->textarea([
+                                        'class' => 'textarea textarea_mb20', 'placeholder' => 'Введите текст сообщения', 'cols' => 30,
+                                        'rows' => 20])->label(false); ?>
+
+                                    <div class="attach">
+                                        <div class="attach__wrapp-label">
+                                            <label class="attach__label" id="label-file1" for="file1">
+                                                <?= Html::activeFileInput($newTicketText, 'ticketsFiles[]', [
+                                                    'multiple' => true, 'class' => 'left clip-input1 attach__input',
+                                                    'id' => 'file1']); ?>
+                                                <span class="attach__icon s-di-vertical-m"></span>
+                                                <span class="attach__text s-di-vertical-m clip-input-txt1">Прикрепить файл</span>
+                                            </label>
+                                            <?= Html::error($newTicketText, 'ticketsFiles[]', ['class' => 'help-block']); ?>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <button class="button button_width-200px appeal__button">Отправить</button>
-                        </form>
+                                <?= Html::submitButton('Отправить', ['class' => 'button button_width-200px appeal__button']); ?>
+                            <?php $form2 = ActiveForm::end(); ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -179,34 +151,27 @@ use yii\helpers\Html;
                 <div class="support">
                     <div class="support__wrapp">
                         <div class="add-something add-something-support d-f-between">
-                            <p class="add-something__text add-something__text_fs14 add-something__text-support">Обращения</p>
+                            <button class="add-something__text add-something__text_fs14 add-something__text-support" data-jsx-modal-target="appeal">
+                                Создать обращение
+                            </button>
                             <div class="add-something__plus"></div>
                         </div>
                         <div class="support__block">
-                            <div class="support__box">
-                                <p class="support__box-title support__box-title_circle">
-                                    Как собрать букет ?
-                                </p>
-                                <p class="support__box-text">
-                                    Вы можете пройти в разделе там
-                                </p>
-                            </div>
-                            <div class="support__box">
-                                <p class="support__box-title">
-                                    Хочу построить от ?
-                                </p>
-                                <p class="support__box-text">
-                                    То что Вы ищете нахо
-                                </p>
-                            </div>
-                            <div class="support__box">
-                                <p class="support__box-title">
-                                    Как собрать букет на подарок ?
-                                </p>
-                                <p class="support__box-text">
-                                    Вы можете пройти в разделе там
-                                </p>
-                            </div>
+                            <?php if (!empty($tickets)): ?>
+                                <?php foreach ($tickets as $ticket): ?>
+                                    <a class="support__box" data-pjax="0" href="<?= Url::to(['/user/tickets', 'id' => $ticket['id']]); ?>">
+                                        <?php if ($ticket['new_text']) {
+                                            $dop_class = 'support__box-title_circle';
+                                        } ?>
+                                        <p class="support__box-title <?php echo $dop_class; ?>">
+                                            <?= $ticket['subject']; ?>
+                                        </p>
+                                        <p class="support__box-text">
+                                            <?= $ticket['lastTicket']['text']; ?>
+                                        </p>
+                                    </a>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -214,3 +179,5 @@ use yii\helpers\Html;
         </div>
     </div>
 </div>
+
+<?php echo $this->render('modal/appeal', compact('newTicket')); ?>

@@ -6,8 +6,8 @@ IndexIgnore */*
 RewriteEngine on
 
 #Переносим все что начинается с "www" на БЕЗ "www"
-#RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
-#RewriteRule ^(.*)$ http://%1/$1 [L,R=301]
+RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+RewriteRule ^(.*)$ http://%1/$1 [L,R=301]
 
 #Редирект с протокола http на https
 #RewriteCond %{HTTPS} !=on

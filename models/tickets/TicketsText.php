@@ -10,6 +10,7 @@ use yii\db\ActiveRecord;
  *
  * @property int $id
  * @property int $ticket_id ID Обращения
+ * @property int $date_time Дата и время
  * @property string $text Текст
  * @property int $user_type Тип пользователя
  *
@@ -19,6 +20,10 @@ use yii\db\ActiveRecord;
 class TicketsText extends ActiveRecord {
 
     public $ticketsFiles;
+    public $gallery;
+
+    const TYPE_USER_NORMAL = 0;
+    const TYPE_USER_TICKETS = 1;
 
     /**
      * {@inheritdoc}
@@ -34,11 +39,12 @@ class TicketsText extends ActiveRecord {
         return [
             [['ticket_id', 'text', 'user_type'], 'required'],
             [['ticket_id', 'user_type'], 'integer'],
+            ['date_time', 'date', 'format' => 'yyyy-M-d H:m:s'],
             [['text'], 'string'],
             [['ticket_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tickets::class,
                 'targetAttribute' => ['ticket_id' => 'id']],
 
-            [['ticketsFiles'], 'file', 'maxFiles' => 5, 'skipOnEmpty' => true],
+            [['ticketsFiles'], 'file', 'maxFiles' => 4, 'maxSize' => 1024 * 1024 * 5],
         ];
     }
 
@@ -49,6 +55,7 @@ class TicketsText extends ActiveRecord {
         return [
             'id' => 'ID',
             'ticket_id' => 'ID Обращения',
+            'date_time' => 'Дата и время текста',
             'text' => 'Текст',
             'user_type' => 'Тип пользователя',
 
@@ -67,6 +74,6 @@ class TicketsText extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getTicketsFiles() {
-        return $this->hasMany(TicketsFiles::class, ['id' => 'ticket_text_id']);
+        return $this->hasMany(TicketsFiles::class, ['ticket_text_id' => 'id']);
     }
 }

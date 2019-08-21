@@ -6,7 +6,6 @@ use app\models\db\User;
 use app\models\payments\Payments;
 use app\models\service\Service;
 use app\models\Transaction;
-use Mpdf\Tag\Tr;
 use Yii;
 use yii\console\Controller;
 use yii\httpclient\Client;
@@ -18,7 +17,7 @@ class CronController extends Controller {
 
         $today = date('Y-m-d');
         $time = date('H:i:s');
-        Yii::info("Проверка услуг, для спинаия средств\r\n Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n Время: " . $time);
+        Yii::info("Проверка услуг, для спиcаyия средств\r\n Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n Время: " . $time);
 
         $services = Service::find()->where(['writeoff_date' => $today, 'completed' => Service::COMPLETED_FALSE])->all();
 
@@ -72,7 +71,7 @@ class CronController extends Controller {
             }
             Yii::info("Закончили обновлять пользователей");
         } else {
-            Yii::info("Сегодня списывать за улуги нечего");
+            Yii::info("Сегодня списывать за уcлуги нечего");
         }
 
         Yii::endProfile('UpdateBalanceUser');

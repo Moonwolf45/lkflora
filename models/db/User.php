@@ -19,6 +19,7 @@ use yii\web\IdentityInterface;
  * @property string  $password_reset_token
  * @property string  $verification_token
  * @property string  $email
+ * @property string  $phone
  * @property string  $balance
  * @property string  $avatar
  * @property string  $auth_key
@@ -222,7 +223,7 @@ class User extends ActiveRecord implements IdentityInterface {
     public function attributeLabels() {
         return [
             'email'   => 'E-mail пользователя',
-            'doc_num' => 'Номер договора',
+            'phone' => 'Номер телефона',
         ];
     }
 
@@ -243,5 +244,12 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function getShops() {
         return $this->hasMany(Shops::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserSetting() {
+        return $this->hasOne(UserSettings::class, ['user_id' => 'id']);
     }
 }

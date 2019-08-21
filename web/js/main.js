@@ -7,7 +7,7 @@
 			$(this).toggleClass('active');
 			var bodyStyle = $(this).closest('body').toggleClass('js_active-sidebar');
 			if ($(this).hasClass('active')) {
-				
+
 				$.cookie('sidebar', '1', { expires: 365, path: '/' });
 				// console.log($.cookie());
 			}
@@ -15,10 +15,10 @@
 				$.cookie('sidebar', '0', { expires: 365, path: '/' });
 
 			}
-			
+
 		});
 	}
-	
+
 
 
 // Edit Email
@@ -70,12 +70,43 @@
 
   	// Attach file
   	$(".clip-input").change(function() {
-        var filename = $(this).val().replace(/.*\\/, "");
+  		const input = $(this)[0];
+		let filename = '';
+		let d = 0;
+
+  		for (let i = 0; i < input.files.length; i++) {
+  			d = i;
+  			d++;
+
+  			if (d === input.files.length) {
+				filename += input.files[i].name;
+			} else {
+				filename += input.files[i].name + ', ';
+			}
+		}
+
         $(".clip-input-txt").text(filename);
     });
 
+	// Attach file
+	$(".clip-input1").change(function() {
+		const input = $(this)[0];
+		let filename = '';
+		let d = 0;
 
+		for (let i = 0; i < input.files.length; i++) {
+			d = i;
+			d++;
 
+			if (d === input.files.length) {
+				filename += input.files[i].name;
+			} else {
+				filename += input.files[i].name + ', ';
+			}
+		}
+
+		$(".clip-input-txt1").text(filename);
+	});
 
     //Tab Tarife
     var $parentTab = $('.js_tab-parent');
@@ -87,14 +118,14 @@
 
     	$parentTabClick.removeClass('active').find('.js__show-hide').text('Что входит в тариф?');
     	$(this).addClass('active').find('.js__show-hide').text('Скрыть');
-    	
+
     	if ($parentTabContent.eq($(this).index()).is(':visible')) {
     		$(this).removeClass('active').find('.js__show-hide').text('Что входит в тариф?');
     		$parentTabContent.eq($(this).index()).slideUp();
     		flag = true;
     	}
     	else{
-    		
+
     		if (flag) {
     			flag = false;
     			$parentTabContent.eq($(this).index()).slideDown();
@@ -171,7 +202,7 @@ $('.js-add-checkbox-service').on('change', function(event) {
 
 //     	// $parentTabClick.removeClass('active').find('.tariff__show-hide').text('Что входит в тариф?');
 //     	// $(this).addClass('active').find('.tariff__show-hide').text('Скрыть');
-    	
+
 //     	console.log();
 //     	if ($parentTabContent.eq($(this).index()).is(':visible')) {
 //     		$(this).removeClass('active');
@@ -179,7 +210,7 @@ $('.js-add-checkbox-service').on('change', function(event) {
 //     		flag = true;
 //     	}
 //     	else{
-    		
+
 //     		if (flag) {
 //     			flag = false;
 //     			$parentTabContent.eq($(this).index()).slideDown();
@@ -190,7 +221,7 @@ $('.js-add-checkbox-service').on('change', function(event) {
 //     		}
 //     	}
 
-    	
+
 //     });
 
 // $(".accordeon_inner .accordeon_inner_open").hide().prev().click(function(e) {

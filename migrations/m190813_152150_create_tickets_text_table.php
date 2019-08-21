@@ -14,6 +14,7 @@ class m190813_152150_create_tickets_text_table extends Migration {
         $this->createTable('{{%tickets_text}}', [
             'id' => Schema::TYPE_PK,
             'ticket_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID Обращения"',
+            'date_time' => Schema::TYPE_DATETIME . ' NOT NULL COMMENT "Дата и время"',
             'text' => Schema::TYPE_TEXT . ' NOT NULL COMMENT "Текст"',
             'user_type' => Schema::TYPE_INTEGER . '(1) NOT NULL COMMENT "Тип пользователя"',
         ]);

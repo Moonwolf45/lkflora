@@ -51,13 +51,13 @@ class TariffAddition extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getAddition() {
-        return $this->hasOne(Addition::className(), ['id' => 'addition_id']);
+        return $this->hasOne(Addition::class, ['id' => 'addition_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTariff() {
-        return $this->hasOne(Tariff::className(), ['id' => 'tariff_id']);
+        return $this->hasOne(Tariff::class, ['id' => 'tariff_id']);
     }
 }

@@ -112,7 +112,7 @@ class UserController extends Controller {
             $model->status = 10;
             $model->balance = 0;
             $model->email = Yii::$app->request->post()['User']['email'];
-            $model->doc_num = Yii::$app->request->post()['User']['doc_num'];
+            $model->phone = Yii::$app->request->post()['User']['phone'];
             $pass = $this->generate_password();
             $model->password_hash = $pass;
             $model->sendMailForNewUser();

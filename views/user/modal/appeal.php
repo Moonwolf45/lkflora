@@ -17,6 +17,7 @@ use yii\widgets\ActiveForm;
                     'options' => [
                         'class' => 'appeal__form',
                         'data' => ['pjax' => true],
+                        'enctype' => 'multipart/form-data',
                     ],
                 ]); ?>
 
@@ -34,16 +35,21 @@ use yii\widgets\ActiveForm;
                             'class' => 'textarea textarea_mb20', 'placeholder' => 'Введите текст сообщения', 'cols' => 30,
                             'rows' => 20])->label(false); ?>
 
-
                         <div class="attach">
-                            <span class="attach__icon s-di-vertical-m"></span>
-                            <?= $form3->field($newTicket, 'ticketsFiles[]')->fileInput([
-                                'multiple' => 'multiple'])->label(false); ?>
+                            <div class="attach__wrapp-label">
+                                <label class="attach__label" id="label-file1" for="file1">
+                                    <?= Html::activeFileInput($newTicket, 'ticketFiles[]', [
+                                        'multiple' => 'multiple', 'class' => 'left clip-input attach__input',
+                                        'id' => 'file1']); ?>
+                                    <span class="attach__icon s-di-vertical-m"></span>
+                                    <span class="attach__text s-di-vertical-m clip-input-txt">Прикрепить файл</span>
+                                </label>
+                            </div>
                         </div>
                     </div>
 
                     <?= Html::submitButton('Отправить', ['class' => 'button button_width-200px appeal__button']); ?>
-                <?php $form = ActiveForm::end(); ?>
+                <?php $form3 = ActiveForm::end(); ?>
             </div>
         </div>
     </div>

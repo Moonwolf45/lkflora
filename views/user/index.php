@@ -2,6 +2,7 @@
 
 use app\models\payments\Payments;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /** @var TYPE_NAME $shops */
@@ -170,7 +171,7 @@ $this->title = 'Главная'; ?>
                             <div class="support__block">
                                 <?php if (!empty($tickets)): ?>
                                     <?php foreach ($tickets as $ticket): ?>
-                                        <div class="support__box">
+                                        <a class="support__box" data-pjax="0" href="<?= Url::to(['/user/tickets', 'id' => $ticket['id']]); ?>">
                                             <?php if ($ticket['new_text']) {
                                                 $dop_class = 'support__box-title_circle';
                                             } ?>
@@ -178,10 +179,13 @@ $this->title = 'Главная'; ?>
                                                 <?= $ticket['subject']; ?>
                                             </p>
                                             <p class="support__box-text">
-                                                Вы можете пройти в разделе там
+                                                <?= $ticket['lastTicket']['text']; ?>
                                             </p>
-                                        </div>
+                                        </a>
                                     <?php endforeach; ?>
+
+                                    <?= Html::a('Все обращения', ['/user/tickets'], ['class' => 'support__box-text all-tickets',
+                                        'data-pjax' => 0]); ?>
                                 <?php else: ?>
                                     <div class="support__box">
                                         <p class="support__box-text">
@@ -189,8 +193,6 @@ $this->title = 'Главная'; ?>
                                         </p>
                                     </div>
                                 <?php endif; ?>
-
-                                <?= Html::a('Все обращения', ['/user/tickets'], ['class' => 'support__box-text all-tickets']); ?>
                             </div>
                         <?php Pjax::end(); ?>
                     </div>

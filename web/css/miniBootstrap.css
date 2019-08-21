@@ -53,6 +53,14 @@
     border-radius: .25rem;
 }
 
+.alert-heading {
+    color: inherit;
+    font-size: 1.5rem;
+    margin-bottom: .5rem;
+    font-weight: 500;
+    line-height: 1.2;
+}
+
 .alert-success {
     color: #155724;
     background-color: #d4edda;
@@ -81,8 +89,20 @@
     margin-bottom: 0!important;
 }
 
-.field-tickets-ticketsfiles {
-    display: inline-block;
+.appeal__wrapp_pt30 {
+    margin: 0 auto 50px;
+}
+
+.attach {
+    width: 100%;
+}
+
+.attach__wrapp-label {
+    width: 100%;
+}
+
+.support__box {
+    display: block;
 }
 
 .all-tickets {
@@ -94,4 +114,13 @@
 
 .all-tickets:hover {
     text-decoration: underline;
+}
+
+.add-something__text-support {
+    border: none;
+    background: transparent;
+}
+
+.discussion__sms {
+    min-width: 190px;
 }

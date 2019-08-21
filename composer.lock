@@ -4,8 +4,49 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "309dbdf990d8c3824f712a739b3f6279",
+    "content-hash": "d54263d6a5730be85cf4dc0f1b21e045",
     "packages": [
+        {
+            "name": "adamasantares/sum2str",
+            "version": "0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adamasantares/sum2str.git",
+                "reference": "ab6e4ee6fa30769612bbe2c67dd7932c78f7b4f7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adamasantares/sum2str/zipball/ab6e4ee6fa30769612bbe2c67dd7932c78f7b4f7",
+                "reference": "ab6e4ee6fa30769612bbe2c67dd7932c78f7b4f7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "adamasantares\\sum2str\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Konstantin Kutsevalov",
+                    "email": "konstantin@kutsevalov.name"
+                }
+            ],
+            "description": "Перевод суммы из числа в строку",
+            "homepage": "https://github.com/adamasantares/sum2str#readme",
+            "keywords": [
+                "russian language only",
+                "sum to string"
+            ],
+            "time": "2017-11-15T10:30:17+00:00"
+        },
         {
             "name": "bower-asset/bootstrap",
             "version": "v3.4.1",
@@ -4458,7 +4499,8 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "ext-json": "*"
     },
     "platform-dev": []
 }

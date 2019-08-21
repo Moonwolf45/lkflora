@@ -18,6 +18,7 @@ class m180819_140916_create_user_table extends Migration {
             'updated_at' => Schema::TYPE_INTEGER . '(11) NOT NULL',
             'company_name' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Название бренда"',
             'email' => Schema::TYPE_STRING . ' UNIQUE NOT NULL COMMENT "E-mail"',
+            'phone' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Телефон"',
             'password_hash' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Пароль"',
             'password_reset_token' => Schema::TYPE_STRING . ' UNIQUE COMMENT "Токен для восстановление пароля"',
             'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL COMMENT "Ключ авторизации"',

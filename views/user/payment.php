@@ -40,14 +40,14 @@ $this->title = 'Детализация баланса'; ?>
         <div class="content__col-12">
             <?php if(Yii::$app->session->hasFlash('success')): ?>
                 <div class="alert alert-success" role="alert">
-                    <h4>Успех</h4>
+                    <h4 class="alert-heading">Успех</h4>
                     <hr>
                     <p class="mb-0"><?php echo Yii::$app->session->getFlash('success'); ?></p>
                 </div>
             <?php endif; ?>
             <?php if(Yii::$app->session->hasFlash('error')): ?>
                 <div class="alert alert-danger" role="alert">
-                    <h4>Ошибка</h4>
+                    <h4 class="alert-heading">Ошибка</h4>
                     <hr>
                     <p class="mb-0"><?php echo Yii::$app->session->getFlash('error'); ?></p>
                 </div>

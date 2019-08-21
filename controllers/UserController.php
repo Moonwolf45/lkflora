@@ -10,6 +10,9 @@ use app\models\shops\Shops;
 use app\models\ShopsAddition;
 use app\models\tariff\Tariff;
 use app\models\tickets\Tickets;
+use app\models\tickets\TicketsFiles;
+use app\models\tickets\TicketsText;
+use app\models\traits\UploadFilesTrait;
 use app\models\Transaction;
 use Yii;
 use yii\filters\AccessControl;
@@ -25,6 +28,7 @@ use app\models\form\UploadAvatarForm;
 use yii\web\UploadedFile;
 
 class UserController extends Controller {
+    use UploadFilesTrait;
 
     public function behaviors() {
         return [
@@ -68,7 +72,7 @@ class UserController extends Controller {
             ->limit(3)->asArray()->all();
 
         $tickets = Tickets::find()->where(['user_id' => Yii::$app->user->id, 'status' => Tickets::STATUS_OPEN_TICKET])
-            ->with('last-tickets-text')->limit(3)->asArray()->all();
+            ->with('lastTicket')->limit(3)->asArray()->all();
 
         $modelShop = new Shops();
         $newTicket = new Tickets();
@@ -89,15 +93,31 @@ class UserController extends Controller {
         }
 
         if ($newTicket->load(Yii::$app->request->post())) {
-            echo "<pre>";
-            print_r($newTicket);
-            echo "</pre>";
+            $newTicket->status = Tickets::STATUS_OPEN_TICKET;
+            $newTicket->new_text = false;
 
-//            $newTicket->status = Tickets::STATUS_OPEN_TICKET;
-//            $newTicket->new_text = false;
-//            $newTicket->save();
+            $newTicket->ticketFiles = UploadedFile::getInstances($newTicket, 'ticketFiles');
+            if ($newTicket->ticketFiles) {
+                $this->uploadGallery($newTicket, 'ticketFiles','tickets');
+            }
+            $newTicket->save(false);
 
-//            return $this->refresh();
+            $newTextTicket = new TicketsText();
+            $newTextTicket->ticket_id = $newTicket->id;
+            $newTextTicket->date_time = date('Y-m-d H:i:s');
+            $newTextTicket->text = $newTicket->tickets_text;
+            $newTextTicket->user_type = TicketsText::TYPE_USER_NORMAL;
+            $newTextTicket->save(false);
+
+            $newTextFiles = new TicketsFiles();
+            foreach ($newTicket->ticketFiles as $ticketFile) {
+                $newTextFiles->ticket_id = $newTicket->id;
+                $newTextFiles->ticket_text_id = $newTextTicket->id;
+                $newTextFiles->file = 'upload/tickets/' . $ticketFile;
+                $newTextFiles->save(false);
+            }
+
+            return $this->refresh();
         }
 
         return $this->render('index', compact('shops', 'modelShop', 'tariffs',
@@ -194,19 +214,34 @@ class UserController extends Controller {
      * @return string
      */
     public function actionSavePdf() {
-//        echo "<pre>";
-//        print_r($_REQUEST);
-//        echo "</pre>";
-
+        $sumToPdf = Yii::$app->request->post();
         $maxPaymentNumber = Payments::getMaxNumberSchet();
         $date = date('d.m.Y');
-        $number = $maxPaymentNumber['invoice_number'] + 1;
+        $number = 'E' . ($maxPaymentNumber['invoice_number'] + 1);
+
+        $schetPayment = new Payments();
+        $schetPayment->user_id = Yii::$app->user->id;
+        $schetPayment->shop_id = 0;
+        $schetPayment->type_service = 0;
+        $schetPayment->service_id = 0;
+        $schetPayment->type = Payments::TYPE_REFILL;
+        $schetPayment->way = Payments::WAY_SCHET;
+        $schetPayment->date = date('Y-m-d');
+        $schetPayment->invoice_number = $maxPaymentNumber['invoice_number'] + 1;
+        $schetPayment->invoice_date = date('Y-m-d');
+        $schetPayment->amount = $sumToPdf['NewPaid']['amount'];
+        $schetPayment->status = Payments::STATUS_EXPOSED;
+        $schetPayment->save(false);
+
         $pdfFile = Yii::$app->pdf;
         $mpdf = $pdfFile->api;
         $mpdf->SetHeader('Счёт №' . $number . ' от ' . $date);
         $mpdf->SetTitle('Счёт №' . $number . ' от ' . $date);
 
-        $content = $this->renderPartial('_schetPDF', ['number' => $number, 'date' => $date]);
+        $user = User::find()->where(['id' => Yii::$app->user->id])->asArray()->limit(1)->one();
+        $userSetting = UserSettings::find()->where(['user_id' => Yii::$app->user->id])->asArray()->limit(1)->one();
+        $content = $this->renderPartial('_schetPDF', ['number' => $number, 'date' => $date, 'user' => $user,
+            'userSetting' => $userSetting, 'amount' => $sumToPdf['NewPaid']['amount']]);
         $mpdf->WriteHtml($content);
         $filename = 'Счёт №' . $number . ' от ' . $date . '.pdf';
         return $mpdf->Output($filename, 'D');
@@ -222,15 +257,20 @@ class UserController extends Controller {
      */
     public function actionDownloadAct($id) {
         if ($id != '') {
-            $model = Payments::find()->where(['id' => $id])->limit(1)->one();
+            $model = Payments::find()->where(['id' => $id])->asArray()->limit(1)->one();
 
            if (!empty($model)) {
+               $user = User::find()->where(['id' => Yii::$app->user->id])->asArray()->limit(1)->one();
+               $userSetting = UserSettings::find()->where(['user_id' => Yii::$app->user->id])->asArray()->limit(1)
+                   ->one();
+
                $pdf = Yii::$app->pdf;
                $mpdf = $pdf->api;
-               $content = $this->renderPartial('_actPDF', ['model' => $model]);
+               $content = $this->renderPartial('_actPDF', ['model' => $model, 'user' => $user,
+                   'userSetting' => $userSetting]);
                $mpdf->WriteHtml($content);
 
-               $number = $model['invoice_number'];
+               $number = 'E' . $model['invoice_number'];
                $date = Yii::$app->formatter->asDate($model['date']);
                $mpdf->SetHeader('Акт №' . $number . ' от ' . $date);
                $mpdf->SetTitle('Акт №' . $number . ' от ' . $date);
@@ -318,10 +358,10 @@ class UserController extends Controller {
                 Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
                 return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
             }
-        } else {
-            Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
-            return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
         }
+
+        Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
+        return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
     }
 
     /**
@@ -343,11 +383,73 @@ class UserController extends Controller {
     /**
      * Страница тех. потдержки
      *
+     * @param string $id
+     *
      * @return string
      */
-    public function actionTickets() {
+    public function actionTickets($id = '') {
+        $tickets = Tickets::find()->where(['user_id' => Yii::$app->user->id, 'status' => Tickets::STATUS_OPEN_TICKET])
+            ->with('lastTicket')->asArray()->all();
 
-        return $this->render('tickets');
+        $newTicket = new Tickets();
+        if ($newTicket->load(Yii::$app->request->post())) {
+            $newTicket->status = Tickets::STATUS_OPEN_TICKET;
+            $newTicket->new_text = false;
+
+            $newTicket->ticketFiles = UploadedFile::getInstances($newTicket, 'ticketFiles');
+            if ($newTicket->ticketFiles) {
+                $this->uploadGallery($newTicket, 'ticketFiles','tickets');
+            }
+            $newTicket->save(false);
+
+            $newTextTicket = new TicketsText();
+            $newTextTicket->ticket_id = $newTicket->id;
+            $newTextTicket->date_time = date('Y-m-d H:i:s');
+            $newTextTicket->text = $newTicket->tickets_text;
+            $newTextTicket->user_type = TicketsText::TYPE_USER_NORMAL;
+            $newTextTicket->save(false);
+
+            $newTextFiles = new TicketsFiles();
+            foreach ($newTicket->ticketFiles as $ticketFile) {
+                $newTextFiles->ticket_id = $newTicket->id;
+                $newTextFiles->ticket_text_id = $newTextTicket->id;
+                $newTextFiles->file = 'upload/tickets/' . $ticketFile;
+                $newTextFiles->save(false);
+            }
+
+            return $this->refresh();
+        }
+
+        $newTicketText = new TicketsText();
+        if ($newTicketText->load(Yii::$app->request->post())) {
+            $newTicketText->ticketsFiles = UploadedFile::getInstances($newTicketText, 'ticketsFiles');
+            if ($newTicketText->ticketsFiles) {
+                $this->uploadGallery($newTicketText, 'ticketsFiles','tickets');
+            }
+
+            $newTicketText->date_time = date('Y-m-d H:i:s');
+            $newTicketText->user_type = TicketsText::TYPE_USER_NORMAL;
+            $newTicketText->save(false);
+
+            $newTextFiles = new TicketsFiles();
+            foreach ($newTicketText->ticketsFiles as $ticketFile) {
+                $newTextFiles->ticket_id = $newTicketText->ticket_id;
+                $newTextFiles->ticket_text_id = $newTicketText->id;
+                $newTextFiles->file = 'upload/tickets/' . $ticketFile;
+                $newTextFiles->save(false);
+            }
+
+            return $this->refresh();
+        }
+
+        if ($id != '') {
+            $openTicket = Tickets::find()->where(['tickets.id' => $id])->joinWith('user')
+                ->joinWith('ticketsText.ticketsFiles')->asArray()->one();
+
+            return $this->render('tickets', compact('newTicket', 'newTicketText', 'tickets', 'openTicket'));
+        } else {
+            return $this->render('tickets', compact('newTicket', 'newTicketText', 'tickets'));
+        }
     }
 
     /**

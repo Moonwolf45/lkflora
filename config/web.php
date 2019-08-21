@@ -39,6 +39,7 @@ $config = [
             'timeZone' => 'Europe/Moscow',
             'dateFormat' => 'dd.MM.yyyy',
             'timeFormat' => 'H:mm:ss',
+            'datetimeFormat' => 'dd.MM.yyyy H:mm:ss',
             'decimalSeparator' => ',',
             'thousandSeparator' => ' ',
             'currencyCode' => 'RUB',
@@ -86,6 +87,9 @@ $config = [
                 'user/download-act/id_<id:\d+>' => 'user/download-act',
                 'user/success-payment/transaction_<transaction_id:\d+>' => 'user/success-payment',
                 'user/false-payment/transaction__<transaction_id:\d+>' => 'user/false-payment',
+
+                'user/tickets/tickets_<id:\d+>' => 'user/tickets',
+                'user/tickets' => 'user/tickets',
             ],
         ],
         'pdf' => [

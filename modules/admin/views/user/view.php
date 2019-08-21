@@ -30,12 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'email:email',
-            [
-                'attribute' => 'doc_num',
-                'value' => function($userSettingsData) {
-                    return $userSettingsData->doc_num;
-                }
-            ],
+            'phone',
             [
                 'attribute' => 'shops',
                 'label' => 'Магазины',

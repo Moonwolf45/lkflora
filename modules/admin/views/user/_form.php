@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\widgets\MaskedInput;
 
 /* @return string
  * @var $model app\models\db\User
@@ -16,12 +17,13 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <label for="user-email">E-mail нового пользователя:</label>
-    <?= Html::activeInput('text', $model, 'email', ['class' => 'form-control']) ?>
+    <?= Html::activeTextInput($model, 'email', ['class' => 'form-control']); ?>
 
     <br>
 
-    <label for="user-doc_num">Номер договора:</label>
-    <?= Html::activeInput('text', $model, 'doc_num', ['class' => 'form-control']) ?>
+    <?= $form->field($model, 'phone')->widget(MaskedInput::class, [
+        'mask' => '+7 (999) 999-99-99',
+    ]); ?>
 
     <br>
 

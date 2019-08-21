@@ -16,7 +16,7 @@ use yii\db\ActiveRecord;
  * @property int $new_text Есть новое сообщение
  *
  * @property User $user
- * @property TicketsFiles[] $ticketsFiles
+ * @property TicketsFiles[] $ticketFiles
  * @property TicketsText[] $ticketsText
  */
 class Tickets extends ActiveRecord {
@@ -24,7 +24,7 @@ class Tickets extends ActiveRecord {
     const STATUS_OPEN_TICKET = 1;
     const STATUS_CLOSE_TICKET = 0;
 
-    public $ticketsFiles;
+    public $ticketFiles;
     public $tickets_text;
 
     /**
@@ -47,7 +47,7 @@ class Tickets extends ActiveRecord {
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']],
 
-            [['ticketsFiles'], 'file', 'maxFiles' => 5, 'skipOnEmpty' => true],
+            [['ticketFiles'], 'file', 'maxFiles' => 4, 'maxSize' => 1024 * 1024 * 5],
         ];
     }
 
@@ -62,7 +62,8 @@ class Tickets extends ActiveRecord {
             'tickets_text' => 'Текст сообщения',
             'status' => 'Открыто_закрыто обращение',
             'new_text' => 'Есть новое сообщение',
-            'ticketsFiles' => 'Доп. файл (до 5шт.)',
+
+            'ticketFiles' => 'Доп. файл (до 5шт.)',
         ];
     }
 
@@ -77,13 +78,13 @@ class Tickets extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getTicketsText() {
-        return $this->hasMany(TicketsText::class, ['ticket_id' => 'id']);
+        return $this->hasMany(TicketsText::class, ['ticket_id' => 'id'])->orderBy(['id' => SORT_DESC]);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getLastTicketsText() {
+    public function getLastTicket() {
         return $this->hasOne(TicketsText::class, ['ticket_id' => 'id'])->orderBy(['id' => SORT_DESC])->limit(1);
     }
 }

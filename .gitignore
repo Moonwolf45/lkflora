@@ -38,4 +38,7 @@ phpunit.phar
 web/node_modules
 
 #upload
-web/upload
+web/upload/tickets/
+web/upload/temp_files/
+web/upload/undefined/
+web/upload/user/

@@ -11,7 +11,7 @@ use yii\db\ActiveRecord;
  * @property int $id
  * @property int $ticket_id ID Обращения
  * @property int $ticket_text_id ID Обращения текста
- * @property string $image Картинка
+ * @property string $file Файл
  *
  * @property Tickets $ticket
  * @property TicketsText $ticketText
@@ -30,13 +30,14 @@ class TicketsFiles extends ActiveRecord {
      */
     public function rules() {
         return [
-            [['ticket_id', 'ticket_text_id', 'image'], 'required'],
+            [['ticket_id', 'ticket_text_id', 'file'], 'required'],
             [['ticket_id', 'ticket_text_id'], 'integer'],
-            [['file'], 'string', 'max' => 255],
             [['ticket_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tickets::class,
                 'targetAttribute' => ['ticket_id' => 'id']],
             [['ticket_text_id'], 'exist', 'skipOnError' => true, 'targetClass' => TicketsText::class,
                 'targetAttribute' => ['ticket_id' => 'id']],
+
+            [['file'], 'file', 'maxFiles' => 4, 'skipOnEmpty' => true, 'maxSize' => 1024 * 1024 * 5]
         ];
     }
 
@@ -48,7 +49,7 @@ class TicketsFiles extends ActiveRecord {
             'id' => 'ID',
             'ticket_id' => 'ID Обращения',
             'ticket_text_id' => 'ID Обращения текста',
-            'file' => 'Картинка',
+            'file' => 'Файл',
         ];
     }
 
