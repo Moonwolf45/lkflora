@@ -15,6 +15,7 @@ class UserProfileForm extends Model {
 
     public $email;
     public $company_name;
+    public $phone;
     public $current_pass;
     public $new_pass;
     public $repeat_new_pass;
@@ -25,7 +26,7 @@ class UserProfileForm extends Model {
      */
     public function rules() {
         return [
-            [['email', 'company_name', 'current_pass', 'new_pass', 'repeat_new_pass'], 'string'],
+            [['email', 'company_name', 'current_pass', 'new_pass', 'repeat_new_pass', 'phone'], 'string'],
             [['image'], 'file', 'extensions' => 'png, jpg', 'maxSize' => 1024 * 1024 * 5]
         ];
     }
@@ -50,6 +51,7 @@ class UserProfileForm extends Model {
         }
 
         $userProfile->email = htmlspecialchars(strip_tags($this->email));
+        $userProfile->phone = $this->phone;
         $userProfile->company_name = htmlspecialchars(strip_tags($this->company_name));
 
         if ($this->current_pass) {
@@ -84,6 +86,7 @@ class UserProfileForm extends Model {
 
         if ($userProfile) {
             $this->email = $userProfile->email;
+            $this->phone = $userProfile->phone;
             $this->company_name = $userProfile->company_name;
         }
     }
@@ -95,25 +98,5 @@ class UserProfileForm extends Model {
         return [
             'image' => false,
         ];
-    }
-
-    /**
-     * Метод загрузки аватарки
-     *
-     * @return bool
-     */
-    public function upload() {
-        if ($this->validate()) {
-            $name_image = $this->image->baseName . '.' . $this->image->extension;
-            $new_name_image = 'upload/temp_files/' . time() . '.' . $this->image->extension;
-            $path = 'upload/user/' . $name_image;
-            shell_exec('convert ' . $new_name_image . ' -auto-orient -quality 90 ' . $path);
-            $this->image->saveAs($path);
-
-            @unlink($new_name_image);
-            return $path;
-        } else {
-            return false;
-        }
     }
 }

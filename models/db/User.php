@@ -222,7 +222,7 @@ class User extends ActiveRecord implements IdentityInterface {
      */
     public function attributeLabels() {
         return [
-            'email'   => 'E-mail пользователя',
+            'email' => 'E-mail пользователя',
             'phone' => 'Номер телефона',
         ];
     }

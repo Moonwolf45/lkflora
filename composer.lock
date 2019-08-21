@@ -923,16 +923,16 @@
         },
         {
             "name": "studio-42/elfinder",
-            "version": "2.1.49",
+            "version": "2.1.50",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Studio-42/elFinder.git",
-                "reference": "8669ee276693177e2c288d852923f4a0371d1b96"
+                "reference": "ae1a24001af2727ef7ef4e8f32c7dc1b49709062"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Studio-42/elFinder/zipball/8669ee276693177e2c288d852923f4a0371d1b96",
-                "reference": "8669ee276693177e2c288d852923f4a0371d1b96",
+                "url": "https://api.github.com/repos/Studio-42/elFinder/zipball/ae1a24001af2727ef7ef4e8f32c7dc1b49709062",
+                "reference": "ae1a24001af2727ef7ef4e8f32c7dc1b49709062",
                 "shasum": ""
             },
             "require": {
@@ -966,18 +966,18 @@
                     "homepage": "http://std42.ru"
                 },
                 {
-                    "name": "Community contributions",
-                    "homepage": "https://github.com/Studio-42/elFinder/contributors"
-                },
-                {
                     "name": "Naoki Sawada",
                     "email": "hypweb+elfinder@gmail.com",
                     "homepage": "http://xoops.hypweb.net"
+                },
+                {
+                    "name": "Community contributions",
+                    "homepage": "https://github.com/Studio-42/elFinder/contributors"
                 }
             ],
             "description": "File manager for web",
             "homepage": "http://elfinder.org",
-            "time": "2019-04-16T15:16:44+00:00"
+            "time": "2019-08-20T14:15:16+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -4335,16 +4335,16 @@
         },
         {
             "name": "yiisoft/yii2-debug",
-            "version": "2.1.7",
+            "version": "2.1.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/yiisoft/yii2-debug.git",
-                "reference": "c54717af9172cf6233fea3eec113c0e0293e2bb2"
+                "reference": "959bf8206a3ec64f8949f62024a2c58d9a02e78f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/yiisoft/yii2-debug/zipball/c54717af9172cf6233fea3eec113c0e0293e2bb2",
-                "reference": "c54717af9172cf6233fea3eec113c0e0293e2bb2",
+                "url": "https://api.github.com/repos/yiisoft/yii2-debug/zipball/959bf8206a3ec64f8949f62024a2c58d9a02e78f",
+                "reference": "959bf8206a3ec64f8949f62024a2c58d9a02e78f",
                 "shasum": ""
             },
             "require": {
@@ -4389,7 +4389,7 @@
                 "debugger",
                 "yii2"
             ],
-            "time": "2019-07-30T12:40:16+00:00"
+            "time": "2019-08-20T15:19:56+00:00"
         },
         {
             "name": "yiisoft/yii2-faker",

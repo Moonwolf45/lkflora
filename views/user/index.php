@@ -71,7 +71,7 @@ $this->title = 'Главная'; ?>
                                             <li class="shops__item shops__item_pb12">
                                                 <div class="shops__item-box shops__item-box_df">
                                                     <div class="shops__item-icon">
-                                                        <?=Html::img('@web/images/icon/icon-lifebuoy.svg'); ?>
+                                                        <?=Html::img('@web/images/icon/flower.svg'); ?>
                                                     </div>
                                                     <p class="shops__item-box-text"><?= $addition['name']; ?>: </p>
 
@@ -201,7 +201,6 @@ $this->title = 'Главная'; ?>
         </div>
     </div>
 </div>
-
 
 <?php echo $this->render('modal/store', compact('modelShop', 'tariffs', 'additions')); ?>
 <?php echo $this->render('modal/appeal', compact('newTicket')); ?>

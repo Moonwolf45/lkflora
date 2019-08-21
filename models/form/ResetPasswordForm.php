@@ -46,7 +46,7 @@ class ResetPasswordForm extends Model {
 
         if ($user->save()) {
             $link = Url::to(['/site/reset-password-confirm', 'token' => $user->password_reset_token], true);
-            $this->sendMailToUser($this->email, 'request', 'Восстановление пароля на сайте Florapoint',
+            $this->sendMailToUser($user->email, 'request', 'Восстановление пароля на сайте Florapoint',
                 ['link' => $link]);
 
             return true;

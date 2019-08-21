@@ -112,8 +112,7 @@ use yii\widgets\Pjax;
                     <div class="appeal__wrapp appeal__wrapp_pt30 appeal__wrapp_mw655 appeal__wrapp_mb30">
                         <?php if (!empty($openTicket)): ?>
                             <?php $form2 = ActiveForm::begin(['options' => ['class' => 'appeal__form',
-//                                'data' => ['pjax' => true],
-                                'enctype' => 'multipart/form-data']]); ?>
+                                'data' => ['pjax' => true], 'enctype' => 'multipart/form-data']]); ?>
                                 <div class="appeal__block">
                                     <?= $form2->field($newTicketText, 'user_id')->hiddenInput(['value' => Yii::$app->user->id])
                                         ->label(false); ?>
@@ -130,7 +129,13 @@ use yii\widgets\Pjax;
                                             <label class="attach__label" id="label-file1" for="file1">
                                                 <?= Html::activeFileInput($newTicketText, 'ticketsFiles[]', [
                                                     'multiple' => true, 'class' => 'left clip-input1 attach__input',
-                                                    'id' => 'file1']); ?>
+                                                    'id' => 'file1', 'accept' => 'image/jpeg, image/pjpeg, image/jpeg,
+                                                        image/jpeg, image/pjpeg, image/jpeg, image/pjpeg, image/jpeg,
+                                                        image/pjpeg, image/png, application/pdf, application/msword,
+                                                        application/excel, application/vnd.ms-excel, application/x-excel,
+                                                        application/x-msexcel,
+                                                        application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+                                                        application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']); ?>
                                                 <span class="attach__icon s-di-vertical-m"></span>
                                                 <span class="attach__text s-di-vertical-m clip-input-txt1">Прикрепить файл</span>
                                             </label>

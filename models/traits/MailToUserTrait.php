@@ -28,8 +28,7 @@ trait MailToUserTrait {
             'text' => 'views/' . $view . '-text',
         ], $params);
 
-        $result->setTo([$email]);
-        $result->setFrom([Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']]);
+        $result->setTo($email);
         $result->setSubject($subject);
         $result->send();
 

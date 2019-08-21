@@ -25,6 +25,7 @@ class Tickets extends ActiveRecord {
     const STATUS_CLOSE_TICKET = 0;
 
     public $ticketFiles;
+    public $manyFile;
     public $tickets_text;
 
     /**
@@ -47,7 +48,8 @@ class Tickets extends ActiveRecord {
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']],
 
-            [['ticketFiles'], 'file', 'maxFiles' => 4, 'maxSize' => 1024 * 1024 * 5],
+            [['ticketFiles', 'manyFile'], 'file', 'extensions' => 'jpg, png, pdf, doc, docx, xls, xlsx, jpeg',
+                'maxFiles' => 4, 'maxSize' => 1024 * 1024 * 5],
         ];
     }
 
@@ -64,6 +66,7 @@ class Tickets extends ActiveRecord {
             'new_text' => 'Есть новое сообщение',
 
             'ticketFiles' => 'Доп. файл (до 5шт.)',
+            'manyFile' => 'Доп. файл (до 5шт.)',
         ];
     }
 

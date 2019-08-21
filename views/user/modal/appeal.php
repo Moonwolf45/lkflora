@@ -14,11 +14,8 @@ use yii\widgets\ActiveForm;
             <div class="appeal__wrapp appeal__wrapp_mw435 appeal__wrapp_m30">
                 <div class="little-title">Создание обращения в техподдержку</div>
                 <?php $form3 = ActiveForm::begin([
-                    'options' => [
-                        'class' => 'appeal__form',
-                        'data' => ['pjax' => true],
-                        'enctype' => 'multipart/form-data',
-                    ],
+                    'options' => ['class' => 'appeal__form', 'data' => ['pjax' => true],
+                    'enctype' => 'multipart/form-data']
                 ]); ?>
 
                     <?= $form3->field($newTicket, 'user_id')->hiddenInput(['value' => Yii::$app->user->id])
@@ -39,11 +36,18 @@ use yii\widgets\ActiveForm;
                             <div class="attach__wrapp-label">
                                 <label class="attach__label" id="label-file1" for="file1">
                                     <?= Html::activeFileInput($newTicket, 'ticketFiles[]', [
-                                        'multiple' => 'multiple', 'class' => 'left clip-input attach__input',
-                                        'id' => 'file1']); ?>
+                                        'multiple' => true, 'class' => 'left clip-input attach__input',
+                                        'id' => 'file1', 'accept' => 'image/jpeg, image/pjpeg, image/jpeg, 
+                                            image/jpeg, image/pjpeg, image/jpeg, image/pjpeg, image/jpeg, 
+                                            image/pjpeg, image/png, application/pdf, application/msword,
+                                            application/excel, application/vnd.ms-excel, application/x-excel,
+                                            application/x-msexcel, 
+                                            application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+                                            application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']); ?>
                                     <span class="attach__icon s-di-vertical-m"></span>
                                     <span class="attach__text s-di-vertical-m clip-input-txt">Прикрепить файл</span>
                                 </label>
+                                <?= Html::error($newTicket, 'ticketFiles[]', ['class' => 'help-block']); ?>
                             </div>
                         </div>
                     </div>

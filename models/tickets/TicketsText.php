@@ -20,7 +20,7 @@ use yii\db\ActiveRecord;
 class TicketsText extends ActiveRecord {
 
     public $ticketsFiles;
-    public $gallery;
+    public $manyFiles;
 
     const TYPE_USER_NORMAL = 0;
     const TYPE_USER_TICKETS = 1;
@@ -44,7 +44,8 @@ class TicketsText extends ActiveRecord {
             [['ticket_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tickets::class,
                 'targetAttribute' => ['ticket_id' => 'id']],
 
-            [['ticketsFiles'], 'file', 'maxFiles' => 4, 'maxSize' => 1024 * 1024 * 5],
+            [['ticketsFiles', 'manyFiles'], 'file', 'extensions' => 'jpg, png, pdf, doc, docx, xls, xlsx, jpeg',
+                'maxFiles' => 4, 'maxSize' => 1024 * 1024 * 5],
         ];
     }
 
@@ -60,6 +61,7 @@ class TicketsText extends ActiveRecord {
             'user_type' => 'Тип пользователя',
 
             'ticketsFiles' => 'Доп. файл (до 5шт.)',
+            'manyFiles' => 'Доп. файл (до 5шт.)',
         ];
     }
 

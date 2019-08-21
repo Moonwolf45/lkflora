@@ -37,7 +37,8 @@ class TicketsFiles extends ActiveRecord {
             [['ticket_text_id'], 'exist', 'skipOnError' => true, 'targetClass' => TicketsText::class,
                 'targetAttribute' => ['ticket_id' => 'id']],
 
-            [['file'], 'file', 'maxFiles' => 4, 'skipOnEmpty' => true, 'maxSize' => 1024 * 1024 * 5]
+            [['file'], 'file', 'extensions' => 'jpg, png, pdf, doc, docx, xls, xlsx, jpeg', 'maxFiles' => 4,
+                'skipOnEmpty' => true, 'maxSize' => 1024 * 1024 * 5]
         ];
     }
 

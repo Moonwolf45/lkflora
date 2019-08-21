@@ -2,6 +2,7 @@
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
 
@@ -46,8 +47,7 @@ use yii\widgets\ActiveForm;
                                     <?= $form->field($modelShop, 'tariff_id')->dropDownList(
                                         ArrayHelper::map($tariffs, 'id', 'name'),
                                         ['prompt' => 'Выберите тариф', 'class' => 'jsx-select input choose__name'])
-                                        ->label('Техподдержка'); ?>
-
+                                        ->label('Тариф'); ?>
                                 </div>
                             </div>
                             <div class="add-store__col">
@@ -55,7 +55,7 @@ use yii\widgets\ActiveForm;
                                     <?= $form->field($modelShop, 'addition[]')->dropDownList(
                                         ArrayHelper::map($additions, 'id', 'name'),
                                         ['prompt' => 'Выберите одну или несколько услуг', 'multiple' => true,
-                                            'class' => 'jsx-select input choose__name multiple', 'size' => 3]); ?>
+                                            'class' => 'jsx-select input choose__name', 'size' => 3]); ?>
                                 </div>
                             </div>
                         </div>

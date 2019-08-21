@@ -10,8 +10,7 @@ use yii\base\Model;
  *
  * @package app\models\forms\reset
  */
-class ResetPasswordConfirmForm extends Model
-{
+class ResetPasswordConfirmForm extends Model {
     /** @var string Пароль */
     public $password;
 
@@ -35,7 +34,7 @@ class ResetPasswordConfirmForm extends Model
     public function attributeLabels()
     {
         return [
-            'password'        => 'Пароль',
+            'password' => 'Пароль',
             'password_repeat' => 'Повторите пароль',
         ];
     }
@@ -48,8 +47,7 @@ class ResetPasswordConfirmForm extends Model
      * @return bool
      * @throws \yii\base\Exception
      */
-    public function update(User $user)
-    {
+    public function update(User $user) {
         if (!$this->validate()) {
             return false;
         }

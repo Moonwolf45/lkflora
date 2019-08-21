@@ -66,7 +66,7 @@ $config = [
             'textLayout' => 'layouts/main-text',
             'messageConfig' => [
                 'charset' => 'UTF-8',
-                'from' => [Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']],
+                'from' => ['info@lk.florapoint.ru' => 'Florapoint.tu'],
             ],
         ],
         'log' => [
@@ -118,13 +118,13 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '37.113.71.111'],
     ];
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
-        'allowedIPs' => ['127.0.0.1', '::1'],
+        'allowedIPs' => ['127.0.0.1', '::1', '37.113.71.111'],
     ];
 }
 

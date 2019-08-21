@@ -66,14 +66,6 @@ switch ($currentPage) {
 
 ?>
 
-<?php
-
-    echo "<pre>";
-    print_r($request);
-    echo "</pre>";
-
-?>
-
 <header class="header">
     <div class="header__wrapp">
         <div class="logo header__logo">
@@ -113,7 +105,7 @@ switch ($currentPage) {
                             <p class="user-data__cash">баланс:
                                 <span><?= Yii::$app->formatter->asDecimal(Yii::$app->user->identity->balance, 2); ?> руб</span>
                             </p>
-                            <a href="" class="user-data__add-cash">
+                            <a href="<?php echo Url::to(['/user/payment', 'd' => 1, 'i' => 1]); ?>" class="user-data__add-cash">
                                 <?=Html::img('@web/images/icon/icon-add.svg'); ?>
                             </a>
                         </div>
@@ -152,7 +144,7 @@ switch ($currentPage) {
                 <p class="user-data__cash">баланс:
                     <span><?= Yii::$app->formatter->asDecimal(Yii::$app->user->identity->balance, 2); ?> руб</span>
                 </p>
-                <a href="" class="user-data__add-cash">
+                <a href="<?php echo Url::to(['/user/payment', 'd' => 1, 'i' => 1]); ?>" class="user-data__add-cash">
                     <?=Html::img('@web/images/icon/icon-add.svg'); ?>
                 </a>
             </div>

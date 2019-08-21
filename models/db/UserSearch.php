@@ -23,7 +23,6 @@ class UserSearch extends User {
      * {@inheritdoc}
      */
     public function scenarios() {
-        // bypass scenarios() implementation in the parent class
         return Model::scenarios();
     }
 
@@ -53,16 +52,16 @@ class UserSearch extends User {
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id'         => $this->id,
-            'status'     => $this->status
+            'id' => $this->id,
+            'status' => $this->status
         ]);
 
         $query->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'phone', $this->phone])
             ->andFilterWhere(['like', 'company_name', $this->company_name])
             ->andFilterWhere(['like', 'password_hash', $this->password_hash])
             ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key])
-            ->andFilterWhere(['like', 'phone', $this->phone]);
+            ->andFilterWhere(['like', 'auth_key', $this->auth_key]);
 
         return $dataProvider;
     }

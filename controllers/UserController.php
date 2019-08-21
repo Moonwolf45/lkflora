@@ -79,14 +79,17 @@ class UserController extends Controller {
 
         if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
             Service::saveTariff($modelShop->tariff_id, $modelShop->id, Yii::$app->user->id);
-            foreach ($modelShop->addition as $addition_one) {
-                $shopAddition = new ShopsAddition();
-                $shopAddition->shop_id = $modelShop->id;
-                $shopAddition->addition_id = $addition_one;
-                $shopAddition->quantity = 1;
-                $shopAddition->save();
 
-                Service::saveAddition($addition_one, $modelShop->id, 1, Yii::$app->user->id);
+            if (!empty($modelShop->addition)) {
+                foreach ($modelShop->addition as $addition_one) {
+                    $shopAddition = new ShopsAddition();
+                    $shopAddition->shop_id = $modelShop->id;
+                    $shopAddition->addition_id = $addition_one;
+                    $shopAddition->quantity = 1;
+                    $shopAddition->save();
+
+                    Service::saveAddition($addition_one, $modelShop->id, 1, Yii::$app->user->id);
+                }
             }
 
             return $this->refresh();
@@ -98,7 +101,7 @@ class UserController extends Controller {
 
             $newTicket->ticketFiles = UploadedFile::getInstances($newTicket, 'ticketFiles');
             if ($newTicket->ticketFiles) {
-                $this->uploadGallery($newTicket, 'ticketFiles','tickets');
+                $manyFile = $this->uploadGallery($newTicket, 'ticketFiles','tickets');
             }
             $newTicket->save(false);
 
@@ -109,12 +112,14 @@ class UserController extends Controller {
             $newTextTicket->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTextTicket->save(false);
 
-            $newTextFiles = new TicketsFiles();
-            foreach ($newTicket->ticketFiles as $ticketFile) {
-                $newTextFiles->ticket_id = $newTicket->id;
-                $newTextFiles->ticket_text_id = $newTextTicket->id;
-                $newTextFiles->file = 'upload/tickets/' . $ticketFile;
-                $newTextFiles->save(false);
+            if (!empty($manyFile)) {
+                foreach ($manyFile as $ticketFile) {
+                    $newTextFiles = new TicketsFiles();
+                    $newTextFiles->ticket_id = $newTicket->id;
+                    $newTextFiles->ticket_text_id = $newTextTicket->id;
+                    $newTextFiles->file = $ticketFile;
+                    $newTextFiles->save(false);
+                }
             }
 
             return $this->refresh();
@@ -398,7 +403,7 @@ class UserController extends Controller {
 
             $newTicket->ticketFiles = UploadedFile::getInstances($newTicket, 'ticketFiles');
             if ($newTicket->ticketFiles) {
-                $this->uploadGallery($newTicket, 'ticketFiles','tickets');
+                $manyFile = $this->uploadGallery($newTicket, 'ticketFiles','tickets');
             }
             $newTicket->save(false);
 
@@ -409,12 +414,14 @@ class UserController extends Controller {
             $newTextTicket->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTextTicket->save(false);
 
-            $newTextFiles = new TicketsFiles();
-            foreach ($newTicket->ticketFiles as $ticketFile) {
-                $newTextFiles->ticket_id = $newTicket->id;
-                $newTextFiles->ticket_text_id = $newTextTicket->id;
-                $newTextFiles->file = 'upload/tickets/' . $ticketFile;
-                $newTextFiles->save(false);
+            if (!empty($manyFile)) {
+                foreach ($manyFile as $ticketFile) {
+                    $newTextFiles = new TicketsFiles();
+                    $newTextFiles->ticket_id = $newTicket->id;
+                    $newTextFiles->ticket_text_id = $newTextTicket->id;
+                    $newTextFiles->file = $ticketFile;
+                    $newTextFiles->save(false);
+                }
             }
 
             return $this->refresh();
@@ -423,20 +430,32 @@ class UserController extends Controller {
         $newTicketText = new TicketsText();
         if ($newTicketText->load(Yii::$app->request->post())) {
             $newTicketText->ticketsFiles = UploadedFile::getInstances($newTicketText, 'ticketsFiles');
+
+            $manyFiles = [];
             if ($newTicketText->ticketsFiles) {
-                $this->uploadGallery($newTicketText, 'ticketsFiles','tickets');
+                $manyFiles = $this->uploadGallery($newTicketText, 'ticketsFiles','tickets');
             }
 
             $newTicketText->date_time = date('Y-m-d H:i:s');
             $newTicketText->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTicketText->save(false);
 
-            $newTextFiles = new TicketsFiles();
-            foreach ($newTicketText->ticketsFiles as $ticketFile) {
-                $newTextFiles->ticket_id = $newTicketText->ticket_id;
-                $newTextFiles->ticket_text_id = $newTicketText->id;
-                $newTextFiles->file = 'upload/tickets/' . $ticketFile;
-                $newTextFiles->save(false);
+            echo "<pre>";
+            print_r($manyFiles);
+            echo "</pre>";
+
+            echo "<pre>";
+            print_r($newTicketText->ticketsFiles);
+            echo "</pre>";
+
+            if (!empty($manyFiles)) {
+                foreach ($manyFiles as $ticketFile) {
+                    $newTextFiles = new TicketsFiles();
+                    $newTextFiles->ticket_id = $newTicketText->ticket_id;
+                    $newTextFiles->ticket_text_id = $newTicketText->id;
+                    $newTextFiles->file = $ticketFile;
+                    $newTextFiles->save(false);
+                }
             }
 
             return $this->refresh();
@@ -464,17 +483,15 @@ class UserController extends Controller {
         }
 
         $model = new UserSettingsForm;
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['/user/index']);
+            return $this->refresh();
         }
 
         $model->loadData();
+        $profileSettings = UserSettings::find()->where(['user_id' => Yii::$app->user->id])->asArray()->limit(1)
+            ->one();
 
-        $userId = Yii::$app->user->id;
-        $profileSettings = UserSettings::findOne(['user_id' => $userId]);
-
-        return $this->render('account', ['model' => $model, 'profileSettings' => $profileSettings]);
+        return $this->render('account', compact('model', 'profileSettings'));
     }
 
     /**
@@ -507,9 +524,8 @@ class UserController extends Controller {
             $this->render('auth');
         }
 
-        $userId = Yii::$app->user->id;
-        $userSettingsData = UserSettings::findOne(['user_id' => $userId]);
-        $profileSettings = User::findOne(['id' => $userId]);
+        $profileSettings = User::find()->with('userSetting')->where(['id' => Yii::$app->user->id])->asArray()
+            ->limit(1)->one();
 
         $model = new UserProfileForm;
 
@@ -519,11 +535,9 @@ class UserController extends Controller {
             if ($model->image) {
                 $currentUserId = Yii::$app->user->id;
                 $user = User::findOne(['id' => $currentUserId]);
-                $image = $model->upload();
-                if ($image != false) {
-                    $user->avatar = $image;
-                    $user->save();
-                }
+                $image = $this->uploadImage($model, 'image', 'user', $user->avatar);
+                $user->avatar = $image;
+                $user->save();
             }
 
             return $this->redirect(['/user/settings']);
@@ -531,8 +545,7 @@ class UserController extends Controller {
 
         $model->loadData();
 
-        return $this->render('settings', ['userSettingsData' => $userSettingsData,
-            'profileSettings' => $profileSettings, 'model' => $model]);
+        return $this->render('settings', compact('profileSettings', 'model'));
     }
 
     /**
@@ -548,8 +561,8 @@ class UserController extends Controller {
             $user = User::findOne(['id' => $currentUserId]);
 
             $model->image = UploadedFile::getInstance($model, 'image');
-            $image = $model->upload();
-            if ($image != false) {
+            if ($model->image) {
+                $image = $this->uploadImage($model, 'image', 'user', $user->avatar);
                 $user->avatar = $image;
                 $user->save();
             }
