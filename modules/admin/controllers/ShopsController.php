@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\service\Service;
 use Yii;
 use app\models\shops\Shops;
 use app\models\shops\ShopsSearch;
@@ -92,12 +93,20 @@ class ShopsController extends Controller {
     /**
      * Deletes an existing Shops model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
      * @param integer $id
+     *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id) {
         $this->findModel($id)->delete();
+        $services = Service::find()->where(['shop_id' => $id, 'completed' => Service::COMPLETED_TRUE])->all();
+        foreach ($services as $service) {
+            $service->delete();
+        }
 
         return $this->redirect(['index']);
     }

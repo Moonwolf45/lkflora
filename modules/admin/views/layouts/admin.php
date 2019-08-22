@@ -64,8 +64,6 @@ AdminAsset::register($this); ?>
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; bacs21of@mail.ru</p>
-
         <p class="pull-right"><a href="<?php echo Url::to(['/user/logout']); ?>"> Выход</a></p>
     </div>
 </footer>

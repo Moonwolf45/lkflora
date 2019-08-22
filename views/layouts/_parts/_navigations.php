@@ -1,5 +1,6 @@
 <?php
 
+use app\models\db\User;
 use yii\helpers\Html;
 use yii\helpers\Url;
 
@@ -84,6 +85,13 @@ switch ($currentPage) {
             Анкета
         </div>
         <ul class="header__list">
+            <?php if (Yii::$app->user->identity->role == User::ROLE_ADMIN): ?>
+                <li class="header__item">
+                    <a href="<?= Url::to(['/admin']); ?>" class="notification-data">
+                        <?=Html::img('@web/images/icon/icon_admin.svg'); ?>
+                    </a>
+                </li>
+            <?php endif; ?>
             <li class="header__item">
                 <a href="" class="notification-data">
                     <?=Html::img('@web/images/icon/icon-notifications.svg'); ?>
@@ -196,16 +204,16 @@ switch ($currentPage) {
                         </div>
                     </a>
                 </li>
-                <li class="menu__item">
-                    <a href="<?php echo Url::to(['']); ?>" class="menu__link <?= $active_five; ?>" title="Приложение">
-                        <div class="menu__box">
-                            <span class="menu__icon">
-                                <?=Html::img('@web/images/icon/icon-phone.svg'); ?>
-                            </span>
-                            <span class="menu__text">Приложение</span>
-                        </div>
-                    </a>
-                </li>
+<!--                <li class="menu__item">-->
+<!--                    <a href="--><?php //echo Url::to(['']); ?><!--" class="menu__link --><?//= $active_five; ?><!--" title="Приложение">-->
+<!--                        <div class="menu__box">-->
+<!--                            <span class="menu__icon">-->
+<!--                                --><?//=Html::img('@web/images/icon/icon-phone.svg'); ?>
+<!--                            </span>-->
+<!--                            <span class="menu__text">Приложение</span>-->
+<!--                        </div>-->
+<!--                    </a>-->
+<!--                </li>-->
                 <li class="menu__item">
                     <a href="<?php echo Url::to(['/user/settings']); ?>" class="menu__link <?= $active_six; ?>" title="Настройки">
                         <div class="menu__box">

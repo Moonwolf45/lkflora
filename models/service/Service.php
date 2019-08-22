@@ -5,6 +5,7 @@ namespace app\models\service;
 use app\models\addition\Addition;
 use app\models\db\User;
 use app\models\shops\Shops;
+use app\models\ShopsAddition;
 use app\models\tariff\Tariff;
 use Yii;
 use yii\db\ActiveRecord;
@@ -171,14 +172,21 @@ class Service extends ActiveRecord {
     /**
      * @param int $user_id
      * @param int $shop_id
-     * @param array $id
      *
      * @return bool
      */
-    public static function updateAdditionFalse($user_id = 0, $shop_id = 0, $id = []) {
-        if ($user_id != 0 && $shop_id != 0 && !empty($id)) {
+    public static function updateAdditionFalse($user_id = 0, $shop_id = 0) {
+        if ($user_id != 0 && $shop_id != 0) {
+
+            $delete_id = [];
+            $additions = ShopsAddition::find()->where(['shop_id' => $shop_id])->asArray()->all();
+            foreach ($additions as $addition) {
+                $delete_id[] = $addition['addition_id'];
+            }
+
             $oldServiceAdditions = Service::find()->where(['user_id' => $user_id, 'shop_id' => $shop_id,
-                'type_service' => self::TYPE_ADDITION, 'type_serviceId' => $id, 'completed' => self::COMPLETED_FALSE])->all();
+                'type_service' => self::TYPE_ADDITION, 'type_serviceId' => $delete_id,
+                'completed' => self::COMPLETED_FALSE])->all();
 
             if (!empty($oldServiceAdditions)) {
                 foreach ($oldServiceAdditions as $addition) {

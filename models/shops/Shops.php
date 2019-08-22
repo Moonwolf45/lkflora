@@ -18,6 +18,7 @@ use yii\db\ActiveRecord;
  * @property string $address Адрес магазина
  * @property int $tariff_id Привязка к тарифу
  * @property int $user_id Привязка к пользователю
+ * @property int $deleted Удалён
  *
  * @property User $user
  * @property Tariff $tariff
@@ -29,6 +30,9 @@ class Shops extends ActiveRecord {
     public $addition = [];
     public $quantityArr = [];
     public $quantity = 1;
+
+    const DELETED_TRUE = 1;
+    const DELETED_FALSE = 0;
 
     /**
      * {@inheritdoc}
@@ -58,7 +62,7 @@ class Shops extends ActiveRecord {
     public function rules() {
         return [
             [['address', 'tariff_id', 'user_id'], 'required'],
-            [['tariff_id', 'user_id'], 'integer'],
+            [['tariff_id', 'user_id', 'deleted'], 'integer'],
             [['addition', 'quantityArr'], 'each', 'rule' => ['integer', 'max' => 100]],
             ['quantity', 'number', 'min' => 0, 'max' => 9999],
             ['quantity', 'default', 'value' => 0],
@@ -82,6 +86,7 @@ class Shops extends ActiveRecord {
             'addition' => 'Доп. услуги',
             'quantity' => 'Количество',
             'quantityArr' => 'Количество',
+            'deleted' => 'Удалён',
         ];
     }
 

@@ -11,6 +11,8 @@ use yii\widgets\Pjax;
 /** @var TYPE_NAME $d */
 /** @var TYPE_NAME $i */
 /** @var TYPE_NAME $maxPaymentId */
+/** @var TYPE_NAME $deposit_count */
+/** @var TYPE_NAME $invoice_count */
 
 //--
 $amount = 0;
@@ -21,11 +23,11 @@ if (iconv_strlen((string)Yii::$app->user->id) == 1) {
     $client_id = 'a' . (string)Yii::$app->user->id;
 }
 $description = 'Пополнение баланса с карты';
-$fail_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/user/false-payment';
+$fail_url = 'https://' . $_SERVER['SERVER_NAME'] . '/user/false-payment';
 $merchant = Yii::$app->params['idSite'];
 $order_id = $maxPaymentId['id'] + 1;
 $salt = Yii::$app->security->generateRandomString(32);
-$success_url = $_SERVER['REQUEST_SCHEME'] . '://' . $_SERVER['SERVER_NAME'] . '/user/success-payment';
+$success_url = 'https://' . $_SERVER['SERVER_NAME'] . '/user/success-payment';
 $testing = 1;
 $unix_timestamp = time();
 
@@ -136,7 +138,12 @@ $this->title = 'Детализация баланса'; ?>
                                                 <tr class="table__row">
                                                     <td class="table__col">
                                                         <p class="table__text">Счет №
-                                                            <span class="s-medium"><?= $inv['invoice_number']; ?></span>
+                                                            <span class="s-medium">
+                                                                <?= Html::a($inv['invoice_number'],
+                                                                    Url::to(['/user/download-pdf', 'id' => $inv['id'],
+                                                                        'invoice_number' => $inv['invoice_number']]),
+                                                                        ['target' => '_blank', 'data-pjax' => 0]); ?>
+                                                            </span>
                                                             от <?=Yii::$app->formatter->asDate($inv['invoice_date']); ?>
                                                         </p>
                                                     </td>
@@ -167,9 +174,13 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php endif; ?>
                                     </table>
 
-                                    <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i]); ?>" class="show-more">
-                                        Показать ещё
-                                    </a>
+                                    <?php if(!empty($invoice)): ?>
+                                        <?php if(count($invoice) < $invoice_count): ?>
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i]); ?>" class="show-more">
+                                                Показать ещё
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
                                 </li>
 
                                 <li class="payment__content-item js__content-item">
@@ -212,9 +223,13 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php endif; ?>
                                     </ul>
 
-                                    <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i]); ?>" class="show-more">
-                                        Показать ещё
-                                    </a>
+                                    <?php if(!empty($deposit)): ?>
+                                        <?php if(count($deposit) < $deposit_count): ?>
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i]); ?>" class="show-more">
+                                                Показать ещё
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
                                 </li>
                             <?php Pjax::end(); ?>
 
@@ -267,7 +282,12 @@ $this->title = 'Детализация баланса'; ?>
                                             <?php foreach($invoice as $inv): ?>
                                                 <div class="check-status__block">
                                                     <p class="check-status__text">Счет №
-                                                        <span class="check-status__span"><?= $inv['invoice_number']; ?></span>
+                                                        <span class="check-status__span">
+                                                            <?= Html::a($inv['invoice_number'],
+                                                                Url::to(['/user/download-pdf', 'id' => $inv['id'],
+                                                                    'invoice_number' => $inv['invoice_number']]),
+                                                                    ['target' => '_blank', 'data-pjax' => 0]); ?>
+                                                        </span>
                                                         от <?=Yii::$app->formatter->asDate($inv['invoice_date']); ?>
                                                     </p>
                                                     <p class="check-status__text">
@@ -293,9 +313,13 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php endif; ?>
                                     </div>
 
-                                    <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i]); ?>" class="show-more">
-                                        Показать ещё
-                                    </a>
+                                    <?php if(!empty($invoice)): ?>
+                                        <?php if(count($invoice) < $invoice_count): ?>
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i]); ?>" class="show-more">
+                                                Показать ещё
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="fee-history fee-history_pt60">
@@ -343,9 +367,13 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php endif; ?>
                                     </ul>
 
-                                    <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i]); ?>" class="show-more">
-                                        Показать ещё
-                                    </a>
+                                    <?php if(!empty($deposit)): ?>
+                                        <?php if(count($deposit) < $deposit_count): ?>
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i]); ?>" class="show-more">
+                                                Показать ещё
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
                                 </div>
                             <?php Pjax::end(); ?>
                         </div>

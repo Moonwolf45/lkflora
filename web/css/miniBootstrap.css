@@ -21,6 +21,21 @@
     height: auto;
 }
 
+.add-store__form {
+    position: relative;
+}
+
+.drop_shop {
+    position: absolute;
+    right: 30px;
+    bottom: 10px;
+    background: #a94442;
+}
+
+.drop_shop:hover {
+    background: #8c3837;
+}
+
 .text-success {
     color: #3c763d;
 }
@@ -123,4 +138,23 @@
 
 .discussion__sms {
     min-width: 190px;
+}
+
+.check-status__span a {
+    color: #000;
+    text-decoration: none;
+}
+
+.check-status__span a:hover {
+    text-decoration: underline;
+}
+
+.services__detalization {
+    display: block;
+    padding: 5px 0 0 0;
+    margin-bottom: 85px;
+}
+
+.services__detalization:hover {
+    text-decoration: underline;
 }

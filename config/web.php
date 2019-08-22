@@ -85,6 +85,7 @@ $config = [
             'rules' => [
                 'user/payment/deposit_<d:\d+>/invoice_<i:\d+>' => 'user/payment',
                 'user/download-act/id_<id:\d+>' => 'user/download-act',
+                'user/download-pdf/id_<id:\d+>/number_<invoice_number:\d+>' => 'user/download-pdf',
                 'user/success-payment/transaction_<transaction_id:\d+>' => 'user/success-payment',
                 'user/false-payment/transaction__<transaction_id:\d+>' => 'user/false-payment',
 

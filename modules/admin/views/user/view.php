@@ -58,25 +58,101 @@ $this->params['breadcrumbs'][] = $this->title;
                         return '<p class="text-danger">Не найдено не одного магазина</p>';
                     }
                 }
-            ]
+            ],
+            [
+                'attribute' => 'doc_num',
+                'label' => 'Номер договора',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->doc_num;
+                }
+            ],
+            [
+                'attribute' => 'type_org',
+                'label' => 'Тип организации',
+                'format' => 'html',
+                'value' => function($data) {
+                    if ($data->userSetting->type_org == 'ip') {
+                        return 'ИП';
+                    } else {
+                        return 'ООО/АО/ЗАО';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'name_org',
+                'label' => 'Название организации',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->name_org;
+                }
+            ],
+            [
+                'attribute' => 'ur_addr_org',
+                'label' => 'Юридический адрес организации',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->ur_addr_org;
+                }
+            ],
+            [
+                'attribute' => 'ogrn',
+                'label' => 'ОГРН',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->ogrn;
+                }
+            ],
+            [
+                'attribute' => 'inn',
+                'label' => 'ИНН',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->inn;
+                }
+            ],
+            [
+                'attribute' => 'kpp',
+                'label' => 'КПП',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->kpp;
+                }
+            ],
+            [
+                'attribute' => 'bik_banka',
+                'label' => 'БИК Банка',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->bik_banka;
+                }
+            ],
+            [
+                'attribute' => 'name_bank',
+                'label' => 'Название банка',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->name_bank;
+                }
+            ],
+            [
+                'attribute' => 'kor_schet',
+                'label' => 'Кор счет',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->kor_schet;
+                }
+            ],
+            [
+                'attribute' => 'rass_schet',
+                'label' => 'Рассчетный счет',
+                'format' => 'html',
+                'value' => function($data) {
+                    return $data->userSetting->rass_schet;
+                }
+            ],
         ],
     ]); ?>
 
-    <?= DetailView::widget([
-        'model' => $userSettingsData,
-        'attributes' => [
-            'doc_num',
-            'type_org',
-            'name_org',
-            'ur_addr_org',
-            'ogrn',
-            'inn',
-            'kpp',
-            'bik_banka',
-            'name_bank',
-            'kor_schet',
-            'rass_schet'
-        ],
-    ]); ?>
 
 </div>

@@ -24,9 +24,24 @@ use yii\web\IdentityInterface;
  * @property string  $avatar
  * @property string  $auth_key
  * @property integer $status
+ * @property integer $role
  * @property integer $created_at
  * @property integer $updated_at
  * @property string  $password write-only password
+ *
+ * @property UserSettings $userSetting
+ *
+ * @property string $doc_num     Номер договора
+ * @property string $type_org    Тип организации
+ * @property string $name_org    Название организации
+ * @property string $ur_addr_org Юр адрес организации
+ * @property string $ogrn        ОГРН
+ * @property string $inn         ИНН
+ * @property string $kpp         КПП
+ * @property string $bik_banka   БИК Банка
+ * @property string $name_bank   Название банка
+ * @property string $kor_schet   Кор счет
+ * @property string $rass_schet  Рассчетный счет
  */
 class User extends ActiveRecord implements IdentityInterface {
     use MailToUserTrait;
@@ -34,9 +49,24 @@ class User extends ActiveRecord implements IdentityInterface {
     public $passForMail;
     public $shops;
 
+    public $doc_num;
+    public $type_org;
+    public $name_org;
+    public $ur_addr_org;
+    public $ogrn;
+    public $inn;
+    public $kpp;
+    public $bik_banka;
+    public $name_bank;
+    public $kor_schet;
+    public $rass_schet;
+
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
+
+    const ROLE_USER = 0;
+    const ROLE_ADMIN = 1;
 
     /**
      * {@inheritdoc}
@@ -71,7 +101,11 @@ class User extends ActiveRecord implements IdentityInterface {
     public function rules() {
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
+            ['role', 'default', 'value' => self::ROLE_USER],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_ADMIN]],
+            [['phone', 'doc_num', 'type_org', 'name_org', 'ur_addr_org', 'ogrn', 'inn', 'kpp', 'bik_banka', 'name_bank',
+                'kor_schet', 'rass_schet'], 'string', 'max' => 255],
         ];
     }
 
@@ -224,6 +258,7 @@ class User extends ActiveRecord implements IdentityInterface {
         return [
             'email' => 'E-mail пользователя',
             'phone' => 'Номер телефона',
+            'role' => 'Роль',
         ];
     }
 

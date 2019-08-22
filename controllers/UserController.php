@@ -14,6 +14,7 @@ use app\models\tickets\TicketsFiles;
 use app\models\tickets\TicketsText;
 use app\models\traits\UploadFilesTrait;
 use app\models\Transaction;
+use kartik\mpdf\Pdf;
 use Yii;
 use yii\filters\AccessControl;
 use yii\httpclient\Client;
@@ -25,6 +26,7 @@ use app\models\db\UserSettings;
 use app\models\form\UserProfileForm;
 use app\models\form\UserSettingsForm;
 use app\models\form\UploadAvatarForm;
+use yii\web\Response;
 use yii\web\UploadedFile;
 
 class UserController extends Controller {
@@ -58,7 +60,7 @@ class UserController extends Controller {
      */
     public function actionIndex() {
         $shops = Shops::find()->joinWith('tariff')->joinWith('additions')
-            ->where(['user_id' => Yii::$app->user->id])->asArray()->all();
+            ->where(['user_id' => Yii::$app->user->id, 'deleted' => Shops::DELETED_FALSE])->asArray()->all();
 
         $tariffs = Tariff::find()->asArray()->all();
         $additions = Addition::find()->asArray()->all();
@@ -149,6 +151,40 @@ class UserController extends Controller {
     }
 
     /**
+     *
+     * Просто action для изменения адреса магазина
+     *
+     * @return \yii\web\Response
+     */
+    public function actionEditShop() {
+        $editShop = Yii::$app->request->post();
+
+        $shop = Shops::findOne($editShop['Shops']['id']);
+        $shop->address = $editShop['Shops']['address'];
+        $shop->save(false);
+
+        return $this->redirect(['/user/index']);
+    }
+
+    /**
+     *
+     * Просто action для удаления магазина
+     *
+     * @return \yii\web\Response
+     */
+    public function actionDeleteShop() {
+        $deleteShop = Yii::$app->request->post();
+
+        $shop = Shops::findOne($deleteShop['Shops']['id']);
+        $shop->deleted = Shops::DELETED_TRUE;
+        $shop->save(false);
+
+        Service::updateAdditionFalse(Yii::$app->user->id, $deleteShop['Shops']['id']);
+
+        return $this->redirect(['/user/index']);
+    }
+
+    /**
      * Просто action для изменения услуг магазина
      *
      * @return \yii\web\Response
@@ -156,12 +192,7 @@ class UserController extends Controller {
     public function actionShopEditService() {
         $shopEditService = Yii::$app->request->post();
 
-        $delete_id = [];
-        $additions = ShopsAddition::find()->where(['shop_id' => $shopEditService['Shops']['id']])->asArray()->all();
-        foreach ($additions as $addition) {
-            $delete_id[] = $addition['addition_id'];
-        }
-        Service::updateAdditionFalse(Yii::$app->user->id, $shopEditService['Shops']['id'], $delete_id);
+        Service::updateAdditionFalse(Yii::$app->user->id, $shopEditService['Shops']['id']);
         ShopsAddition::deleteAll(['shop_id' => $shopEditService['Shops']['id']]);
 
         foreach ($shopEditService['Shops']['addition'] as $key => $service) {
@@ -204,13 +235,19 @@ class UserController extends Controller {
         $deposit = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL,
             'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->limit(3 * $d)->asArray()->all();
 
+        $deposit_count = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL,
+            'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->count();
+
         $invoice = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL])
             ->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])->limit(3 * $i)->asArray()->all();
+
+        $invoice_count = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL])
+            ->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])->count();
 
         $maxPaymentId = Payments::getMaxId();
 
         return $this->render('payment', compact('d', 'i', 'modelPaid', 'payments', 'deposit', 'invoice',
-            'maxPaymentId'));
+            'maxPaymentId', 'deposit_count', 'invoice_count'));
     }
 
     /**
@@ -243,13 +280,42 @@ class UserController extends Controller {
         $mpdf->SetHeader('Счёт №' . $number . ' от ' . $date);
         $mpdf->SetTitle('Счёт №' . $number . ' от ' . $date);
 
-        $user = User::find()->where(['id' => Yii::$app->user->id])->asArray()->limit(1)->one();
-        $userSetting = UserSettings::find()->where(['user_id' => Yii::$app->user->id])->asArray()->limit(1)->one();
+        $user = User::find()->joinWith('userSetting')->where(['user.id' => Yii::$app->user->id])->asArray()
+            ->limit(1)->one();
         $content = $this->renderPartial('_schetPDF', ['number' => $number, 'date' => $date, 'user' => $user,
-            'userSetting' => $userSetting, 'amount' => $sumToPdf['NewPaid']['amount']]);
+            'amount' => $sumToPdf['NewPaid']['amount']]);
         $mpdf->WriteHtml($content);
         $filename = 'Счёт №' . $number . ' от ' . $date . '.pdf';
         return $mpdf->Output($filename, 'D');
+    }
+
+    /**
+     * Скачивание счета счета
+     *
+     * @param $id
+     * @param $invoice_number
+     *
+     * @return string
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function actionDownloadPdf($id, $invoice_number) {
+        $schetPayment = Payments::find()->where(['id' => $id, 'invoice_number' => $invoice_number])->limit(1)->one();
+        $user = User::find()->joinWith('userSetting')->where(['user.id' => Yii::$app->user->id])->asArray()
+            ->limit(1)->one();
+
+        $date = Yii::$app->formatter->asDate($schetPayment['invoice_date']);
+        $number = 'E' . $schetPayment['invoice_number'];
+
+        $pdfFile = Yii::$app->pdf;
+        $mpdf = $pdfFile->api;
+        $mpdf->SetHeader('Счёт №' . $number . ' от ' . $date);
+        $mpdf->SetTitle('Счёт №' . $number . ' от ' . $date);
+
+        $content = $this->renderPartial('_schetPDF', ['number' => $number, 'date' => $date, 'user' => $user,
+            'amount' => $schetPayment['amount']]);
+        $mpdf->WriteHtml($content);
+        $filename = 'Счёт №' . $number . ' от ' . $date . '.pdf';
+        return $mpdf->Output($filename, 'I');
     }
 
     /**
@@ -265,14 +331,12 @@ class UserController extends Controller {
             $model = Payments::find()->where(['id' => $id])->asArray()->limit(1)->one();
 
            if (!empty($model)) {
-               $user = User::find()->where(['id' => Yii::$app->user->id])->asArray()->limit(1)->one();
-               $userSetting = UserSettings::find()->where(['user_id' => Yii::$app->user->id])->asArray()->limit(1)
-                   ->one();
+               $user = User::find()->joinWith('userSetting')->where(['user.id' => Yii::$app->user->id])->asArray()
+                   ->limit(1)->one();
 
                $pdf = Yii::$app->pdf;
                $mpdf = $pdf->api;
-               $content = $this->renderPartial('_actPDF', ['model' => $model, 'user' => $user,
-                   'userSetting' => $userSetting]);
+               $content = $this->renderPartial('_actPDF', ['model' => $model, 'user' => $user]);
                $mpdf->WriteHtml($content);
 
                $number = 'E' . $model['invoice_number'];
@@ -400,11 +464,7 @@ class UserController extends Controller {
         if ($newTicket->load(Yii::$app->request->post())) {
             $newTicket->status = Tickets::STATUS_OPEN_TICKET;
             $newTicket->new_text = false;
-
             $newTicket->ticketFiles = UploadedFile::getInstances($newTicket, 'ticketFiles');
-            if ($newTicket->ticketFiles) {
-                $manyFile = $this->uploadGallery($newTicket, 'ticketFiles','tickets');
-            }
             $newTicket->save(false);
 
             $newTextTicket = new TicketsText();
@@ -414,7 +474,9 @@ class UserController extends Controller {
             $newTextTicket->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTextTicket->save(false);
 
-            if (!empty($manyFile)) {
+            if ($newTicket->ticketFiles) {
+                $manyFile = $this->uploadGallery($newTicket, 'ticketFiles','tickets');
+
                 foreach ($manyFile as $ticketFile) {
                     $newTextFiles = new TicketsFiles();
                     $newTextFiles->ticket_id = $newTicket->id;
@@ -430,25 +492,13 @@ class UserController extends Controller {
         $newTicketText = new TicketsText();
         if ($newTicketText->load(Yii::$app->request->post())) {
             $newTicketText->ticketsFiles = UploadedFile::getInstances($newTicketText, 'ticketsFiles');
-
-            $manyFiles = [];
-            if ($newTicketText->ticketsFiles) {
-                $manyFiles = $this->uploadGallery($newTicketText, 'ticketsFiles','tickets');
-            }
-
             $newTicketText->date_time = date('Y-m-d H:i:s');
             $newTicketText->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTicketText->save(false);
 
-            echo "<pre>";
-            print_r($manyFiles);
-            echo "</pre>";
+            if ($newTicketText->ticketsFiles) {
+                $manyFiles = $this->uploadGallery($newTicketText, 'ticketsFiles', 'tickets');
 
-            echo "<pre>";
-            print_r($newTicketText->ticketsFiles);
-            echo "</pre>";
-
-            if (!empty($manyFiles)) {
                 foreach ($manyFiles as $ticketFile) {
                     $newTextFiles = new TicketsFiles();
                     $newTextFiles->ticket_id = $newTicketText->ticket_id;

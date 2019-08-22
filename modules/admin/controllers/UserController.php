@@ -56,17 +56,13 @@ class UserController extends Controller {
      * @throws NotFoundHttpException
      */
     public function actionView($id) {
-        $userSettingsData = UserSettings::findOne(['user_id' => $id]);
-        $model = $this->findModel($id);
+        $model = User::find()->joinWith('userSetting')->where(['user.id' => $id])->limit(1)->one();
         $shops = Shops::find()->joinWith('additions')->joinWith('tariff')->where(['user_id' => $id])
             ->asArray()->all();
 
         $model->shops = $shops;
 
-        return $this->render('view', [
-            'model' => $model,
-            'userSettingsData' => $userSettingsData,
-        ]);
+        return $this->render('view', ['model' => $model]);
     }
 
     /**
@@ -135,9 +131,23 @@ class UserController extends Controller {
      * @throws NotFoundHttpException
      */
     public function actionUpdate($id) {
-        $model = $this->findModel($id);
+        $model = User::find()->joinWith('userSetting')->where(['user.id' => $id])->limit(1)->one();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $user_set = UserSettings::find()->where(['user_id' => $id])->limit(1)->one();
+            $user_set->doc_num = $model->doc_num;
+            $user_set->type_org = $model->type_org;
+            $user_set->name_org = $model->name_org;
+            $user_set->ur_addr_org = $model->ur_addr_org;
+            $user_set->ogrn = $model->ogrn;
+            $user_set->inn = $model->inn;
+            $user_set->kpp = $model->kpp;
+            $user_set->bik_banka = $model->bik_banka;
+            $user_set->name_bank = $model->name_bank;
+            $user_set->kor_schet = $model->kor_schet;
+            $user_set->rass_schet = $model->rass_schet;
+            $user_set->save();
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

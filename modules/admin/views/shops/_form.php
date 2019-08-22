@@ -1,6 +1,7 @@
 <?php
 
 use app\models\db\User;
+use app\models\shops\Shops;
 use app\models\tariff\Tariff;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -22,6 +23,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'user_id')->dropDownList(ArrayHelper::map(User::find()->all(), 'id',
         'company_name'), ['prompt' => 'Выберите бренд']); ?>
+
+    <?= $form->field($model, 'deleted')->dropDownList([Shops::DELETED_TRUE => 'Да',
+        Shops::DELETED_FALSE => 'Нет'], ['prompt' => 'Выберите бренд']); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>

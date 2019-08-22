@@ -39,7 +39,8 @@ $this->title = 'Главная'; ?>
                                 </div>
                             </div>
                             <?php foreach ($shops as $shop): ?>
-                                <ul class="shops__list">
+                                <?php $editStore_id = md5($shop['id']); $addressShop = $shop['address']; ?>
+                                <ul class="shops__list" data-jsx-modal-target="editStore_<?=$editStore_id; ?>">
                                     <?php $id_modal = md5($shop['id'] . '_' . $shop['tariff']['id']);
                                         $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id']; ?>
                                     <li class="shops__item-mobile">
@@ -55,7 +56,7 @@ $this->title = 'Главная'; ?>
                                         <div class="shops__item-box shops__item-box_mw115 shops__item-title">Тариф</div>
                                     </li>
                                     <li class="shops__item shops__item_p2">
-                                        <div class="shops__item-box shops__item-name"><?=$shop['address']; ?></div>
+                                        <div class="shops__item-box shops__item-name"><?=$addressShop; ?></div>
                                         <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
                                             <a class="shops__item-box-link shops__item-name">
                                                 <?=$shop['tariff']['name']; ?>
@@ -99,6 +100,8 @@ $this->title = 'Главная'; ?>
                                         </div>
                                     </li>
                                 </ul>
+                                <?php echo $this->render('modal/editStore', compact('editStore_id',
+                                    'modelShop', 'addressShop', 'shop_id')); ?>
                                 <?php echo $this->render('modal/tariff', compact('modelShop', 'tariffs',
                                     'id_modal', 'tariff_id', 'shop_id')); ?>
                                 <?php echo $this->render('modal/add_service', compact('modelShop', 'id_modal',
@@ -124,7 +127,7 @@ $this->title = 'Главная'; ?>
                             }
                         } ?>
                         <p class="services__total"><?= Yii::$app->formatter->asDecimal($total_payment, 2); ?> руб/мес</p>
-                        <p class="services__detalization">детализация</p>
+                        <a href="<?= Url::to(['/user/payment', 'd' => 1, 'i' => 1]); ?>" class="services__detalization">детализация</a>
                         <p class="sub-title">
                             Созданные счета
                         </p>
@@ -133,7 +136,10 @@ $this->title = 'Главная'; ?>
                                 <?php foreach($invoice as $inv): ?>
                                     <div class="check-status__block">
                                         <p class="check-status__text">Счет №
-                                            <span class="check-status__span"><?= $inv['invoice_number']; ?></span>
+                                            <span class="check-status__span"><?= Html::a($inv['invoice_number'],
+                                                Url::to(['/user/download-pdf', 'id' => $inv['id'],
+                                                    'invoice_number' => $inv['invoice_number']]), ['target' => '_blank',
+                                                    'data-pjax' => 0]); ?></span>
                                         </p>
                                         <?php if ($inv['status'] == Payments::STATUS_PAID): ?>
                                             <p class="check-status__condition check-status__condition_on">Оплачен</p>

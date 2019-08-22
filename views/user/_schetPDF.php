@@ -5,7 +5,7 @@ use yii\helpers\Html;
 
 /** @var TYPE_NAME $number */
 /** @var TYPE_NAME $date */
-/** @var TYPE_NAME $userSetting */
+/** @var TYPE_NAME $user */
 
 ?>
 
@@ -164,8 +164,8 @@ use yii\helpers\Html;
             <div class="side-who__col side-who__col_pt">
                 <p class="side-who__span">Поупатель:</p>
                 <p class="side-who__text">
-                    <?= $userSetting['name_org']; ?>, <?= $userSetting['ur_addr_org']; ?>, телефон <?= $user['phone']; ?>,
-                    ИНН <?= $userSetting['inn']; ?>, КПП <?= $userSetting['kpp']; ?>
+                    <?= $user['userSetting']['name_org']; ?>, <?= $user['userSetting']['ur_addr_org']; ?>, телефон <?= $user['phone']; ?>,
+                    ИНН <?= $user['userSetting']['inn']; ?>, КПП <?= $user['userSetting']['kpp']; ?>
                 </p>
             </div>
         </div>

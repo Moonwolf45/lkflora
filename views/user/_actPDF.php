@@ -4,7 +4,6 @@ use adamasantares\sum2str\Sum2Str;
 
 /** @var TYPE_NAME $model */
 /** @var TYPE_NAME $user */
-/** @var TYPE_NAME $userSetting */
 
 ?>
 
@@ -101,7 +100,7 @@ use adamasantares\sum2str\Sum2Str;
                 <p class="text-midl">И Заказчик</p>
             </div>
             <div class="face__col two_col">
-                <p class="text-midl ttu text-midl_pb"><?= $userSetting['name_org']; ?></p>
+                <p class="text-midl ttu text-midl_pb"><?= $user['userSetting']['name_org']; ?></p>
                 <p class="text-small">контрагент</p>
             </div>
             <div class="face__col three_col">
@@ -225,15 +224,15 @@ use adamasantares\sum2str\Sum2Str;
             </div>
             <div class="footer__col">
                 <p class="text-norm text-norm_p2 ttu">Заказчик</p>
-                <p class="text-midl ttu tac border"><?= $userSetting['name_org']; ?></p>
+                <p class="text-midl ttu tac border"><?= $user['userSetting']['name_org']; ?></p>
                 <div class="footer__block">
                     <div class="footer__box">
                         <p class="text-midl s-di-vam one_p">ИНН</p>
-                        <p class="text-midl s-di-vam border two_p"><?= $userSetting['inn']; ?></p>
+                        <p class="text-midl s-di-vam border two_p"><?= $user['userSetting']['inn']; ?></p>
                     </div>
                     <div class="footer__box">
                         <p class="text-midl text-midl_pl s-di-vam one_p">КПП</p>
-                        <p class="text-midl s-di-vam border two_p"><?= $userSetting['kpp']; ?></p>
+                        <p class="text-midl s-di-vam border two_p"><?= $user['userSetting']['kpp']; ?></p>
                     </div>
                 </div>
                 <div class="footer__item">
@@ -241,7 +240,7 @@ use adamasantares\sum2str\Sum2Str;
                         <p class="text-midl">Адрес</p>
                     </div>
                     <div class="item-second item-second_address">
-                        <p class="text-midl"><?= $userSetting['ur_addr_org']; ?></p>
+                        <p class="text-midl"><?= $user['userSetting']['ur_addr_org']; ?></p>
                     </div>
                 </div>
                 <div class="footer__item">
@@ -249,7 +248,7 @@ use adamasantares\sum2str\Sum2Str;
                         <p class="text-midl">Р/с</p>
                     </div>
                     <div class="item-second">
-                        <p class="text-midl"><?= $userSetting['rass_schet']; ?></p>
+                        <p class="text-midl"><?= $user['userSetting']['rass_schet']; ?></p>
                     </div>
                 </div>
                 <div class="footer__item">
@@ -257,7 +256,7 @@ use adamasantares\sum2str\Sum2Str;
                         <p class="text-midl">К/с</p>
                     </div>
                     <div class="item-second">
-                        <p class="text-midl"><?= $userSetting['kor_schet']; ?></p>
+                        <p class="text-midl"><?= $user['userSetting']['kor_schet']; ?></p>
                     </div>
                 </div>
                 <div class="footer__item">
@@ -265,7 +264,7 @@ use adamasantares\sum2str\Sum2Str;
                         <p class="text-midl">Банк</p>
                     </div>
                     <div class="item-second item-second_bank">
-                        <p class="text-midl ttu"><?= $userSetting['name_bank']; ?></p>
+                        <p class="text-midl ttu"><?= $user['userSetting']['name_bank']; ?></p>
                     </div>
                 </div>
                 <div class="footer__item">
@@ -273,7 +272,7 @@ use adamasantares\sum2str\Sum2Str;
                         <p class="text-midl">Бик</p>
                     </div>
                     <div class="item-second">
-                        <p class="text-midl"><?= $userSetting['bik_banka']; ?></p>
+                        <p class="text-midl"><?= $user['userSetting']['bik_banka']; ?></p>
                     </div>
                 </div>
                 <div class="footer__item">

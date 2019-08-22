@@ -8,6 +8,8 @@ use yii\widgets\Pjax;
 /** @var TYPE_NAME $newTicket */
 /** @var TYPE_NAME $newTicketText */
 
+$this->title = 'Техподдержка';
+
 ?>
 
 <div class="content">
@@ -53,8 +55,8 @@ use yii\widgets\Pjax;
                                                             <p><?= $textTicket['text']; ?></p>
                                                         </div>
                                                         <div class="discussion__avatar">
-                                                            <?php if ($user['avatar'] != ''): ?>
-                                                                <?= Html::img('@web/' . $user['avatar'], ['class' => 'discussion__img']); ?>
+                                                            <?php if ($openTicket['user']['avatar'] != ''): ?>
+                                                                <?= Html::img('@web/' . $openTicket['user']['avatar'], ['class' => 'discussion__img']); ?>
                                                             <?php else: ?>
                                                                 <?= Html::img('@web/images/user-photo.png', ['class' => 'discussion__img']); ?>
                                                             <?php endif; ?>

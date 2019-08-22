@@ -44,7 +44,18 @@ YiiAsset::register($this); ?>
                 'value' => function($data) {
                     return $data->user->company_name;
                 },
-            ]
+            ],
+            [
+                'attribute' => 'deleted',
+                'format' => 'html',
+                'value' => function($data) {
+                    if ($data->deleted) {
+                        return '<p class="text-success">Да</p>';
+                    } else {
+                        return '<p class="text-danger">Нет</p>';
+                    }
+                },
+            ],
         ]
     ]); ?>
 
