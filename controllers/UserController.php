@@ -65,7 +65,7 @@ class UserController extends Controller {
         $tariffs = Tariff::find()->asArray()->all();
         $additions = Addition::find()->asArray()->all();
 
-        $date_month = date("Y-m-d", mktime(0, 0, 0, date("m") + 1, 31, date("Y")));
+        $date_month = date("Y-m-d", mktime(23, 59, 59, date("m") + 1, 31, date("Y")));
         $monthly_payment = Service::find()->where(['user_id' => Yii::$app->user->id, 'completed' => Service::COMPLETED_FALSE])
             ->andWhere(['<=', 'writeoff_date', $date_month])->asArray()->all();
 
@@ -73,14 +73,14 @@ class UserController extends Controller {
             'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])
             ->limit(3)->asArray()->all();
 
-        $tickets = Tickets::find()->where(['user_id' => Yii::$app->user->id, 'status' => Tickets::STATUS_OPEN_TICKET])
-            ->with('lastTicket')->limit(3)->asArray()->all();
+        $tickets = Tickets::find()->joinWith('lastTicket')->where(['tickets.user_id' => Yii::$app->user->id,
+            'tickets.status' => Tickets::STATUS_OPEN_TICKET])->limit(3)->asArray()->all();
 
         $modelShop = new Shops();
         $newTicket = new Tickets();
 
         if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
-            Service::saveTariff($modelShop->tariff_id, $modelShop->id, Yii::$app->user->id);
+            Service::saveTariff($modelShop->tariff_id, $modelShop->id, Yii::$app->user->id, false);
 
             if (!empty($modelShop->addition)) {
                 foreach ($modelShop->addition as $addition_one) {
@@ -90,7 +90,7 @@ class UserController extends Controller {
                     $shopAddition->quantity = 1;
                     $shopAddition->save();
 
-                    Service::saveAddition($addition_one, $modelShop->id, 1, Yii::$app->user->id);
+                    Service::saveAddition($addition_one, $modelShop->id, 1, false, Yii::$app->user->id);
                 }
             }
 
@@ -145,7 +145,7 @@ class UserController extends Controller {
         $shop->tariff_id = $updateShop['Shops']['tariff_id'];
         $shop->save(false);
 
-        Service::saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'], Yii::$app->user->id, $oldTariff_id, true);
+        Service::saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'], Yii::$app->user->id, false, $oldTariff_id, true);
 
         return $this->redirect(['/user/index']);
     }
@@ -397,16 +397,16 @@ class UserController extends Controller {
                         $user->balance += $resp_array->transaction->amount;
                         $user->save(false);
 
-                        Yii::$app->session->setFlash('success', 'Оплата на ' . Yii::$app->formatter
-                                ->asDecimal($resp_array->transaction->amount, 2) . 'руб прошла успешно.');
+                        Yii::$app->session->setFlash('success', 'Ваша оплата на ' . Yii::$app->formatter
+                                ->asDecimal($resp_array->transaction->amount, 2) . ' руб. прошла успешно.');
 
                         $payments->status = Payments::STATUS_PAID;
                     } elseif ($resp_array->transaction->state == 'PROCESSING' || $resp_array->transaction->state == 'WAITING_FOR_3DS') {
-                        Yii::$app->session->setFlash('success', 'Оплата находится в процессе, как только статус изменится деньги тут же постуят на ваш счет');
+                        Yii::$app->session->setFlash('success', 'Оплата находится в процессе. Как только статус изменится, деньги постуят на ваш счет в течении 5 минут.');
 
                         $payments->status = Payments::STATUS_WAITING;
                     }  elseif ($resp_array->transaction->state == 'FAILED') {
-                        Yii::$app->session->setFlash('error', 'Извините, но во время оплаты произошла какая-то неизвестная ошибка');
+                        Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка. Попробуйте повторить операцию.');
 
                         $payments->status = Payments::STATUS_CANCEL;
                     }
@@ -424,12 +424,12 @@ class UserController extends Controller {
                     return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
                 }
             } else {
-                Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
+                Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка. Попробуйте повторить операцию.');
                 return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
             }
         }
 
-        Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
+        Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка. Попробуйте повторить операцию.');
         return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
     }
 
@@ -441,11 +441,8 @@ class UserController extends Controller {
      * @return \yii\web\Response
      */
     public function actionFalsePayment($transaction_id) {
-        if ($transaction_id != '') {
-            Yii::$app->session->setFlash('error', 'Извините, но во время оплаты произошла какая-то неизвестная ошибка');
-        }
 
-        Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка.');
+        Yii::$app->session->setFlash('error', 'Во время оплаты произошла неизвестная ошибка. Попробуйте повторить операцию.');
         return $this->redirect(['/user/payment', 'd' => 1, 'i' => 1]);
     }
 

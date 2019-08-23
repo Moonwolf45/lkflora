@@ -21,6 +21,7 @@ use yii\db\ActiveRecord;
  * @property string $writeoff_date Дата списания
  * @property string $writeoff_amount Цена списания
  * @property int $quantity Количество
+ * @property int $agree Подтвержден
  * @property int $repeat Повторяющийся
  * @property int $completed Выполнен
  *
@@ -33,6 +34,9 @@ class Service extends ActiveRecord {
 
     const REPEAT_FALSE = 0;
     const REPEAT_TRUE = 1;
+
+    const AGREE_FALSE = 0;
+    const AGREE_TRUE = 1;
 
     const COMPLETED_FALSE = 0;
     const COMPLETED_TRUE = 1;
@@ -49,8 +53,9 @@ class Service extends ActiveRecord {
      */
     public function rules() {
         return [
-            [['user_id', 'shop_id', 'type_service', 'type_serviceId', 'writeoff_date', 'writeoff_amount'], 'required'],
-            [['user_id', 'shop_id', 'type_service', 'type_serviceId', 'quantity', 'repeat', 'completed'], 'integer'],
+            [['user_id', 'shop_id', 'type_service', 'type_serviceId', 'writeoff_date', 'writeoff_amount', 'agree'], 'required'],
+            [['user_id', 'shop_id', 'type_service', 'type_serviceId', 'quantity'], 'integer'],
+            [['repeat', 'completed', 'agree'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['writeoff_date'], 'date'],
             [['writeoff_amount'], 'number'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
@@ -71,6 +76,7 @@ class Service extends ActiveRecord {
             'writeoff_date' => 'Дата списания',
             'writeoff_amount' => 'Цена списания',
             'quantity' => 'Количество',
+            'agree' => 'Подтвержден',
             'repeat' => 'Повторяющийся',
             'completed' => 'Выполнен',
         ];
@@ -94,16 +100,19 @@ class Service extends ActiveRecord {
      * @param int $tariff_id
      * @param int $shop_id
      * @param int $user_id
+     * @param bool $tariff_agree
+     *
      * @param int $old_id
      * @param bool $updateTariff
      *
      * @return bool
      */
-    public static function saveTariff($tariff_id = 0, $shop_id = 0, $user_id = 0, $old_id = 0, $updateTariff = false) {
+    public static function saveTariff($tariff_id = 0, $shop_id = 0, $user_id = 0, $tariff_agree = false, $old_id = 0, $updateTariff = false) {
         if ($tariff_id != 0 && $shop_id != 0 && $user_id != 0) {
             if ($updateTariff && $old_id != 0) {
                 $oldServiceTariff = Service::findOne(['user_id' => $user_id, 'shop_id' => $shop_id,
-                    'type_service' => self::TYPE_TARIFF, 'type_serviceId' => $old_id, 'completed' => self::COMPLETED_FALSE]);
+                    'type_service' => self::TYPE_TARIFF, 'type_serviceId' => $old_id, 'agree' => self::AGREE_TRUE,
+                    'completed' => self::COMPLETED_FALSE]);
 
                 if (!empty($oldServiceTariff)) {
                     $oldServiceTariff->repeat = self::REPEAT_FALSE;
@@ -122,9 +131,18 @@ class Service extends ActiveRecord {
                 $saveService->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
                 $saveService->writeoff_amount = $tariff['cost'];
                 $saveService->quantity = 1;
+                if ($tariff_agree) {
+                    $saveService->agree = self::AGREE_TRUE;
+                } else {
+                    $saveService->agree = self::AGREE_FALSE;
+                }
                 $saveService->repeat = self::REPEAT_TRUE;
                 $saveService->completed = self::COMPLETED_FALSE;
                 $saveService->save(false);
+
+                $shops = Shops::find()->where(['id' => $shop_id])->limit(1)->one();
+                $shops->on_check = Shops::ON_CHECK_TRUE;
+                $shops->save(false);
 
                 return true;
             }
@@ -137,11 +155,12 @@ class Service extends ActiveRecord {
      * @param int $addition_id
      * @param int $shop_id
      * @param int $quantity
+     * @param bool $addition_agree
      * @param int $user_id
      *
      * @return bool
      */
-    public static function saveAddition($addition_id = 0, $shop_id = 0, $quantity = 1, $user_id = 0) {
+    public static function saveAddition($addition_id = 0, $shop_id = 0, $quantity = 1, $addition_agree = false, $user_id = 0) {
         if ($addition_id != 0 && $shop_id != 0 && $user_id != 0) {
             $addition = Addition::find()->where(['id' => $addition_id])->asArray()->limit(1)->one();
 
@@ -154,6 +173,11 @@ class Service extends ActiveRecord {
                 $saveService->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
                 $saveService->writeoff_amount = $addition['cost'];
                 $saveService->quantity = $quantity;
+                if ($addition_agree) {
+                    $saveService->agree = self::AGREE_TRUE;
+                } else {
+                    $saveService->agree = self::AGREE_FALSE;
+                }
                 if ($addition['type']) {
                     $saveService->repeat = self::REPEAT_TRUE;
                 } else {
@@ -161,6 +185,10 @@ class Service extends ActiveRecord {
                 }
                 $saveService->completed = self::COMPLETED_FALSE;
                 $saveService->save(false);
+
+                $shops = Shops::find()->where(['id' => $shop_id])->limit(1)->one();
+                $shops->on_check = Shops::ON_CHECK_TRUE;
+                $shops->save(false);
 
                 return true;
             }
@@ -185,7 +213,7 @@ class Service extends ActiveRecord {
             }
 
             $oldServiceAdditions = Service::find()->where(['user_id' => $user_id, 'shop_id' => $shop_id,
-                'type_service' => self::TYPE_ADDITION, 'type_serviceId' => $delete_id,
+                'type_service' => self::TYPE_ADDITION, 'type_serviceId' => $delete_id, 'agree' => self::AGREE_TRUE,
                 'completed' => self::COMPLETED_FALSE])->all();
 
             if (!empty($oldServiceAdditions)) {
@@ -212,13 +240,15 @@ class Service extends ActiveRecord {
     public static function updateAddition($id = 0, $shop_id = 0, $quantity = 1, $user_id = 0) {
         if ($user_id != 0 && $shop_id != 0 && $id != 0) {
             $oldServiceAddition = Service::findOne(['user_id' => $user_id, 'shop_id' => $shop_id,
-                'type_service' => self::TYPE_ADDITION, 'type_serviceId' => $id, 'completed' => self::COMPLETED_FALSE]);
+                'agree' => self::AGREE_TRUE, 'type_service' => self::TYPE_ADDITION, 'type_serviceId' => $id,
+                'completed' => self::COMPLETED_FALSE]);
 
             if (!empty($oldServiceAddition)) {
                 $addition = Addition::find()->where(['id' => $id])->asArray()->limit(1)->one();
 
                 if ($quantity > $oldServiceAddition->quantity) {
                     $oldServiceAddition->quantity = $quantity;
+                    $oldServiceAddition->agree = self::AGREE_FALSE;
                     if ($addition['type']) {
                         $oldServiceAddition->repeat = self::REPEAT_TRUE;
                     } else {
@@ -234,6 +264,7 @@ class Service extends ActiveRecord {
                     $next_payment->writeoff_date = date('Y-m-d', strtotime($oldServiceAddition->writeoff_date . '+30 day'));
                     $next_payment->writeoff_amount = $addition['cost'];
                     $next_payment->quantity = $quantity;
+                    $next_payment->agree = self::AGREE_FALSE;
                     if ($addition['type']) {
                         $next_payment->repeat = self::REPEAT_TRUE;
                     } else {
@@ -250,9 +281,15 @@ class Service extends ActiveRecord {
                     $oldServiceAddition->save(false);
                 }
 
+                if ($quantity > $oldServiceAddition->quantity || $quantity < $oldServiceAddition->quantity) {
+                    $shops = Shops::find()->where(['id' => $shop_id])->limit(1)->one();
+                    $shops->on_check = Shops::ON_CHECK_TRUE;
+                    $shops->save(false);
+                }
+
                 return true;
             } else {
-                self::saveAddition($id, $shop_id, $quantity, $user_id);
+                self::saveAddition($id, $shop_id, $quantity, false, $user_id);
 
                 return true;
             }

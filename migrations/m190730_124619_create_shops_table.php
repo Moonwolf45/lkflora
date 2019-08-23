@@ -18,6 +18,7 @@ class m190730_124619_create_shops_table extends Migration {
             'address' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Адрес магазина"',
             'tariff_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Привязка к тарифу"',
             'user_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Привязка к бренду"',
+            'on_check' => Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 0 COMMENT "На проверке"',
             'deleted' => Schema::TYPE_INTEGER . '(1) NOT NULL DEFAULT 0 COMMENT "Привязка к бренду"',
         ]);
 

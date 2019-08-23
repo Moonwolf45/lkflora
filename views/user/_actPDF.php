@@ -1,6 +1,7 @@
 <?php
 
 use adamasantares\sum2str\Sum2Str;
+use yii\helpers\Html;
 
 /** @var TYPE_NAME $model */
 /** @var TYPE_NAME $user */
@@ -26,7 +27,7 @@ use adamasantares\sum2str\Sum2Str;
     .five_col{width:18%;}
     .text,.text-midl,.text-small{font-size:14px;font-weight:bold;}
     .text-norm{font-size:14px;font-weight:bold;}
-    .text-norm_pt15{padding-top:15px;}
+    .text-norm_pt5{padding-top:5px;}
     .text-midl, .text-small{font-weight:400;}
     .text-midl_pb{padding-bottom:10px;}
     .text-midl_pt15{padding-top:15px;}
@@ -35,7 +36,7 @@ use adamasantares\sum2str\Sum2Str;
     .ttu{text-transform:uppercase;}
     .border{border-bottom:2px solid #000;}
     .goods{border-collapse:collapse;width:100%;text-align:center;}
-    .goods th, .goods td{border:1px solid #000;}
+    .goods th,.goods td{border:1px solid #000;}
     .goods th:nth-child(1){width:5%;}
     .goods th:nth-child(2){width:40%;}
     .goods th:nth-child(3){width:8%;}
@@ -52,10 +53,10 @@ use adamasantares\sum2str\Sum2Str;
     .footer{float:left;width:100%;}
     .footer__row{margin:0 -15px;}
     .footer__col{position:relative;float:left;width:45%;padding:0 15px;}
-    .text-norm_p2{padding:25px 0 30px 0;}
+    .text-norm_p2{padding:25px 0 10px 0;}
     .footer__box{float:left;width:50%;}
     .s-di-vam{display:inline-block;vertical-align:middle;}
-    .footer__block{display:inline-block;width:100%;}
+    .footer__block{display:inline-block;position:relative;width:100%;}
     .one-down, .two-down{float:left;}
     .one-down{width:30%;margin-right:5px;}
     .two-down{width:65%;}
@@ -67,6 +68,9 @@ use adamasantares\sum2str\Sum2Str;
     .item-first p, .item-second p{margin:5px 0;}
     .item-second_bank{min-height:60px;}
     .footer__block_pb{padding-bottom:25px;}
+    .footer__sign{width:20px;height:20px;}
+    .footer__seal{float:left;width:55px;}
+    .footer__seal img{max-width:100%;max-height:100%;width:auto;height:auto;}
     .one-down,.two-down{position:relative;}
     .one-down p:before,.two-down p:before{content:"/";background:#FFF;position:absolute;bottom:-4px;list-style:outside;}
 </style>
@@ -127,7 +131,7 @@ use adamasantares\sum2str\Sum2Str;
         </tr>
         <tr>
             <td>1</td>
-            <td>Аренда сервера 1 квартал</td>
+            <td>Техническое сопровождение</td>
             <td>1</td>
             <td>шт.</td>
             <td><?= Yii::$app->formatter->asDecimal($model['amount'], 2); ?></td>
@@ -145,7 +149,7 @@ use adamasantares\sum2str\Sum2Str;
         </div>
     </div>
     <p class="text-midl text-midl_pt15">Общая стоимость выполненых работ (оказаных услуг), включая налоги сосотавила:</p>
-    <p class="text-norm text-norm_pt15"><?= Sum2Str::toStr($model['amount']); ?></p>
+    <p class="text-norm text-norm_pt5"><?= Sum2Str::toStr($model['amount']); ?></p>
     <hr>
     <p class="text-midl">Вышеперечисленные работы (услуги) выполнены в установленные сроки, в полном объёме и с надлежащим качеством.</p>
     <p class="text-midl">Претензий друг к другу стороны не имеют</p>
@@ -214,13 +218,16 @@ use adamasantares\sum2str\Sum2Str;
                 </div>
                 <div class="footer__block footer__block_pb">
                     <div class="one-down border">
-                        <p class="text-midl ">/</p>
+                        <p class="text-midl">/<?= Html::img('@web/images/sign.png', ['class' => 'footer__sign']); ?></p>
                     </div>
                     <div class="two-down border">
                         <p class="text-midl ">/</p>
                     </div>
                 </div>
                 <p class="text-midl tac">М.П.</p>
+                <div class="footer__seal">
+                    <?= Html::img('@web/images/seal.jpg'); ?>
+                </div>
             </div>
             <div class="footer__col">
                 <p class="text-norm text-norm_p2 ttu">Заказчик</p>

@@ -18,17 +18,17 @@ trait UploadFilesTrait {
      */
     public function uploadImage($model_name, $field, $path_to_file = 'undefined', $oldFile = '') {
         if (file_exists('upload')) {
-            if (!file_exists($path_to_file)) {
-                mkdir($path_to_file, 0755);
+            if (!file_exists('upload/' . $path_to_file)) {
+                mkdir('upload/' . $path_to_file, 0755);
             }
         } else {
             mkdir('upload', 0755);
-            mkdir($path_to_file, 0755);
+            mkdir('upload/' . $path_to_file, 0755);
         }
 
         if ($model_name->validate()) {
-            $name_image = $model_name->$field->baseName . '.' . $model_name->$field->extension;
-            $new_name_image = 'upload/temp_files/' . time() . '.' . $model_name->$field->extension;
+            $name_image = time() . '.' . $model_name->$field->extension;
+            $new_name_image = 'upload/temp_files/' . $model_name->$field->baseName . '.' . $model_name->$field->extension;
             $path = 'upload/' . $path_to_file . '/' . $name_image;
             shell_exec('convert ' . $new_name_image . ' -auto-orient -quality 90 ' . $path);
             $model_name->$field->saveAs($path);
@@ -55,19 +55,19 @@ trait UploadFilesTrait {
      */
     public function uploadGallery($model_name, $field, $path_to_file = 'undefined') {
         if (file_exists('upload')) {
-            if (!file_exists($path_to_file)) {
-                mkdir($path_to_file, 0755);
+            if (!file_exists('upload/' . $path_to_file)) {
+                mkdir('upload/' . $path_to_file, 0755);
             }
         } else {
             mkdir('upload', 0755);
-            mkdir($path_to_file, 0755);
+            mkdir('upload/' . $path_to_file, 0755);
         }
 
         $arrFile = [];
         if ($model_name->validate()) {
             foreach ($model_name->$field as $key => $file) {
                 $randTempNameFile = time() . '_' . $file->baseName . '.' . $file->extension;
-                $name_image = $file->baseName . '.' . $file->extension;
+                $name_image = time() . '.' . $file->extension;
                 $new_name_image = 'upload/temp_files/' . $randTempNameFile;
                 $path = 'upload/' . $path_to_file . '/' . $name_image;
                 shell_exec('convert ' . $new_name_image . ' -auto-orient -quality 90 ' . $path);

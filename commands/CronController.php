@@ -19,7 +19,7 @@ class CronController extends Controller {
         $time = date('H:i:s');
         Yii::info("Проверка услуг, для спиcаyия средств\r\n Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n Время: " . $time);
 
-        $services = Service::find()->where(['writeoff_date' => $today, 'completed' => Service::COMPLETED_FALSE])->all();
+        $services = Service::find()->where(['writeoff_date' => $today, 'agree' => Service::AGREE_TRUE, 'completed' => Service::COMPLETED_FALSE])->all();
 
         if (!empty($services)) {
             Yii::info("Начинаем обновлять пользователей");
@@ -40,9 +40,9 @@ class CronController extends Controller {
                     $new_service = new Service();
 
                     if ($service->type_service = Service::TYPE_TARIFF) {
-                        $new_service->saveTariff($service->type_serviceId, $service->shop_id, $service->user_id);
+                        $new_service->saveTariff($service->type_serviceId, $service->shop_id, $service->user_id, true);
                     } else {
-                        $new_service->saveAddition($service->type_serviceId, $service->shop_id, $service->quantity, $service->user_id);
+                        $new_service->saveAddition($service->type_serviceId, $service->shop_id, $service->quantity, true, $service->user_id);
                     }
                 }
 

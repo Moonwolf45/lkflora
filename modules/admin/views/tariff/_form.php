@@ -45,6 +45,8 @@ mihaildev\elfinder\Assets::noConflict($this);
         ]
     ); ?>
 
+    <?= $form->field($model, 'maximum')->checkbox(); ?>
+
     <?= $form->field($model, 'term')->textInput(['maxlength' => true]); ?>
 
     <div class="form-group">

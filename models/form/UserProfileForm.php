@@ -27,7 +27,7 @@ class UserProfileForm extends Model {
     public function rules() {
         return [
             [['email', 'company_name', 'current_pass', 'new_pass', 'repeat_new_pass', 'phone'], 'string'],
-            [['image'], 'file', 'extensions' => 'png, jpg', 'maxSize' => 1024 * 1024 * 5]
+            [['image'], 'file', 'extensions' => 'png, jpg', 'maxSize' => 1024 * 1024 * 4]
         ];
     }
 
@@ -54,7 +54,7 @@ class UserProfileForm extends Model {
         $userProfile->phone = $this->phone;
         $userProfile->company_name = htmlspecialchars(strip_tags($this->company_name));
 
-        if ($this->current_pass) {
+        if ($this->current_pass != '' && $this->new_pass != '' && $this->repeat_new_pass != '') {
             if ($this->new_pass == $this->repeat_new_pass) {
                 $currentPass = $this->current_pass;
                 $user_id = Yii::$app->user->id;

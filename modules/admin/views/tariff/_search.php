@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\TariffSearch */
+/* @var $model app\models\tariff\TariffSearch */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
@@ -26,6 +26,8 @@ use yii\widgets\ActiveForm;
     <?=$form->field($model, 'drop'); ?>
 
     <?=$form->field($model, 'status'); ?>
+
+    <?=$form->field($model, 'maximum'); ?>
 
     <?=$form->field($model, 'term'); ?>
 

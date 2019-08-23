@@ -9,7 +9,6 @@ use app\models\payments\PaymentsSchetSearch;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 
 class SchetController extends Controller {
 

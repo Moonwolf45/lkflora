@@ -1,5 +1,6 @@
 # phpstorm project files
 .idea
+/.htaccess
 
 # netbeans project files
 nbproject
@@ -14,6 +15,8 @@ Thumbs.db
 
 # composer vendor dir
 /vendor
+
+# cahce dir
 /runtime
 
 # composer itself is not needed

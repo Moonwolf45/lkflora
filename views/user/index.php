@@ -40,7 +40,7 @@ $this->title = 'Главная'; ?>
                             </div>
                             <?php foreach ($shops as $shop): ?>
                                 <?php $editStore_id = md5($shop['id']); $addressShop = $shop['address']; ?>
-                                <ul class="shops__list" data-jsx-modal-target="editStore_<?=$editStore_id; ?>">
+                                <ul class="shops__list">
                                     <?php $id_modal = md5($shop['id'] . '_' . $shop['tariff']['id']);
                                         $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id']; ?>
                                     <li class="shops__item-mobile">
@@ -56,14 +56,24 @@ $this->title = 'Главная'; ?>
                                         <div class="shops__item-box shops__item-box_mw115 shops__item-title">Тариф</div>
                                     </li>
                                     <li class="shops__item shops__item_p2">
-                                        <div class="shops__item-box shops__item-name"><?=$addressShop; ?></div>
+                                        <div class="shops__item-box shops__item-box-link shops__item-name" data-jsx-modal-target="editStore_<?=$editStore_id; ?>">
+                                            <?=$addressShop; ?>
+                                        </div>
                                         <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
                                             <a class="shops__item-box-link shops__item-name">
                                                 <?=$shop['tariff']['name']; ?>
                                             </a>
+                                            <?php if ($shop['tariff']['maximum']): ?>
+                                                <a class="shops__item-tariff-icon">
+                                                    <?= Html::img('@web/images/icon/icon-list-arrow.svg');?>
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
                                     </li>
-                                    <?php $shopsAdditions = []; if (!empty($shop['additions'])):
+                                    <?php $shopsAdditions = [];
+                                        $count_addition = 0;
+                                    if (!empty($shop['additions'])):
+                                        $count_addition = count($shop['additions']);
                                         foreach ($shop['shopsAdditions'] as $key => $shopAddition) {
                                             $shopsAdditions[$shopAddition['shop_id'] . '_' . $shopAddition['addition_id']] = $shop['shopsAdditions'][$key];
                                         }
@@ -94,10 +104,19 @@ $this->title = 'Главная'; ?>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                     <li class="shops__item">
-                                        <div class="add-something" data-jsx-modal-target="addService_<?=$id_modal; ?>">
-                                            <div class="add-something__plus s-di-vertical-m"></div>
-                                            <p class="add-something__text s-di-vertical-m">добавить услугу</p>
-                                        </div>
+                                        <?php if($count_addition == 0): ?>
+                                            <div class="add-something" data-jsx-modal-target="addService_<?=$id_modal; ?>">
+                                                <div class="add-something__plus s-di-vertical-m"></div>
+                                                <p class="add-something__text s-di-vertical-m">добавить услугу</p>
+                                            </div>
+                                        <?php else: ?>
+                                            <div class="add-something" data-jsx-modal-target="addService_<?=$id_modal; ?>">
+                                                <div class="s-di-vertical-m">
+                                                    <?= Html::img('@web/images/icon/icon-edit-service.svg'); ?>
+                                                </div>
+                                                <p class="add-something__text s-di-vertical-m">редактировать услугу</p>
+                                            </div>
+                                        <?php endif; ?>
                                     </li>
                                 </ul>
                                 <?php echo $this->render('modal/editStore', compact('editStore_id',
@@ -135,12 +154,10 @@ $this->title = 'Главная'; ?>
                             <?php if(!empty($invoice)): ?>
                                 <?php foreach($invoice as $inv): ?>
                                     <div class="check-status__block">
-                                        <p class="check-status__text">Счет №
-                                            <span class="check-status__span"><?= Html::a($inv['invoice_number'],
-                                                Url::to(['/user/download-pdf', 'id' => $inv['id'],
-                                                    'invoice_number' => $inv['invoice_number']]), ['target' => '_blank',
-                                                    'data-pjax' => 0]); ?></span>
-                                        </p>
+                                        <a href="<?= Url::to(['/user/download-pdf', 'id' => $inv['id'],
+                                            'invoice_number' => $inv['invoice_number']]); ?>" class="check-status__text" target="_blank" data-pjax="0">
+                                            Счет № <span class="check-status__span"><?= $inv['invoice_number']; ?></span>
+                                        </a>
                                         <?php if ($inv['status'] == Payments::STATUS_PAID): ?>
                                             <p class="check-status__condition check-status__condition_on">Оплачен</p>
                                         <?php else: ?>

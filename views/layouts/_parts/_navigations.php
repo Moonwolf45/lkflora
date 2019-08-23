@@ -85,20 +85,13 @@ switch ($currentPage) {
             Анкета
         </div>
         <ul class="header__list">
-            <?php if (Yii::$app->user->identity->role == User::ROLE_ADMIN): ?>
-                <li class="header__item">
-                    <a href="<?= Url::to(['/admin']); ?>" class="notification-data">
-                        <?=Html::img('@web/images/icon/icon_admin.svg'); ?>
-                    </a>
-                </li>
-            <?php endif; ?>
-            <li class="header__item">
-                <a href="" class="notification-data">
-                    <?=Html::img('@web/images/icon/icon-notifications.svg'); ?>
-                </a>
-            </li>
+<!--            <li class="header__item">-->
+<!--                <a href="" class="notification-data">-->
+<!--                    --><?//=Html::img('@web/images/icon/icon-notifications.svg'); ?>
+<!--                </a>-->
+<!--            </li>-->
             <li class="header__item header__item_mobile-none">
-                <a href="" class="massage-data">
+                <a href="<?= Url::to(['/user/tickets']);?>" class="massage-data">
                     <?=Html::img('@web/images/icon/icon-messages.svg'); ?>
                 </a>
             </li>
@@ -234,6 +227,18 @@ switch ($currentPage) {
                         </div>
                     </a>
                 </li>
+                <?php if (Yii::$app->user->identity->role == User::ROLE_ADMIN): ?>
+                    <li class="menu__item">
+                        <a href="<?php echo Url::to(['/admin']); ?>" class="menu__link" title="Админ-панель">
+                            <div class="menu__box">
+                                <span class="menu__icon">
+                                    <?=Html::img('@web/images/icon/icon_admin.svg'); ?>
+                                </span>
+                                <span class="menu__text">Админ-панель</span>
+                            </div>
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li class="menu__item">
                     <a href="<?php echo Url::to(['/site/logout']); ?>" class="menu__link menu__link_last" title="Выйти">
                         <div class="menu__box">

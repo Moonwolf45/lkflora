@@ -158,3 +158,16 @@
 .services__detalization:hover {
     text-decoration: underline;
 }
+
+.table__text {
+    color: #000;
+}
+
+.table__text:hover,
+.check-status__text:hover {
+    text-decoration: underline;
+}
+
+.shops__item-box-link {
+    padding-right: 5px;
+}

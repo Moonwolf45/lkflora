@@ -60,6 +60,19 @@ YiiAsset::register($this); ?>
                     }
                 }
             ],
+            [
+                'attribute' => 'maximum',
+                'filter' => [0 => "Нет", 1 => "Да"],
+                'format' => 'html',
+                'headerOptions' => ['width' => '140'],
+                'value' => function($data) {
+                    if ($data->maximum) {
+                        return '<p class="text-success">Да</p>';
+                    } else {
+                        return '<p class="text-danger">Нет</p>';
+                    }
+                }
+            ],
             'term',
         ],
     ]); ?>

@@ -131,7 +131,7 @@ $this->title = 'Настройки';
                                     <div class="field settings__field settings__field-mt50">
                                         <p class="field__text">Текущий пароль</p>
                                         <?= Html::activePasswordInput($model, 'current_pass', ['class' => 'input',
-                                            'placeholder' => '']); ?>
+                                            'autocomplete' => 'off']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -140,7 +140,7 @@ $this->title = 'Настройки';
                                     <div class="field settings__field settings__field-mt50">
                                         <p class="field__text">Новый пароль</p>
                                         <?= Html::activePasswordInput($model, 'new_pass', ['class' => 'input',
-                                            'placeholder' => '']); ?>
+                                            'autocomplete' => 'off']); ?>
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +149,7 @@ $this->title = 'Настройки';
                                     <div class="field settings__field settings__field-mt50">
                                         <p class="field__text">Повторите новый пароль</p>
                                         <?= Html::activePasswordInput($model, 'repeat_new_pass', ['class' => 'input',
-                                            'placeholder' => '']); ?>
+                                            'autocomplete' => 'off']); ?>
                                     </div>
                                 </div>
                             </div>

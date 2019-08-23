@@ -17,6 +17,7 @@ use yii\db\ActiveRecord;
  * @property string $about Описание
  * @property int $drop Параметр который запрещает подключать тариф ниже данного
  * @property int $status Статус
+ * @property int $maximum Макимальный тариф
  * @property string $term Срок действия тарифа, после которого он не может быть повторно подключен
  */
 class Tariff extends ActiveRecord {
@@ -33,7 +34,7 @@ class Tariff extends ActiveRecord {
     public function rules() {
         return [
             [['name', 'cost', 'term'], 'required'],
-            [['drop', 'status'], 'boolean', 'trueValue' => true, 'falseValue' => false],
+            [['drop', 'status', 'maximum'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['cost'], 'number'],
             [['about'], 'string'],
             [['status_con', 'default_con', 'term'], 'integer'],
@@ -67,6 +68,7 @@ class Tariff extends ActiveRecord {
             'about' => 'Описание',
             'drop' => 'Подключение тарифа',
             'status' => 'Статус',
+            'maximum' => 'Макимальный тариф',
             'term' => 'Срок действия тарифа',
             'status_con' => 'Статус связи',
             'default_con' => 'Состояние связи по умолчанию',

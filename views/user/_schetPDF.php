@@ -180,7 +180,7 @@ use yii\helpers\Html;
             </tr>
             <tr>
                 <td>1</td>
-                <td>Аренда сервера 1 квартал</td>
+                <td>Техническое сопровождение</td>
                 <td>1</td>
                 <td>шт.</td>
                 <td><?= Yii::$app->formatter->asDecimal($amount, 2); ?></td>

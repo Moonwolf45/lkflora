@@ -37,8 +37,10 @@ class PaymentsSchetSearch extends Payments {
     public function search ($params) {
         $query = Payments::find()->where(['type' => Payments::TYPE_REFILL])->andWhere(['!=', 'invoice_number', ''])
             ->joinwith('user');
+
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => ['defaultOrder' => ['invoice_number' => SORT_DESC]]
         ]);
 
         $this->load($params);

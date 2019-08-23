@@ -42,15 +42,11 @@ $this->title = 'Детализация баланса'; ?>
         <div class="content__col-12">
             <?php if(Yii::$app->session->hasFlash('success')): ?>
                 <div class="alert alert-success" role="alert">
-                    <h4 class="alert-heading">Успех</h4>
-                    <hr>
                     <p class="mb-0"><?php echo Yii::$app->session->getFlash('success'); ?></p>
                 </div>
             <?php endif; ?>
             <?php if(Yii::$app->session->hasFlash('error')): ?>
                 <div class="alert alert-danger" role="alert">
-                    <h4 class="alert-heading">Ошибка</h4>
-                    <hr>
                     <p class="mb-0"><?php echo Yii::$app->session->getFlash('error'); ?></p>
                 </div>
             <?php endif; ?>
@@ -137,15 +133,13 @@ $this->title = 'Детализация баланса'; ?>
                                             <?php foreach($invoice as $inv): ?>
                                                 <tr class="table__row">
                                                     <td class="table__col">
-                                                        <p class="table__text">Счет №
-                                                            <span class="s-medium">
-                                                                <?= Html::a($inv['invoice_number'],
-                                                                    Url::to(['/user/download-pdf', 'id' => $inv['id'],
-                                                                        'invoice_number' => $inv['invoice_number']]),
-                                                                        ['target' => '_blank', 'data-pjax' => 0]); ?>
+                                                        <a href="<?= Url::to(['/user/download-pdf', 'id' => $inv['id'],
+                                                            'invoice_number' => $inv['invoice_number']]); ?>" class="table__text" target="_blank" data-pjax="0">
+                                                            Счет № <span class="s-medium">
+                                                                <?= $inv['invoice_number']; ?>
                                                             </span>
                                                             от <?=Yii::$app->formatter->asDate($inv['invoice_date']); ?>
-                                                        </p>
+                                                        </a>
                                                     </td>
                                                     <td class="table__col">
                                                         <p>
@@ -281,15 +275,13 @@ $this->title = 'Детализация баланса'; ?>
                                         <?php if(!empty($invoice)): ?>
                                             <?php foreach($invoice as $inv): ?>
                                                 <div class="check-status__block">
-                                                    <p class="check-status__text">Счет №
-                                                        <span class="check-status__span">
-                                                            <?= Html::a($inv['invoice_number'],
-                                                                Url::to(['/user/download-pdf', 'id' => $inv['id'],
-                                                                    'invoice_number' => $inv['invoice_number']]),
-                                                                    ['target' => '_blank', 'data-pjax' => 0]); ?>
+                                                    <a href="<?= Url::to(['/user/download-pdf', 'id' => $inv['id'],
+                                                        'invoice_number' => $inv['invoice_number']]); ?>" class="check-status__text" target="_blank" data-pjax="0">
+                                                        Счет № <span class="check-status__span">
+                                                            <?= $inv['invoice_number']; ?>
                                                         </span>
                                                         от <?=Yii::$app->formatter->asDate($inv['invoice_date']); ?>
-                                                    </p>
+                                                    </a>
                                                     <p class="check-status__text">
                                                         <span class="check-status__span">
                                                             <?=Yii::$app->formatter->asDecimal($inv['amount'], 2); ?>

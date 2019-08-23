@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
                 'attribute' => 'id',
-                'headerOptions' => ['width' => '50'],
+                'headerOptions' => ['width' => '30'],
             ],
             [
                 'attribute' => 'name',
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'about',
                 'filter' => false,
                 'format' => 'html',
-                'headerOptions' => ['width' => '280'],
+                'headerOptions' => ['width' => '250'],
             ],
             [
                 'attribute' => 'drop',
@@ -61,12 +61,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'status',
                 'filter' => [0 => "Выключен", 1 => "Включен"],
                 'format' => 'html',
-                'headerOptions' => ['width' => '140'],
+                'headerOptions' => ['width' => '120'],
                 'value' => function($data) {
                     if ($data->status) {
                         return '<p class="text-success">Включен</p>';
                     } else {
                         return '<p class="text-danger">Выключен</p>';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'maximum',
+                'filter' => [0 => "Нет", 1 => "Да"],
+                'format' => 'html',
+                'headerOptions' => ['width' => '140'],
+                'value' => function($data) {
+                    if ($data->maximum) {
+                        return '<p class="text-success">Да</p>';
+                    } else {
+                        return '<p class="text-danger">Нет</p>';
                     }
                 }
             ],

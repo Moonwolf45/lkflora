@@ -15,7 +15,7 @@ class TariffSearch extends Tariff {
     public function rules() {
         return [
             [['id', 'term'], 'integer'],
-            [['drop', 'status'], 'boolean', 'trueValue' => true, 'falseValue' => false],
+            [['drop', 'status', 'maximum'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['name', 'about'], 'safe'],
             [['cost'], 'number'],
         ];
@@ -54,6 +54,7 @@ class TariffSearch extends Tariff {
             'cost' => $this->cost,
             'drop' => $this->drop,
             'status' => $this->status,
+            'maximum' => $this->maximum,
             'term' => $this->term,
         ]);
 
