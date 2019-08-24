@@ -1,5 +1,6 @@
 <?php
 
+use app\models\addition\Addition;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use mihaildev\ckeditor\CKEditor;
@@ -32,7 +33,8 @@ mihaildev\elfinder\Assets::noConflict($this);
         'editorOptions' => ElFinder::ckeditorOptions('elfinder', [])
     ]); ?>
 
-    <?= $form->field($model, 'type')->dropDownList([0 => 'Фиксированный', 1 => 'Ежемесячный'], [
+    <?= $form->field($model, 'type')->dropDownList([Addition::TYPE_NOT_REPEAT => 'Фиксированный',
+        Addition::TYPE_REPEAT => 'Ежемесячный'], [
             'options' => [
                 '1' => ['Selected' => true]
             ]

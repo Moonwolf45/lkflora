@@ -24,6 +24,10 @@ use yii\db\ActiveRecord;
  * @property Tariff[] $tariffs
  */
 class Addition extends ActiveRecord {
+
+    const TYPE_NOT_REPEAT = 0;
+    const TYPE_REPEAT = 1;
+
     /**
      * {@inheritdoc}
      */

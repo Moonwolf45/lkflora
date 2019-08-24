@@ -12,6 +12,11 @@ use yii\httpclient\Client;
 
 class CronController extends Controller {
 
+    /**
+     * @throws \Throwable
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\StaleObjectException
+     */
     public function actionUpdate() {
         Yii::beginProfile('UpdateBalanceUser');
 
@@ -19,8 +24,7 @@ class CronController extends Controller {
         $time = date('H:i:s');
         Yii::info("Проверка услуг, для спиcаyия средств\r\n Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n Время: " . $time);
 
-        $services = Service::find()->where(['writeoff_date' => $today, 'agree' => Service::AGREE_TRUE, 'completed' => Service::COMPLETED_FALSE])->all();
-
+        $services = Service::find()->where(['writeoff_date' => $today, 'agree' => Service::AGREE_TRUE])->all();
         if (!empty($services)) {
             Yii::info("Начинаем обновлять пользователей");
 
@@ -28,46 +32,44 @@ class CronController extends Controller {
                 $user = User::findOne($service->user_id);
                 Yii::info("Пользователь: " . $user->company_name);
 
-                $total = $service->writeoff_amount * $service->quantity;
-                $new_balance = $user->balance - $total;
-                $user->balance = $new_balance;
-                $user->save();
-
-                $service->completed = Service::COMPLETED_TRUE;
-                $service->save();
-
-                if ($service->repeat == Service::REPEAT_TRUE) {
-                    $new_service = new Service();
-
+                if ($user->balance < $service->writeoff_amount) {
+                    $service->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")));
+                    $service->save();
+                } else {
+                    Yii::info("Записываем движение по счету в БД");
+                    $payment = new Payments();
+                    $payment->user_id = $service->user_id;
+                    $payment->shop_id = $service->shop_id;
                     if ($service->type_service = Service::TYPE_TARIFF) {
-                        $new_service->saveTariff($service->type_serviceId, $service->shop_id, $service->user_id, true);
+                        $payment->type_service = Payments::TYPE_SERVICE_TARIFF;
                     } else {
-                        $new_service->saveAddition($service->type_serviceId, $service->shop_id, $service->quantity, true, $service->user_id);
+                        $payment->type_service = Payments::TYPE_SERVICE_ADDITION;
+                    }
+                    $payment->service_id = $service->type_serviceId;
+                    $payment->type = Payments::TYPE_WRITEOFF;
+                    $payment->way = Payments::WAY_BALANCE;
+                    $payment->date = $today;
+                    $payment->invoice_date = $today;
+                    $payment->amount = $service->writeoff_amount;
+                    if ($service->type_service = Service::TYPE_TARIFF) {
+                        $payment->description = 'Списание с баланса оплаты за тариф';
+                    } else {
+                        $payment->description = 'Списание с баланса оплаты за доп. услугу';
+                    }
+                    $payment->status = Payments::STATUS_PAID;
+                    $payment->save();
+
+                    $new_balance = $user->balance - $service->writeoff_amount;
+                    $user->balance = $new_balance;
+
+                    if ($service->repeat_service == Service::REPEAT_TRUE) {
+                        $service->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
+                        $service->save();
+                    } else {
+                        $service->delete();
                     }
                 }
-
-                Yii::info("Записываем движение по счету в БД");
-                $payment = new Payments();
-                $payment->user_id = $service->user_id;
-                $payment->shop_id = $service->shop_id;
-                if ($service->type_service = Service::TYPE_TARIFF) {
-                    $payment->type_service = Payments::TYPE_SERVICE_TARIFF;
-                } else {
-                    $payment->type_service = Payments::TYPE_SERVICE_ADDITION;
-                }
-                $payment->service_id = $service->type_serviceId;
-                $payment->type = Payments::TYPE_WRITEOFF;
-                $payment->way = Payments::WAY_BALANCE;
-                $payment->date = $today;
-                $payment->invoice_date = $today;
-                $payment->amount = $total;
-                if ($service->type_service = Service::TYPE_TARIFF) {
-                    $payment->description = 'Списание с баланса оплаты за тариф';
-                } else {
-                    $payment->description = 'Списание с баланса оплаты за доп. услугу';
-                }
-                $payment->status = Payments::STATUS_PAID;
-                $payment->save();
+                $user->save();
             }
             Yii::info("Закончили обновлять пользователей");
         } else {
@@ -77,6 +79,10 @@ class CronController extends Controller {
         Yii::endProfile('UpdateBalanceUser');
     }
 
+    /**
+     * @throws \yii\base\Exception
+     * @throws \yii\base\InvalidConfigException
+     */
     public function actionRepeatTransaction() {
         Yii::beginProfile('RepeatTransaction');
 
@@ -112,6 +118,7 @@ class CronController extends Controller {
                         if ($resp_array->transaction->state == 'COMPLETE') {
                             $user->balance += $resp_array->transaction->amount;
                             $user->save(false);
+
                             $payment->status = Payments::STATUS_PAID;
 
                             $transaction->status = Transaction::STATUS_OK;
@@ -134,5 +141,4 @@ class CronController extends Controller {
 
         Yii::endProfile('RepeatTransaction');
     }
-
 }

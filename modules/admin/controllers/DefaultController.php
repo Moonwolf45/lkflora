@@ -14,7 +14,6 @@ use Yii;
 class DefaultController extends Controller {
     /**
      * Настройка доступа
-     * todo: в данный момент доступ открыт всем авторизированным пользователям!
      *
      * @return array
      */

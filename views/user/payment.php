@@ -25,7 +25,7 @@ if (iconv_strlen((string)Yii::$app->user->id) == 1) {
 $description = 'Пополнение баланса с карты';
 $fail_url = 'https://' . $_SERVER['SERVER_NAME'] . '/user/false-payment';
 $merchant = Yii::$app->params['idSite'];
-$order_id = $maxPaymentId['id'] + 1;
+$order_id = $maxPaymentId['id'] + 1 .  '_' . $client_id;
 $salt = Yii::$app->security->generateRandomString(32);
 $success_url = 'https://' . $_SERVER['SERVER_NAME'] . '/user/success-payment';
 $testing = 1;

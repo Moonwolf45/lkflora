@@ -63,7 +63,7 @@ $this->title = 'Главная'; ?>
                                             <a class="shops__item-box-link shops__item-name">
                                                 <?=$shop['tariff']['name']; ?>
                                             </a>
-                                            <?php if ($shop['tariff']['maximum']): ?>
+                                            <?php if (!$shop['tariff']['maximum']): ?>
                                                 <a class="shops__item-tariff-icon">
                                                     <?= Html::img('@web/images/icon/icon-list-arrow.svg');?>
                                                 </a>
@@ -142,7 +142,7 @@ $this->title = 'Главная'; ?>
                         <?php $total_payment = 0;
                         if (!empty($monthly_payment)) {
                             foreach ($monthly_payment as $m_payment) {
-                                $total_payment += $m_payment['writeoff_amount'] * $m_payment['quantity'];
+                                $total_payment += $m_payment['writeoff_amount'];
                             }
                         } ?>
                         <p class="services__total"><?= Yii::$app->formatter->asDecimal($total_payment, 2); ?> руб/мес</p>

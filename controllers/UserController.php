@@ -14,24 +14,24 @@ use app\models\tickets\TicketsFiles;
 use app\models\tickets\TicketsText;
 use app\models\traits\UploadFilesTrait;
 use app\models\Transaction;
-use kartik\mpdf\Pdf;
 use Yii;
 use yii\filters\AccessControl;
 use yii\httpclient\Client;
 use yii\web\Controller;
 use app\models\AuthForm;
-
 use app\models\db\User;
 use app\models\db\UserSettings;
 use app\models\form\UserProfileForm;
 use app\models\form\UserSettingsForm;
 use app\models\form\UploadAvatarForm;
-use yii\web\Response;
 use yii\web\UploadedFile;
 
 class UserController extends Controller {
     use UploadFilesTrait;
 
+    /**
+     * @return array
+     */
     public function behaviors() {
         return [
             'access' => [
@@ -57,6 +57,8 @@ class UserController extends Controller {
      * Главная страница пользователя
      *
      * @return string
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionIndex() {
         $shops = Shops::find()->joinWith('tariff')->joinWith('additions')
@@ -65,9 +67,8 @@ class UserController extends Controller {
         $tariffs = Tariff::find()->asArray()->all();
         $additions = Addition::find()->asArray()->all();
 
-        $date_month = date("Y-m-d", mktime(23, 59, 59, date("m") + 1, 31, date("Y")));
-        $monthly_payment = Service::find()->where(['user_id' => Yii::$app->user->id, 'completed' => Service::COMPLETED_FALSE])
-            ->andWhere(['<=', 'writeoff_date', $date_month])->asArray()->all();
+        $monthly_payment = Service::find()->where(['user_id' => Yii::$app->user->id, 'agree' => Service::AGREE_TRUE])
+            ->asArray()->all();
 
         $invoice = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL,
             'status' => Payments::STATUS_PAID])->andWhere(['!=', 'invoice_number', ''])->orderBy(['id' => SORT_DESC])
@@ -79,8 +80,11 @@ class UserController extends Controller {
         $modelShop = new Shops();
         $newTicket = new Tickets();
 
-        if ($modelShop->load(Yii::$app->request->post()) && $modelShop->save()) {
-            Service::saveTariff($modelShop->tariff_id, $modelShop->id, Yii::$app->user->id, false);
+        if ($modelShop->load(Yii::$app->request->post())) {
+            $modelShop->on_check = Shops::ON_CHECK_TRUE;
+            $modelShop->save();
+
+            Service::saveTariff($modelShop->tariff_id, $modelShop->id, Yii::$app->user->id);
 
             if (!empty($modelShop->addition)) {
                 foreach ($modelShop->addition as $addition_one) {
@@ -90,7 +94,7 @@ class UserController extends Controller {
                     $shopAddition->quantity = 1;
                     $shopAddition->save();
 
-                    Service::saveAddition($addition_one, $modelShop->id, 1, false, Yii::$app->user->id);
+                    Service::saveAddition($addition_one, $modelShop->id, 1, Yii::$app->user->id);
                 }
             }
 
@@ -100,11 +104,7 @@ class UserController extends Controller {
         if ($newTicket->load(Yii::$app->request->post())) {
             $newTicket->status = Tickets::STATUS_OPEN_TICKET;
             $newTicket->new_text = false;
-
             $newTicket->ticketFiles = UploadedFile::getInstances($newTicket, 'ticketFiles');
-            if ($newTicket->ticketFiles) {
-                $manyFile = $this->uploadGallery($newTicket, 'ticketFiles','tickets');
-            }
             $newTicket->save(false);
 
             $newTextTicket = new TicketsText();
@@ -114,7 +114,9 @@ class UserController extends Controller {
             $newTextTicket->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTextTicket->save(false);
 
-            if (!empty($manyFile)) {
+            if ($newTicket->ticketFiles) {
+                $manyFile = $this->uploadGallery($newTicket, 'ticketFiles','tickets');
+
                 foreach ($manyFile as $ticketFile) {
                     $newTextFiles = new TicketsFiles();
                     $newTextFiles->ticket_id = $newTicket->id;
@@ -132,10 +134,11 @@ class UserController extends Controller {
     }
 
     /**
-     *
      * Просто action для обновления тарифа магазина
      *
      * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionUpdateShop() {
         $updateShop = Yii::$app->request->post();
@@ -143,15 +146,15 @@ class UserController extends Controller {
         $shop = Shops::findOne($updateShop['Shops']['id']);
         $oldTariff_id = $shop->tariff_id;
         $shop->tariff_id = $updateShop['Shops']['tariff_id'];
+        $shop->on_check = Shops::ON_CHECK_TRUE;
         $shop->save(false);
 
-        Service::saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'], Yii::$app->user->id, false, $oldTariff_id, true);
+        Service::saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'], Yii::$app->user->id, $oldTariff_id);
 
         return $this->redirect(['/user/index']);
     }
 
     /**
-     *
      * Просто action для изменения адреса магазина
      *
      * @return \yii\web\Response
@@ -167,7 +170,6 @@ class UserController extends Controller {
     }
 
     /**
-     *
      * Просто action для удаления магазина
      *
      * @return \yii\web\Response
@@ -179,7 +181,7 @@ class UserController extends Controller {
         $shop->deleted = Shops::DELETED_TRUE;
         $shop->save(false);
 
-        Service::updateAdditionFalse(Yii::$app->user->id, $deleteShop['Shops']['id']);
+        Service::deleteShopService(Yii::$app->user->id, $deleteShop['Shops']['id']);
 
         return $this->redirect(['/user/index']);
     }
@@ -188,24 +190,41 @@ class UserController extends Controller {
      * Просто action для изменения услуг магазина
      *
      * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionShopEditService() {
         $shopEditService = Yii::$app->request->post();
 
-        Service::updateAdditionFalse(Yii::$app->user->id, $shopEditService['Shops']['id']);
-        ShopsAddition::deleteAll(['shop_id' => $shopEditService['Shops']['id']]);
+        $shopAdditions = ShopsAddition::find()->where(['shop_id' => $shopEditService['Shops']['id']])
+            ->indexBy('addition_id')->all();
+        $keys = array_keys($shopAdditions);
 
         foreach ($shopEditService['Shops']['addition'] as $key => $service) {
             if ($service != 0) {
-                $shopAddition = new ShopsAddition();
-                $shopAddition->shop_id = $shopEditService['Shops']['id'];
-                $shopAddition->addition_id = $key;
-                $shopAddition->quantity = $shopEditService['Shops']['quantityArr'][$key];
-                $shopAddition->save();
+                if (in_array($key, $keys)) {
+                    $shopAdditions[$key]->quantity = $shopEditService['Shops']['quantityArr'][$key];
+                    $shopAdditions[$key]->save();
 
-                Service::updateAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id);
+                    Service::updateAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id);
+                } else {
+                    $shopAddition = new ShopsAddition();
+                    $shopAddition->shop_id = $shopEditService['Shops']['id'];
+                    $shopAddition->addition_id = $key;
+                    $shopAddition->quantity = $shopEditService['Shops']['quantityArr'][$key];
+                    $shopAddition->save();
+
+                    Service::saveAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id);
+                }
+            } else {
+                $shopAdditions[$key]->delete();
+                Service::deleteAddition($key, $shopEditService['Shops']['id'], Yii::$app->user->id);
             }
         }
+
+        $shop = Shops::findOne($shopEditService['Shops']['id']);
+        $shop->on_check = Shops::ON_CHECK_TRUE;
+        $shop->save(false);
 
         return $this->redirect(['/user/index']);
     }

@@ -47,6 +47,7 @@ AdminAsset::register($this); ?>
                 ['label' => 'Доп. услуги', 'url' => ['/admin/addition']],
                 ['label' => 'Реестр фин. оп.', 'url' => ['/admin/finance']],
                 ['label' => 'Выставленные счета', 'url' => ['/admin/schet']],
+                ['label' => 'Запросы', 'url' => ['/admin/need']],
             ],
         ]);
 

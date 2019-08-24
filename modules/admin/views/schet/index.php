@@ -14,7 +14,7 @@ use yii\grid\GridView;
 $this->title = 'Выставленные счета';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="addition-index">
+<div class="schet-index">
 
     <h1><?= Html::encode($this->title); ?></h1>
 
@@ -25,20 +25,29 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             [
-                'attribute' => 'id',
-                'headerOptions' => ['width' => '40'],
+                'attribute' => 'invoice_number',
+                'format' => 'html',
+                'headerOptions' => ['width' => '90'],
             ],
-            'invoice_number',
             [
                 'attribute' => 'user_id',
                 'filter' => ArrayHelper::map(User::find()->all(), 'id', 'company_name'),
                 'format' => 'html',
+                'headerOptions' => ['width' => '120'],
                 'value' => function($data) {
                     return $data->user->company_name;
                 },
             ],
-            'date:date',
-            'invoice_date:date',
+            [
+                'attribute' => 'date',
+                'format' => 'date',
+                'headerOptions' => ['width' => '100'],
+            ],
+            [
+                'attribute' => 'invoice_date',
+                'format' => 'date',
+                'headerOptions' => ['width' => '110'],
+            ],
             [
                 'attribute' => 'amount',
                 'format' => 'html',

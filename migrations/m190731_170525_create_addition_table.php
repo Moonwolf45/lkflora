@@ -18,7 +18,7 @@ class m190731_170525_create_addition_table extends Migration {
             'name' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Название"',
             'cost' => Schema::TYPE_DECIMAL . '(12,2) NOT NULL COMMENT "Стоимость"',
             'about' => Schema::TYPE_TEXT . ' COMMENT "Описание"',
-            'type' => Schema::TYPE_INTEGER . '(3) NOT NULL COMMENT "Тип"',
+            'type' => Schema::TYPE_TINYINT . '(1) NOT NULL COMMENT "Тип"',
         ]);
     }
 
