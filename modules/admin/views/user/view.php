@@ -1,10 +1,12 @@
 <?php
 
+use app\models\service\Service;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\db\User */
+/* @var $services app\models\service\Service */
 
 $this->title = $model->email;
 $this->params['breadcrumbs'][] = ['label' => 'Пользователи', 'url' => ['index']];
@@ -12,17 +14,17 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Html::encode($this->title); ?></h1>
 
     <p>
-        <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Редактировать', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
         <?= Html::a('Удалить', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Вы действительно хотите удалить этого пользователя без возможности восстановить его?',
                 'method' => 'post',
             ],
-        ]) ?>
+        ]); ?>
     </p>
 
     <?= DetailView::widget([
@@ -154,5 +156,71 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
     ]); ?>
 
+    <hr>
+    <h2>Услуги</h2>
+    <?php foreach ($services as $service): ?>
+        <?= DetailView::widget([
+            'model' => $service,
+            'attributes' => [
+                [
+                    'attribute' => 'connection_date',
+                    'label' => 'Дата подключения',
+                    'format' => 'html',
+                    'value' => function($data) {
+                        return Yii::$app->formatter->asDate($data['connection_date']);
+                    }
+                ],
+                [
+                    'attribute' => 'shop_id',
+                    'label' => 'Магазин',
+                    'format' => 'html',
+                    'value' => function($data) {
+                        if ($data['shop']) {
+                            return $data['shop']['address'];
+                        } else {
+                            return '<p class="text-danger">Не найдено не одного магазина</p>';
+                        }
+
+                    }
+                ],
+                [
+                    'attribute' => 'type_service',
+                    'label' => 'Услуга',
+                    'format' => 'html',
+                    'value' => function($data) {
+                        if ($data['type_service'] == Service::TYPE_TARIFF) {
+                            return 'Тариф';
+                        } else {
+                            return 'Доп. услуга';
+                        }
+                    }
+                ],
+                [
+                    'attribute' => 'type_serviceId',
+                    'label' => 'Название услуги',
+                    'format' => 'html',
+                    'value' => function($data) {
+                        if ($data['type_service'] == Service::TYPE_TARIFF) {
+                            return $data['tariff']['name'];
+                        } else {
+                            return $data['additions'][0]['name'];
+                        }
+                    }
+                ],
+                [
+                    'attribute' => 'agree',
+                    'label' => 'Подтверждён',
+                    'format' => 'html',
+                    'value' => function($data) {
+                        if ($data['agree']) {
+                            return '<p class="text-success">Да</p>';
+                        } else {
+                            return '<p class="text-warning">Нет</p>';
+                        }
+                    }
+                ]
+            ]
+        ]); ?>
+    <?php endforeach; ?>
 
 </div>

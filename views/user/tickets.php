@@ -1,5 +1,6 @@
 <?php
 
+use app\models\tickets\TicketsFiles;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ActiveForm;
@@ -41,14 +42,27 @@ $this->title = 'Техподдержка';
 
                                                             <?php foreach($textTicket['ticketsFiles'] as $file): ?>
                                                                 <div class="<?= $class; ?>">
-                                                                    <div class="discussion__uploaded-photo">
-                                                                        <?= Html::img('@web/' . $file['file'], ['class' => 'discussion__img']); ?>
-                                                                    </div>
+                                                                    <?php if($file['type_file'] == TicketsFiles::TYPE_IMAGE): ?>
+                                                                        <div class="discussion__uploaded-photo">
+                                                                            <a data-fancybox="gallery" href="<?= Url::to('@web/' . $file['file']); ?>">
+                                                                                <?= Html::img('@web/' . $file['file']); ?>
+                                                                            </a>
+                                                                        </div>
+                                                                    <?php endif; ?>
                                                                 </div>
                                                             <?php endforeach; ?>
                                                         </div>
                                                     <?php endif; ?>
                                                     <p class="discussion__name"><?= $openTicket['user']['company_name']; ?></p>
+                                                    <?php if (!empty($textTicket['ticketsFiles'])): ?>
+                                                        <?php foreach($textTicket['ticketsFiles'] as $file): ?>
+                                                            <?php if($file['type_file'] == TicketsFiles::TYPE_FILE): ?>
+                                                                <a href="<?= Url::to('@web/' . $file['file']); ?>" data-pjax="0" download>
+                                                                    <?= $file['name_file']; ?>
+                                                                </a>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
                                                     <div class="discussion__message" >
                                                         <div class="discussion__sms" data-time-sms="<?= Yii::$app->
                                                             formatter->asDatetime($textTicket['date_time']); ?>">
@@ -82,14 +96,27 @@ $this->title = 'Техподдержка';
 
                                                             <?php foreach($textTicket['ticketsFiles'] as $file): ?>
                                                                 <div class="<?= $class; ?>">
-                                                                    <div class="discussion__uploaded-photo">
-                                                                        <?= Html::img('@web/' . $file['file'], ['class' => 'discussion__img']); ?>
-                                                                    </div>
+                                                                    <?php if($file['type_file'] == TicketsFiles::TYPE_IMAGE): ?>
+                                                                        <div class="discussion__uploaded-photo">
+                                                                            <a data-fancybox="gallery" href="<?= Url::to('@web/' . $file['file']); ?>">
+                                                                                <?= Html::img('@web/' . $file['file']); ?>
+                                                                            </a>
+                                                                        </div>
+                                                                    <?php endif; ?>
                                                                 </div>
                                                             <?php endforeach; ?>
                                                         </div>
                                                     <?php endif; ?>
                                                     <p class="discussion__name">Техподдержка</p>
+                                                    <?php if (!empty($textTicket['ticketsFiles'])): ?>
+                                                        <?php foreach($textTicket['ticketsFiles'] as $file): ?>
+                                                            <?php if($file['type_file'] == TicketsFiles::TYPE_FILE): ?>
+                                                                <a href="<?= Url::to('@web/' . $file['file']); ?>" data-pjax="0" download>
+                                                                    <?= $file['name_file']; ?>
+                                                                </a>
+                                                            <?php endif; ?>
+                                                        <?php endforeach; ?>
+                                                    <?php endif; ?>
                                                     <div class="discussion__message" >
                                                         <div class="discussion__sms" data-time-sms="<?= Yii::$app->
                                                             formatter->asDatetime($textTicket['date_time']); ?>">
@@ -102,14 +129,13 @@ $this->title = 'Техподдержка';
                                                 </div>
                                             </li>
                                         <?php endif; ?>
-
                                     <?php endforeach; ?>
                                 <?php endif; ?>
                             </ul>
                         <?php Pjax::end();?>
                     </div>
-
                 </div>
+
                 <div class="appeal">
                     <div class="appeal__wrapp appeal__wrapp_pt30 appeal__wrapp_mw655 appeal__wrapp_mb30">
                         <?php if (!empty($openTicket)): ?>

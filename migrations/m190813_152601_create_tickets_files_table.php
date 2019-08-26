@@ -15,7 +15,9 @@ class m190813_152601_create_tickets_files_table extends Migration {
             'id' => Schema::TYPE_PK,
             'ticket_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID Обращения"',
             'ticket_text_id' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "ID Обращения пользователя"',
+            'type_file' => Schema::TYPE_TINYINT . '(1) DEFAULT 0 NOT NULL COMMENT "Тип файла"',
             'file' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Картинка"',
+            'name_file' => Schema::TYPE_STRING . ' NOT NULL COMMENT "Имя файла"',
         ]);
 
         $this->addForeignKey('ticketsFilesUserId', '{{%tickets_files}}', 'ticket_id', '{{%tickets}}',

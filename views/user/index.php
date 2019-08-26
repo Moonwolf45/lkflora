@@ -62,12 +62,13 @@ $this->title = 'Главная'; ?>
                                         <div class="shops__item-box  shops__item-box_mw115" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
                                             <a class="shops__item-box-link shops__item-name">
                                                 <?=$shop['tariff']['name']; ?>
+
+                                                <?php if (!$shop['tariff']['maximum']): ?>
+                                                    <span class="shops__item-tariff-icon">
+                                                        <?= Html::img('@web/images/icon/icon-list-arrow.svg');?>
+                                                    </span>
+                                                <?php endif; ?>
                                             </a>
-                                            <?php if (!$shop['tariff']['maximum']): ?>
-                                                <a class="shops__item-tariff-icon">
-                                                    <?= Html::img('@web/images/icon/icon-list-arrow.svg');?>
-                                                </a>
-                                            <?php endif; ?>
                                         </div>
                                     </li>
                                     <?php $shopsAdditions = [];

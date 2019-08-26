@@ -121,7 +121,9 @@ class UserController extends Controller {
                     $newTextFiles = new TicketsFiles();
                     $newTextFiles->ticket_id = $newTicket->id;
                     $newTextFiles->ticket_text_id = $newTextTicket->id;
-                    $newTextFiles->file = $ticketFile;
+                    $newTextFiles->type_file = $ticketFile['type'];
+                    $newTextFiles->file = $ticketFile['path'];
+                    $newTextFiles->name_file = $ticketFile['name'];
                     $newTextFiles->save(false);
                 }
             }
@@ -497,7 +499,9 @@ class UserController extends Controller {
                     $newTextFiles = new TicketsFiles();
                     $newTextFiles->ticket_id = $newTicket->id;
                     $newTextFiles->ticket_text_id = $newTextTicket->id;
-                    $newTextFiles->file = $ticketFile;
+                    $newTextFiles->type_file = $ticketFile['type'];
+                    $newTextFiles->file = $ticketFile['path'];
+                    $newTextFiles->name_file = $ticketFile['name'];
                     $newTextFiles->save(false);
                 }
             }
@@ -519,7 +523,9 @@ class UserController extends Controller {
                     $newTextFiles = new TicketsFiles();
                     $newTextFiles->ticket_id = $newTicketText->ticket_id;
                     $newTextFiles->ticket_text_id = $newTicketText->id;
-                    $newTextFiles->file = $ticketFile;
+                    $newTextFiles->type_file = $ticketFile['type'];
+                    $newTextFiles->file = $ticketFile['path'];
+                    $newTextFiles->name_file = $ticketFile['name'];
                     $newTextFiles->save(false);
                 }
             }

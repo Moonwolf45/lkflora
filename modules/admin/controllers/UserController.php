@@ -3,6 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\models\db\UserSettings;
+use app\models\service\Service;
 use app\models\shops\Shops;
 use Yii;
 use app\models\db\User;
@@ -59,10 +60,13 @@ class UserController extends Controller {
         $model = User::find()->joinWith('userSetting')->where(['user.id' => $id])->limit(1)->one();
         $shops = Shops::find()->joinWith('additions')->joinWith('tariff')->where(['user_id' => $id])
             ->asArray()->all();
+        $services = Service::find()->joinWith('shop')->joinWith('additions')->joinWith('tariff')
+            ->where(['service.user_id' => Yii::$app->user->id])->asArray()->all();
 
         $model->shops = $shops;
 
-        return $this->render('view', ['model' => $model]);
+
+        return $this->render('view', compact('model', 'services'));
     }
 
     /**

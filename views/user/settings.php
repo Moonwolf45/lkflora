@@ -64,7 +64,7 @@ $this->title = 'Настройки';
                                                     $avatar = 'images/group.svg';
                                                 } ?>
                                                 <?=Html::img('@web/' . $avatar, ['alt' => 'Ваше фото', 'id' => 'for-preview',
-                                                    'style' => 'width:150px;height:150px;border-radius:50%;']); ?>
+                                                    'style' => 'width:150px;height:150px;border-radius:50%;object-fit:cover;']); ?>
                                                 <?= $form->field($model, 'image', ['options' => ['id' => 'imgInp',
                                                     'onchange' => 'previewFile()']])->fileInput(); ?>
                                             </label>
@@ -91,7 +91,7 @@ $this->title = 'Настройки';
                                                 <span class="settings__mail-box">
                                                     <span class="settings__mail-text"><?= $profileSettings['email'] ?></span>
                                                     <span class="settings__mail-edit js_mail-edit">
-                                                        <?=Html::img('@web/images/icon/edit.svg'); ?>
+                                                        <?=Html::img('@web/images/icon/icon-edit.svg'); ?>
                                                     </span>
                                                 </span>
                                             </div>

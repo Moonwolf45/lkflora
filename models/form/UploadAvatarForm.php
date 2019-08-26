@@ -19,7 +19,7 @@ class UploadAvatarForm extends Model {
      */
     public function rules() {
         return [
-            [['image'], 'file', 'extensions' => 'png, jpg', 'maxSize' => 1024 * 1024 * 5]
+            [['image'], 'file', 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 5]
         ];
     }
 }

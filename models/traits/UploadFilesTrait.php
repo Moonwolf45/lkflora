@@ -2,6 +2,7 @@
 
 namespace app\models\traits;
 
+use app\models\tickets\TicketsFiles;
 use Yii;
 
 trait UploadFilesTrait {
@@ -66,16 +67,32 @@ trait UploadFilesTrait {
         $arrFile = [];
         if ($model_name->validate()) {
             foreach ($model_name->$field as $key => $file) {
-                $randTempNameFile = time() . '_' . $file->baseName . '.' . $file->extension;
+                $randTempNameFile = time() . '_' . preg_replace("/[^ \w]+/", "_", $file->baseName) . '.' . $file->extension;
                 $name_image = time() . '.' . $file->extension;
-                $new_name_image = 'upload/temp_files/' . $randTempNameFile;
-                $path = 'upload/' . $path_to_file . '/' . $name_image;
-                shell_exec('convert ' . $new_name_image . ' -auto-orient -quality 90 ' . $path);
-                $file->saveAs($path);
-                $model_name->$field[$key]->saveAs($path);
-                $arrFile[$key] = $path;
+                if ($file->type == 'image/jpeg' || $file->type == 'image/pjpeg' || $file->type == 'image/jpeg'
+                    || $file->type == 'image/jpeg' || $file->type == 'image/pjpeg' || $file->type == 'image/jpeg'
+                    || $file->type == 'image/pjpeg' || $file->type == 'image/jpeg' || $file->type == 'image/pjpeg'
+                    || $file->type == 'image/png') {
+                        $new_name_image = 'upload/temp_files/' . $randTempNameFile;
+                        $path = 'upload/' . $path_to_file . '/' . $name_image;
+                        shell_exec('convert ' . $new_name_image . ' -auto-orient -quality 90 ' . $path);
+                        $file->saveAs($path);
+                        $model_name->$field[$key]->saveAs($path);
 
-                @unlink($new_name_image);
+                        $arrFile[$key]['type'] = TicketsFiles::TYPE_IMAGE;
+                        $arrFile[$key]['path'] = $path;
+                        $arrFile[$key]['name'] = $name_image;
+
+                    @unlink($new_name_image);
+                } else {
+                    $path = 'upload/' . $path_to_file . '/' . preg_replace("/[^ \w]+/", "_", $file->baseName) . '.' . $file->extension;
+                    $file->saveAs($path);
+                    $model_name->$field[$key]->saveAs($path);
+
+                    $arrFile[$key]['type'] = TicketsFiles::TYPE_FILE;
+                    $arrFile[$key]['path'] = $path;
+                    $arrFile[$key]['name'] = preg_replace("/[^ \w]+/", "_", $file->baseName);
+                }
             }
 
             return $arrFile;

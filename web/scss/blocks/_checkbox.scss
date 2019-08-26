@@ -27,8 +27,8 @@
 	.checkbox__checkbox:checked + .checkbox__nesting{
 		.checkbox__square{
 			background: transparent;
-			
-			&:before{ 
+
+			&:before{
 				opacity: 1;
 			}
 		}
@@ -65,7 +65,7 @@
 	.checkbox__square{
 		background: $gray-field;
 		border-color: $gray-field;
-		&:before{ 
+		&:before{
 			opacity: 1;
 		}
 	}
@@ -86,7 +86,7 @@
 }
 
 
-.checkbox__square{ 
+.checkbox__square{
 	width: 18px;
 	height: 18px;
 	margin-right: 10px;
@@ -100,7 +100,7 @@
 		display: block;
 		width: 12px;
 		height: 10px;
-		background: url(images/icon/icon-checkbox.svg) no-repeat center/contain;
+		background: url(../images/icon/icon-checkbox.svg) no-repeat center/contain;
 		position: absolute;
 		top: 50%;
 		left: 50%;

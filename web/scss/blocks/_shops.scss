@@ -1,5 +1,5 @@
 .shops{
-	
+
 }
 
 .shops__wrapp{
@@ -11,7 +11,7 @@
 }
 
 .shops__box{
-	
+
 }
 
 .shops__box_pr40{
@@ -31,7 +31,7 @@
 }
 
 .shops__img{
-	
+
 }
 
 .shops__list{
@@ -47,7 +47,7 @@
 	        justify-content: space-between;
 	    -webkit-align-items: center;
 	            align-items: center;
-	
+
 }
 
 .shops__item-box_mw115{
@@ -67,16 +67,6 @@
 	position: relative;
 	padding-right: 20px;
 	cursor: pointer;
-	&:after{
-		content: '';
-		position: absolute;
-		width: 10px;
-		height: 10px;
-		top: 50%;
-		right: 0;
-		transform:translate(0, -50%);
-		background: url(images/icon/icon-list-arrow.svg) no-repeat center/cover;
-	}
 }
 
 .shops__item-name,
@@ -95,7 +85,7 @@
 }
 
 .shops__item-box{
-	
+
 }
 
 .shops__item-box_df{
@@ -109,7 +99,7 @@
 	height: 14px;
 }
 .shops__item-icon-link{
-	
+
 }
 .shops__item-box-text{
 	font-size: 14px;
@@ -127,11 +117,11 @@
 	font-size: 14px;
 	color: $green;
 	padding: 0 10px;
-	
+
 }
 
 .shops__item-tariff-icon{
-	
+
 }
 
 .shops__item-mobile{
@@ -152,7 +142,7 @@
 	.shops__list{
 		padding: 15px 0 15px 25px;
 	}
-	
+
 	.shops__item-box_mw115{
 		min-width: 85px;
 	}
@@ -172,14 +162,14 @@
 	.shops__list{
 		padding: 15px 0 15px 90px;
 	}
-	
+
 	.shops__item-box_mw115{
 		min-width: 155px;
 	}
 }
 
 @media (max-width:730px) {
-	
+
 }
 
 @media (max-width:580px) {
@@ -196,7 +186,7 @@
 	.shops__list{
 		padding: 15px 0 15px 25px;
 	}
-	
+
 	.shops__item-box_mw115{
 		min-width: 85px;
 	}

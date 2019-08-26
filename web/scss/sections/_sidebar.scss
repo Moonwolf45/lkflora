@@ -1,16 +1,16 @@
 @media (min-width:991px) {
 	body.js_active-sidebar{
 		.sidebar{
-			width: 215px;
+			width: 250px;
 		}
 		.header {
-	    	width: calc(100% - 215px);
+	    	width: calc(100% - 250px);
 	    }
 	    .content {
 		   
 		}
 		#wrapper{
-			padding-left: 215px;
+			padding-left: 250px;
 		}
 		.menu__text{
 			opacity: 1;

@@ -27,7 +27,7 @@ class UserProfileForm extends Model {
     public function rules() {
         return [
             [['email', 'company_name', 'current_pass', 'new_pass', 'repeat_new_pass', 'phone'], 'string'],
-            [['image'], 'file', 'extensions' => 'png, jpg', 'maxSize' => 1024 * 1024 * 4]
+            [['image'], 'file', 'extensions' => 'png, jpg, jpeg', 'maxSize' => 1024 * 1024 * 4]
         ];
     }
 

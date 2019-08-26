@@ -141,31 +141,6 @@
 	}
 }
 
-// .discussion__photo{
-// 	position: relative;
-// 	width: 455px;
-// 	height: 240px;
-// 	img{
-// 		-webkit-border-radius: 10px;
-// 		        border-radius: 10px;
-//     }
-// }
-
-// .discussion__photos{
-// 	display: flex;
-// 	width: 455px;
-// 	height: 55px;
-// 	margin: 0 -5px;
-// 	position: relative;
-// 	img{
-// 		-webkit-border-radius: 10px;
-// 		        border-radius: 10px;
-// 	    width: 25%;
-// 	    padding: 0 5px;
-// 	}
-	
-// }
-
 .discussion__uploaded-photos{
 	display: flex;
 	margin: 0 -2.5px;
@@ -186,6 +161,7 @@
 		top: 0;
 		left: 0;
 		position: absolute;
+		object-fit:cover;
 		width: 100%;
 		height: 100%;
 	}

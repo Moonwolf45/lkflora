@@ -81,7 +81,7 @@ class Tickets extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getTicketsText() {
-        return $this->hasMany(TicketsText::class, ['ticket_id' => 'id'])->orderBy(['id' => SORT_DESC]);
+        return $this->hasMany(TicketsText::class, ['ticket_id' => 'id']);
     }
 
     /**

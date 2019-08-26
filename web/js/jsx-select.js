@@ -13,13 +13,11 @@ $(document).ready(function() {
 		$(this).toggleClass('active');
 		$(this).find('.jsx-select__list').toggle();
 
-
 		var documnt = $(this).closest(document);
 		if (windheight > offsetFromScreenTop) {
 			selectList.addClass('top');
 			selectList.removeClass('bottom');
-		}
-		else {
+		} else {
 			selectList.addClass('bottom');
 			selectList.removeClass('top');
 		}
@@ -27,24 +25,18 @@ $(document).ready(function() {
 		var firstClick = true;
 		if ($(this).hasClass('active')) {
 			// Скрипт который будет закрывать sidebar при клике на любое место
-
 			documnt.bind('click.myEvent', function(e) {
-				// console.log($(e.target).closest('.jsx-select__list').length);
 				if (!firstClick && $(e.target).closest('.jsx-select__list').length == 0) {
 					selectClick.removeClass('active');
 					selectList.hide(0);
 					documnt.unbind('click.myEvent');
 				}
-
 				if ($(e.target).closest('.jsx-select__list').length == 1) {
 					documnt.unbind('click.myEvent');
 				}
 				firstClick = false;
 			});
 		}
-
-
-
 	});
 
 	selectItem.click(function(event) {

@@ -38,7 +38,7 @@
 					top: calc(50% + 2px);
 					transform:translate(0,-50%) rotate(135deg);
 				}
-	    	
+
 	    }
 	}
 }
@@ -77,7 +77,7 @@
 		position: relative;
 		padding: 0 0 10px 30px;
 		max-width: 270px;
-		
+
 		&:before{
 			content: '';
 			position: absolute;
@@ -86,7 +86,7 @@
 			left: 0;
 			width: 20px;
 			height: 20px;
-			background: url(images/icon/icon-check.svg) no-repeat left/cover;
+			background: url(../images/icon/icon-check.svg) no-repeat left/cover;
 		}
 	}
 }

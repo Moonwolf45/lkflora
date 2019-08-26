@@ -97,6 +97,17 @@ class Service extends ActiveRecord {
         return $this->hasOne(Shops::class, ['id' => 'shop_id']);
     }
 
+    public function getTariff() {
+        return $this->hasOne(Tariff::class, ['id' => 'type_serviceId']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAdditions() {
+        return $this->hasMany(Addition::class, ['id' => 'type_serviceId']);
+    }
+
     /**
      * Сохранение и изменение тарифа
      *

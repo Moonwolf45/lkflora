@@ -2,6 +2,7 @@
 
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\web\View;
 use yii\widgets\ActiveForm;
 
 
@@ -49,12 +50,14 @@ use yii\widgets\ActiveForm;
                                         ->label('Тариф'); ?>
                                 </div>
                             </div>
-                            <div class="add-store__col">
+                            <div class="add-store__col add-store__col_w100">
                                 <div class="add-store__box">
-                                    <?= $form->field($modelShop, 'addition[]')->dropDownList(
-                                        ArrayHelper::map($additions, 'id', 'name'),
-                                        ['prompt' => 'Выберите одну или несколько услуг', 'multiple' => true,
-                                            'class' => 'jsx-select input choose__name', 'size' => 3]); ?>
+                                    <div class="field">
+                                        <p class="field__text">Доп услуги</p>
+                                    </div>
+                                    <?= Html::activeDropDownList($modelShop, 'addition[]', ArrayHelper::map($additions, 'id', 'name'), [
+                                        'multiple' => 'multiple',
+                                        'class' => 'field-select']); ?>
                                 </div>
                             </div>
                         </div>
@@ -67,3 +70,14 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
 </div>
+
+<?php
+$script = <<< JS
+    var select = new SlimSelect({
+        select: '.field-select',
+        showSearch: false,
+        placeholder: 'Выберите одну или несколько',
+    });
+JS;
+
+$this->registerJs($script, View::POS_READY); ?>

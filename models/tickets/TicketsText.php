@@ -45,7 +45,7 @@ class TicketsText extends ActiveRecord {
                 'targetAttribute' => ['ticket_id' => 'id']],
 
             [['ticketsFiles', 'manyFiles'], 'file', 'extensions' => 'jpg, png, pdf, doc, docx, xls, xlsx, jpeg',
-                'maxFiles' => 4, 'maxSize' => 1024 * 1024 * 5],
+                'maxFiles' => 4, 'maxSize' => 1024 * 1024 * 4],
         ];
     }
 
