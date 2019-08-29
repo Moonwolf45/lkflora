@@ -26,6 +26,12 @@ use yii\db\StaleObjectException;
  * @property int $repeat_service Повторяющийся
  * @property int $deleted Удалён
  *
+ * @property int $old_service_id Старый ID Услуги
+ * @property int $old_connection_date Старая дата подключения
+ * @property int $old_writeoff_date Старая дата списания
+ * @property int $old_writeoff_amount Старая сумма списания
+ * @property string $edit_description Описание изменения
+ *
  * @property User $user
  */
 class Service extends ActiveRecord {
@@ -55,10 +61,11 @@ class Service extends ActiveRecord {
     public function rules() {
         return [
             [['user_id', 'shop_id', 'type_service', 'type_serviceId', 'connection_date', 'writeoff_date', 'writeoff_amount', 'agree'], 'required'],
-            [['user_id', 'shop_id', 'type_service', 'type_serviceId'], 'integer'],
+            [['user_id', 'shop_id', 'type_service', 'type_serviceId', 'old_service_id'], 'integer'],
             [['repeat_service', 'agree', 'deleted'], 'boolean', 'trueValue' => true, 'falseValue' => false],
-            [['writeoff_date', 'connection_date'], 'date'],
-            [['writeoff_amount'], 'number'],
+            [['writeoff_date', 'connection_date', 'old_connection_date', 'old_writeoff_date'], 'date'],
+            [['edit_description'], 'string', 'max' => 255],
+            [['writeoff_amount', 'old_writeoff_amount'], 'number'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']],
         ];
@@ -80,6 +87,12 @@ class Service extends ActiveRecord {
             'agree' => 'Подтвержден',
             'repeat_service' => 'Повторяющийся',
             'deleted' => 'Удалён',
+
+            'old_service_id' => 'Старый ID Услуги',
+            'old_connection_date' => 'Старая дата подключения',
+            'old_writeoff_date' => 'Старая дата списания',
+            'old_writeoff_amount' => 'Старая сумма списания',
+            'edit_description' => 'Описание изменения',
         ];
     }
 
@@ -105,7 +118,87 @@ class Service extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getAdditions() {
-        return $this->hasMany(Addition::class, ['id' => 'type_serviceId']);
+        return $this->hasOne(Addition::class, ['id' => 'type_serviceId']);
+    }
+
+    /**
+     * Получение типов услуги
+     *
+     * @param string $i
+     *
+     * @return array|mixed
+     */
+    public static function getTypeService($i = '') {
+        $typeArray = [
+            self::TYPE_TARIFF => 'Тариф',
+            self::TYPE_ADDITION => 'Доп. услуга',
+        ];
+
+        if ($i == '') {
+            return $typeArray;
+        } else {
+            return $typeArray[$i];
+        }
+    }
+
+    /**
+     * Получение повоторения услуги
+     *
+     * @param string $i
+     *
+     * @return array|mixed
+     */
+    public static function getRepeatService($i = '') {
+        $repeatArray = [
+            self::REPEAT_TRUE => 'Да',
+            self::REPEAT_FALSE => 'Нет',
+        ];
+
+        if ($i == '') {
+            return $repeatArray;
+        } else {
+            return $repeatArray[$i];
+        }
+    }
+
+    /**
+     * Получение подтверждения услуги
+     *
+     * @param string $i
+     *
+     * @return array|mixed
+     */
+    public static function getAgreeService($i = '') {
+        $agreeArray = [
+            self::AGREE_TRUE => 'Подтверждён',
+            self::AGREE_FALSE => 'Не подтверждён',
+        ];
+
+        if ($i == '') {
+            return $agreeArray;
+        } else {
+            return $agreeArray[$i];
+        }
+    }
+
+    /**
+     * Получение удаления услуги
+     *
+     * @param string $i
+     *
+     * @return array|mixed
+     */
+    public static function getDeleteService($i = '') {
+        $deleteArray = [
+            self::DELETED_TRUE => 'Да',
+            self::DELETED_FALSE => 'Нет',
+        ];
+
+        if ($i == '') {
+            return $deleteArray;
+        } else {
+            return $deleteArray[$i];
+        }
     }
 
     /**
@@ -121,6 +214,12 @@ class Service extends ActiveRecord {
      * @throws \Throwable
      */
     public static function saveTariff($tariff_id = 0, $shop_id = 0, $user_id = 0, $old_id = 0) {
+        $old_service_id = null;
+        $old_connection_date = null;
+        $old_writeoff_date = null;
+        $old_writeoff_amount = null;
+        $edit_description = null;
+
         if ($tariff_id != 0 && $shop_id != 0 && $user_id != 0) {
             if ($old_id != 0) {
                 $oldServiceTariff = Service::findOne(['user_id' => $user_id, 'shop_id' => $shop_id,
@@ -128,6 +227,12 @@ class Service extends ActiveRecord {
                     'deleted' => self::DELETED_FALSE]);
 
                 if (!empty($oldServiceTariff)) {
+                    $old_service_id = $old_id;
+                    $old_connection_date = $oldServiceTariff->connection_date;
+                    $old_writeoff_date = $oldServiceTariff->writeoff_date;
+                    $old_writeoff_amount = $oldServiceTariff->writeoff_amount;
+                    $edit_description = 'Изменение тарифа';
+
                     $oldServiceTariff->delete();
                 }
             }
@@ -146,6 +251,12 @@ class Service extends ActiveRecord {
                 $saveService->agree = self::AGREE_FALSE;
                 $saveService->repeat_service = self::REPEAT_TRUE;
                 $saveService->deleted = self::DELETED_FALSE;
+
+                $saveService->old_service_id = $old_service_id;
+                $saveService->old_connection_date = $old_connection_date;
+                $saveService->old_writeoff_date = $old_writeoff_date;
+                $saveService->old_writeoff_amount = $old_writeoff_amount;
+                $saveService->edit_description = $edit_description;
                 $saveService->save(false);
 
                 return true;
@@ -186,6 +297,12 @@ class Service extends ActiveRecord {
                         $saveService->repeat_service = self::REPEAT_FALSE;
                     }
                     $saveService->deleted = self::DELETED_FALSE;
+
+                    $saveService->old_service_id = null;
+                    $saveService->old_connection_date = null;
+                    $saveService->old_writeoff_date = null;
+                    $saveService->old_writeoff_amount = null;
+                    $saveService->edit_description = 'Добавление услуги';
                     $saveService->save(false);
                 }
 
@@ -209,6 +326,12 @@ class Service extends ActiveRecord {
      * @throws \Throwable
      */
     public static function updateAddition($id = 0, $shop_id = 0, $quantity = 1, $user_id = 0) {
+        $old_service_id = null;
+        $old_connection_date = null;
+        $old_writeoff_date = null;
+        $old_writeoff_amount = null;
+        $edit_description = null;
+
         if ($user_id != 0 && $shop_id != 0 && $id != 0) {
             $oldServiceAdditions = Service::find()->where(['user_id' => $user_id, 'shop_id' => $shop_id,
                 'agree' => self::AGREE_TRUE, 'type_service' => self::TYPE_ADDITION, 'type_serviceId' => $id])->all();
@@ -235,6 +358,9 @@ class Service extends ActiveRecord {
                             $next_payment->repeat_service = self::REPEAT_FALSE;
                         }
                         $next_payment->deleted = self::DELETED_FALSE;
+
+                        $next_payment->edit_description = 'Увелечение количества';
+
                         $next_payment->save(false);
                     }
                 } elseif ($quantity < $countOldService) {
@@ -242,7 +368,12 @@ class Service extends ActiveRecord {
                     $i = 0;
                     foreach ($oldServiceAdditions as $oldServiceAddition) {
                         if ($i < $new_quantity) {
-                            $oldServiceAddition->delete();
+                            $oldServiceAddition->agree = self::AGREE_FALSE;
+                            $oldServiceAddition->deleted = self::DELETED_TRUE;
+
+                            $oldServiceAddition->edit_description = 'Уменьшение количества';
+
+                            $oldServiceAddition->save(false);
                             $i++;
                         }
                     }
@@ -308,7 +439,13 @@ class Service extends ActiveRecord {
                 ->one();
 
             if (!empty($oldServiceAddition)) {
-                $oldServiceAddition->delete();
+                $oldServiceAddition->agree = self::AGREE_FALSE;
+                $oldServiceAddition->deleted = self::DELETED_TRUE;
+
+                $oldServiceAddition->edit_description = 'Отключение услуги';
+
+                $oldServiceAddition->save();
+
                 return true;
             }
         }

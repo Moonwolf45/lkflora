@@ -2,6 +2,9 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\addition\Addition;
+use app\models\TariffAddition;
+use app\models\TariffAdditionQuantity;
 use Yii;
 use app\models\tariff\Tariff;
 use app\models\tariff\TariffSearch;
@@ -43,14 +46,16 @@ class TariffController extends Controller {
 
     /**
      * Displays a single Tariff model.
+     *
      * @param integer $id
+     *
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = Tariff::find()->joinWith('addition ad')->joinWith('additionQty adq')->where(['tariff.id' => $id])
+            ->one();
+
+        return $this->render('view', compact('model'));
     }
 
     /**
@@ -60,33 +65,81 @@ class TariffController extends Controller {
      */
     public function actionCreate() {
         $model = new Tariff();
+        $additions = Addition::find()->indexBy('id')->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if (!empty($model->resolutionService)) {
+                foreach ($model->resolutionService as $key => $resolutionService) {
+                    if ($resolutionService != '') {
+                        $newResSer = new TariffAdditionQuantity();
+                        $newResSer->tariff_id = $model->id;
+                        $newResSer->addition_id = $resolutionService;
+                        $newResSer->status_con = $model->resolutionServiceQuantity[$key];
+                        $newResSer->save();
+                    }
+                }
+            }
+
+            if (!empty($model->connectedServices)) {
+                foreach ($model->connectedServices as $connectedService) {
+                    if ($connectedService != '') {
+                        $newConSer = new TariffAddition();
+                        $newConSer->tariff_id = $model->id;
+                        $newConSer->addition_id = $connectedService;
+                        $newConSer->save();
+                    }
+                }
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create', compact('model', 'additions'));
     }
 
     /**
      * Updates an existing Tariff model.
      * If update is successful, the browser will be redirected to the 'view' page.
+     *
      * @param integer $id
+     *
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id) {
-        $model = $this->findModel($id);
+        $model = Tariff::find()->joinWith('tariffAddition')->joinWith('tariffAdditionQty')->where(['tariff.id' => $id])
+            ->one();
+        $additions = Addition::find()->indexBy('id')->all();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if (!empty($model->resolutionService)) {
+                TariffAdditionQuantity::deleteAll(['tariff_id' => $id]);
+                foreach ($model->resolutionService as $key => $resolutionService) {
+                    if ($resolutionService != '') {
+                        $newResSer = new TariffAdditionQuantity();
+                        $newResSer->tariff_id = $id;
+                        $newResSer->addition_id = $resolutionService;
+                        $newResSer->status_con = $model->resolutionServiceQuantity[$key];
+                        $newResSer->save();
+                    }
+                }
+            }
+
+            if (!empty($model->connectedServices)) {
+                TariffAddition::deleteAll(['tariff_id' => $id]);
+                foreach ($model->connectedServices as $connectedService) {
+                    if ($connectedService != '') {
+                        $newConSer = new TariffAddition();
+                        $newConSer->tariff_id = $id;
+                        $newConSer->addition_id = $connectedService;
+                        $newConSer->save();
+                    }
+                }
+            }
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        return $this->render('update', compact('model', 'additions'));
     }
 
     /**

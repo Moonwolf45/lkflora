@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'type_service',
-                'filter' => [Payments::TYPE_SERVICE_TARIFF => "Тарифф", Payments::TYPE_SERVICE_ADDITION => "Доп. Услуга"],
+                'filter' => [Payments::TYPE_SERVICE_TARIFF => "Тариф", Payments::TYPE_SERVICE_ADDITION => "Доп. Услуга"],
                 'format' => 'html',
                 'value' => function($data) {
                     if ($data->type == Payments::TYPE_WRITEOFF) {
@@ -128,6 +128,4 @@ $this->params['breadcrumbs'][] = $this->title;
             ]
         ],
     ]); ?>
-
-
 </div>

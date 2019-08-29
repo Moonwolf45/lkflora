@@ -5,6 +5,7 @@ namespace app\models\addition;
 use app\models\shops\Shops;
 use app\models\tariff\Tariff;
 use app\models\TariffAddition;
+use app\models\TariffAdditionQuantity;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -20,6 +21,7 @@ use yii\db\ActiveRecord;
  * @property string $about Описание
  * @property int $type Тип
  *
+ * @property TariffAdditionQuantity[] $tariffAdditionsQty
  * @property TariffAddition[] $tariffAdditions
  * @property Tariff[] $tariffs
  */
@@ -81,6 +83,14 @@ class Addition extends ActiveRecord {
      */
     public function getTariffs() {
         return $this->hasMany(Tariff::class, ['id' => 'tariff_id'])->viaTable('{{%tariff_addition}}', ['addition_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function getTariffsQuantity() {
+        return $this->hasMany(Tariff::class, ['id' => 'tariff_id'])->viaTable('{{%tariff_addition_quantity}}', ['addition_id' => 'id']);
     }
 
     /**

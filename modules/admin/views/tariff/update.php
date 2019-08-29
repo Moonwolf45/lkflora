@@ -3,7 +3,8 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Tariff */
+/* @var $model app\models\tariff\Tariff */
+/* @var $additions app\models\addition\Addition */
 
 $this->title = 'Изменение тарифа: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Тарифы', 'url' => ['index']];
@@ -16,6 +17,7 @@ $this->params['breadcrumbs'][] = 'Изменение'; ?>
 
     <?= $this->render('_form', [
         'model' => $model,
+        'additions' => $additions,
     ]); ?>
 
 </div>

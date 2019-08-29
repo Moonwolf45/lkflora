@@ -1,3 +1,20 @@
+.background-loader {
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: rgba(0, 0, 0, .8);
+}
+
+.blur {
+    -webkit-filter: blur(5px);
+    -moz-filter: blur(5px);
+    -o-filter: blur(5px);
+    -ms-filter: blur(5px);
+    filter: blur(5px);
+}
+
 .help-block {
     display: block;
     margin-top: 5px;
@@ -15,10 +32,6 @@
 .has-error .help-block,
 .has-error .control-label {
     color: #a94442;
-}
-
-.multiple{
-    height: auto;
 }
 
 .add-store__form {
@@ -47,6 +60,7 @@
 .bill-btn__link {
     border: none;
     background: transparent;
+    cursor: pointer;
 }
 
 .services__total {
@@ -166,4 +180,9 @@
 .table__text:hover,
 .check-status__text:hover {
     text-decoration: underline;
+}
+
+.btn-disabled {
+    background: #ccc;
+    cursor: no-drop;
 }

@@ -117,3 +117,35 @@ a.desc:after {
 .kv-monospace {
     text-align: left !important;
 }
+
+.block_service {
+    margin: 0;
+}
+
+.block_service div {
+    margin-left: 15px;
+}
+
+.block_resolutionService div .form-group {
+    float: left;
+    margin-right: 10px;
+}
+
+.block_resolutionService div .form-group:first-child {
+    width: 49%;
+}
+
+.block_resolutionService div .form-group:nth-child(2) {
+    width: 45%;
+}
+
+.block_connectedService div .form-group {
+    float: left;
+    width: 96.3%;
+}
+
+.add_res_ser,
+.add_con_ser {
+    float: right;
+}
+

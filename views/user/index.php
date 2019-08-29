@@ -42,7 +42,8 @@ $this->title = 'Главная'; ?>
                                 <?php $editStore_id = md5($shop['id']); $addressShop = $shop['address']; ?>
                                 <ul class="shops__list">
                                     <?php $id_modal = md5($shop['id'] . '_' . $shop['tariff']['id']);
-                                        $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id']; ?>
+                                        $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id'];
+                                        $tariff_drop = $shop['tariff']['drop']; ?>
                                     <li class="shops__item-mobile">
                                         <div class="shops__item-box s-di-vertical-m shops__item-title">Тариф</div>
                                         <div class="shops__item-box shops__item-box-mobile s-di-vertical-m" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
@@ -53,6 +54,14 @@ $this->title = 'Главная'; ?>
                                     </li>
                                     <li class="shops__item">
                                         <div class="shops__item-box shops__item-title">Адрес</div>
+                                        <?php if($shop['on_check']): ?>
+                                            <div class="shops__item-box shops__item-request">
+                                                <p>Запрос обрабатывается</p>
+                                                <div class="shops__request-help">
+                                                    <p class="shops__request-help-icon hint-- hint--top hint--info" data-hint="Ваш запрос отправлен и обрабатывается  администрацией FloraPoint. После подключения услуги, она станет активна."></p>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
                                         <div class="shops__item-box shops__item-box_mw115 shops__item-title">Тариф</div>
                                     </li>
                                     <li class="shops__item shops__item_p2">
@@ -123,7 +132,7 @@ $this->title = 'Главная'; ?>
                                 <?php echo $this->render('modal/editStore', compact('editStore_id',
                                     'modelShop', 'addressShop', 'shop_id')); ?>
                                 <?php echo $this->render('modal/tariff', compact('modelShop', 'tariffs',
-                                    'id_modal', 'tariff_id', 'shop_id')); ?>
+                                    'id_modal', 'tariff_id', 'shop_id', 'tariff_drop')); ?>
                                 <?php echo $this->render('modal/add_service', compact('modelShop', 'id_modal',
                                     'shop_id', 'additions', 'shopsAdditions')); ?>
                             <?php endforeach; ?>

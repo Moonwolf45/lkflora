@@ -1,36 +1,34 @@
 <?php
 
-use app\models\db\User;
 use app\models\service\Service;
-use app\models\shops\Shops;
-use yii\grid\ActionColumn;
-use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
-use yii\grid\GridView;
-use yii\jui\DatePicker;
+use yii\web\YiiAsset;
+use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel app\models\service\ServiceNotAgreeSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $model app\models\payments\Payments */
 
-$this->title = 'Запросы';
+$this->title = $model->id . ' - ' . $model->user->company_name . ' - ' . $model->shop->address;
+$this->params['breadcrumbs'][] = ['label' => 'Запросы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-?>
-<div class="schet-index">
+YiiAsset::register($this); ?>
+
+<div class="addition-view">
 
     <h1><?= Html::encode($this->title); ?></h1>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            [
-                'attribute' => 'id',
-                'headerOptions' => ['width' => '40'],
-            ],
+    <p>
+        <?= Html::a('Подтвердить', ['update', 'id' => $model->id, 'shop_id' => $model->shop_id], [
+            'class' => 'btn btn-success'
+        ]); ?>
+    </p>
+
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+            'id',
             [
                 'attribute' => 'user_id',
-                'filter' => ArrayHelper::map(User::find()->all(), 'id', 'company_name'),
                 'format' => 'html',
                 'value' => function($data) {
                     return $data->user->company_name;
@@ -38,7 +36,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'shop_id',
-                'filter' => ArrayHelper::map(Shops::find()->all(), 'id', 'address'),
                 'format' => 'html',
                 'value' => function($data) {
                     return $data->shop->address;
@@ -46,8 +43,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'type_service',
-                'filter' => Service::getTypeService(),
-                'headerOptions' => ['width' => '150'],
                 'format' => 'html',
                 'value' => function($data) {
                     return Service::getTypeService($data->type_service);
@@ -56,7 +51,6 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'type_serviceId',
                 'label' => 'Название услуги',
-                'filter' => false,
                 'format' => 'html',
                 'value' => function($data) {
                     if ($data->type_service == Service::TYPE_TARIFF) {
@@ -69,10 +63,6 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'connection_date',
-                'filter' => DatePicker::widget([
-                    'model' => $searchModel,
-                    'attribute' => 'connection_date'
-                ]),
                 'format' => 'html',
                 'value' => function($data) {
                     return Yii::$app->formatter->asDate($data->connection_date);
@@ -86,10 +76,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
             ],
             [
-                'class' => ActionColumn::class,
-                'template'=>'{view}',
-            ]
+                'attribute' => 'repeat_service',
+                'format' => 'html',
+                'value' => function($data) {
+                    return Service::getRepeatService($data->repeat_service);
+                },
+            ],
+            [
+                'attribute' => 'agree',
+                'format' => 'html',
+                'value' => function($data) {
+                    if ($data->agree) {
+                        return '<p class="text-success">' . Service::getAgreeService($data->agree) . '</p>';
+                    } else {
+                        return '<p class="text-danger">' . Service::getAgreeService($data->agree) . '</p>';
+                    }
+                },
+            ],
+            [
+                'attribute' => 'edit_description',
+                'format' => 'html',
+            ],
         ],
-    ]); ?>
+    ]) ?>
 
 </div>

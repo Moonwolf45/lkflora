@@ -55,7 +55,8 @@ use yii\widgets\ActiveForm;
                                     <div class="field">
                                         <p class="field__text">Доп услуги</p>
                                     </div>
-                                    <?= Html::activeDropDownList($modelShop, 'addition[]', ArrayHelper::map($additions, 'id', 'name'), [
+                                    <?= Html::activeDropDownList($modelShop, 'addition[]',
+                                        ArrayHelper::map($additions, 'id', 'name'), [
                                         'multiple' => 'multiple',
                                         'class' => 'field-select']); ?>
                                 </div>

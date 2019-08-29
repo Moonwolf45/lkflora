@@ -72,11 +72,13 @@ $this->title = 'Детализация баланса'; ?>
                                     <div class="bill-btn__icon">
                                         <?=Html::img('@web/images/icon/icon-bill-pdf.svg'); ?>
                                     </div>
-                                    <?php $form1 = ActiveForm::begin(['action' => Url::to(['/user/save-pdf']), 'id' => 'f3']); ?>
+                                    <?php Pjax::begin(); ?>
+                                        <?php $form1 = ActiveForm::begin(['action' => Url::to(['/user/save-pdf']), 'id' => 'f3']); ?>
                                         <?= $form1->field($modelPaid, 'amount')->hiddenInput(['value' => 0])
                                             ->label(false)->error(false); ?>
-                                        <?= Html::submitButton('Выставить счёт', ['class' => 'bill-btn__link']); ?>
-                                    <?php $form1 = ActiveForm::end(); ?>
+                                        <?php $form1 = ActiveForm::end(); ?>
+                                        <?= Html::button('Выставить счёт', ['class' => 'bill-btn__link f3_btn']); ?>
+                                    <?php Pjax::end(); ?>
                                 </div>
 
                                 <div class="bill-btn__box">
@@ -97,8 +99,8 @@ $this->title = 'Детализация баланса'; ?>
                                         <input type="hidden" name="salt" value="<?= $salt; ?>">
                                         <input type="hidden" name="testing" value="<?= $testing; ?>">
                                         <input type="hidden" name="signature" value="">
-                                        <?= Html::submitButton('Оплатить картой', ['class' => 'bill-btn__link']); ?>
                                     <?php $form2 = ActiveForm::end(); ?>
+                                    <?= Html::button('Оплатить картой', ['class' => 'bill-btn__link f4_btn']); ?>
                                 </div>
                             </div>
 
@@ -453,17 +455,34 @@ $script = <<< JS
         $('#f4 input[name="amount"]').val(this.value);
     });
     
-    $('#f3 .bill-btn__link').val('click', function(e) {
-        if ($('input[name="paid"]').val() == '') {
-            e.preventDefault();
+    $('.f3_btn').on('click', function(e) {
+        e.preventDefault();
+        
+        if ($('#f3 input[name="NewPaid[amount]"]').val() == 0) {
             $('.help-block').addClass('has-error');
             $('.help-block').html('Поле не может быть пустым');
+        } else {
+            $(this).attr('disabled', 'disabled');
+            $(this).addClass('btn-disabled');
+            $(this).parent().parent().addClass('btn-disabled');
+            
+            setTimeout(function() {
+                $('.f3_btn').removeAttr('disabled');
+                $('.f3_btn').removeClass('btn-disabled');
+                $('.f3_btn').parent().parent().removeClass('btn-disabled');
+            }, 10000);
+            
+            $('#f3').submit();
         }
     });
     
-    $('#f4 .bill-btn__link').on('click', function(e) {
+    $('.f4_btn').on('click', function(e) {
         e.preventDefault();
-        if ($('input[name="paid"]').val() != '') {
+        
+        if ($('#f4 input[name="amount"]').val() == 0) {
+            $('.help-block').addClass('has-error');
+            $('.help-block').html('Поле не может быть пустым');
+        } else {
             let string = 'amount='+ btoa($('#f4 input[name="amount"]').val());
             string += stringTwo;
             
@@ -472,9 +491,6 @@ $script = <<< JS
 
             $('#f4 input[name="signature"]').val(signatureFour);
             $('#f4').submit();
-        } else {
-            $('.help-block').addClass('has-error');
-            $('.help-block').html('Поле не может быть пустым');
         }
     });
 JS;

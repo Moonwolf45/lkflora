@@ -54,12 +54,33 @@
 	min-width: 115px;
 }
 
-.shops__item-title{
+.shops__item-title,
+.shops__item-request{
 	font-family: $rubik;
 	font-weight: 500;
 	font-size: 12px;
 	text-transform: uppercase;
 	color: $light-gray;
+}
+
+.shops__item-request{
+	display: flex;
+	-webkit-align-items: flex-start;
+	        align-items: flex-start;
+	p{
+		font-family: $rubik;
+		font-weight: 500;
+		font-size: 12px;
+		text-transform: uppercase;
+		color: $pink;
+		padding-right: 10px;
+	}
+}
+
+.shops__request-help-icon{
+	 width: 14px;
+	 height: 14px;
+	 background: url(/images/icon/icon-hint.svg) no-repeat center/contain;
 }
 
 

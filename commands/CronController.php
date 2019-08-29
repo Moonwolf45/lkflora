@@ -3,6 +3,7 @@
 namespace app\commands;
 
 use app\models\db\User;
+use app\models\MessageToPaid;
 use app\models\payments\Payments;
 use app\models\service\Service;
 use app\models\Transaction;
@@ -22,9 +23,13 @@ class CronController extends Controller {
 
         $today = date('Y-m-d');
         $time = date('H:i:s');
-        Yii::info("Проверка услуг, для спиcаyия средств\r\n Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n Время: " . $time);
+        Yii::info("Проверка услуг, для спиcаyия средств\r\n 
+            Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n 
+            Время: " . $time);
 
-        $services = Service::find()->where(['writeoff_date' => $today, 'agree' => Service::AGREE_TRUE])->all();
+        $services = Service::find()->where(['writeoff_date' => $today, 'agree' => Service::AGREE_TRUE,
+            'deleted' => Service::DELETED_FALSE])->all();
+
         if (!empty($services)) {
             Yii::info("Начинаем обновлять пользователей");
 
@@ -32,9 +37,16 @@ class CronController extends Controller {
                 $user = User::findOne($service->user_id);
                 Yii::info("Пользователь: " . $user->company_name);
 
+                $oldDebtor = MessageToPaid::find()->where(['user_id' => $service->user_id,
+                    'service_type' => $service->type_service, 'service_id' => $service->id,
+                    'amount' => $service->writeoff_amount])->limit(1)->one();
+
                 if ($user->balance < $service->writeoff_amount) {
                     $service->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")));
-                    $service->save();
+                    $service->save(false);
+
+                    $oldDebtor->debtor = MessageToPaid::DEBTOR_YES;
+                    $oldDebtor->save(false);
                 } else {
                     Yii::info("Записываем движение по счету в БД");
                     $payment = new Payments();
@@ -57,19 +69,24 @@ class CronController extends Controller {
                         $payment->description = 'Списание с баланса оплаты за доп. услугу';
                     }
                     $payment->status = Payments::STATUS_PAID;
-                    $payment->save();
+                    $payment->save(false);
 
                     $new_balance = $user->balance - $service->writeoff_amount;
                     $user->balance = $new_balance;
+                    $user->save(false);
 
                     if ($service->repeat_service == Service::REPEAT_TRUE) {
                         $service->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
-                        $service->save();
+                        $service->save(false);
+
+                        $oldDebtor->date_to_paid = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
+                        $oldDebtor->debtor = MessageToPaid::DEBTOR_NO;
+                        $oldDebtor->save(false);
                     } else {
                         $service->delete();
+                        $oldDebtor->delete();
                     }
                 }
-                $user->save();
             }
             Yii::info("Закончили обновлять пользователей");
         } else {
@@ -88,7 +105,9 @@ class CronController extends Controller {
 
         $today = date('Y-m-d');
         $time = date('H:i:s');
-        Yii::info("Проверка таблицы транзакций, для поиска незваершенных\r\n Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n Время: " . $time);
+        Yii::info("Проверка таблицы транзакций, для поиска незваершенных\r\n 
+            Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n 
+            Время: " . $time);
 
         $transactions = Transaction::find()->where(['status' => Transaction::STATUS_REPEAT])->all();
         if (!empty($transactions)) {
@@ -140,5 +159,30 @@ class CronController extends Controller {
         }
 
         Yii::endProfile('RepeatTransaction');
+    }
+
+    public function actionMessageAboutPaymentForServices() {
+        Yii::beginProfile('MessageAboutPayment');
+
+        $today = date('Y-m-d');
+        $time = date('H:i:s');
+        Yii::info("Проверка таблицы сообщений, для поиска скорых списаний\r\n 
+            Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n 
+            Время: " . $time);
+
+        $messages = MessageToPaid::find()->where(['>=', 'date_tp_paid', date("Y-m-d",
+            mktime(0, 0, 0, date("m"), date("d") + 3, date("Y")))])
+            ->limit(1)->groupBy('user_id')->all();
+
+        if (!empty($messages)) {
+            Yii::info("НАчинаем перебирать отбирать пользователей для сообщений");
+
+
+        } else {
+            Yii::info("Сообщений нет");
+        }
+
+
+        Yii::endProfile('MessageAboutPayment');
     }
 }

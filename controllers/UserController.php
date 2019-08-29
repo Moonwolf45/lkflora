@@ -14,6 +14,8 @@ use app\models\tickets\TicketsFiles;
 use app\models\tickets\TicketsText;
 use app\models\traits\UploadFilesTrait;
 use app\models\Transaction;
+use DateTime;
+use DateTimeZone;
 use Yii;
 use yii\filters\AccessControl;
 use yii\httpclient\Client;
@@ -109,7 +111,8 @@ class UserController extends Controller {
 
             $newTextTicket = new TicketsText();
             $newTextTicket->ticket_id = $newTicket->id;
-            $newTextTicket->date_time = date('Y-m-d H:i:s');
+            $date_time = new DateTime('now', new DateTimeZone("UTC"));
+            $newTextTicket->date_time = $date_time->format('Y-m-d H:i:s');
             $newTextTicket->text = $newTicket->tickets_text;
             $newTextTicket->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTextTicket->save(false);
@@ -275,39 +278,46 @@ class UserController extends Controller {
      * Выставление счета
      *
      * @return string
+     * @throws \Exception
      */
     public function actionSavePdf() {
         $sumToPdf = Yii::$app->request->post();
-        $maxPaymentNumber = Payments::getMaxNumberSchet();
-        $date = date('d.m.Y');
-        $number = 'E' . ($maxPaymentNumber['invoice_number'] + 1);
+        if ($sumToPdf['NewPaid']['amount'] != 0) {
+            $maxPaymentNumber = Payments::getMaxNumberSchet();
+            $date_time = new DateTime('now');
+            $date = $date_time->format('d.m.Y');
+            $number = 'E' . ($maxPaymentNumber['invoice_number'] + 1);
 
-        $schetPayment = new Payments();
-        $schetPayment->user_id = Yii::$app->user->id;
-        $schetPayment->shop_id = 0;
-        $schetPayment->type_service = 0;
-        $schetPayment->service_id = 0;
-        $schetPayment->type = Payments::TYPE_REFILL;
-        $schetPayment->way = Payments::WAY_SCHET;
-        $schetPayment->date = date('Y-m-d');
-        $schetPayment->invoice_number = $maxPaymentNumber['invoice_number'] + 1;
-        $schetPayment->invoice_date = date('Y-m-d');
-        $schetPayment->amount = $sumToPdf['NewPaid']['amount'];
-        $schetPayment->status = Payments::STATUS_EXPOSED;
-        $schetPayment->save(false);
+            $schetPayment = new Payments();
+            $schetPayment->user_id = Yii::$app->user->id;
+            $schetPayment->shop_id = 0;
+            $schetPayment->type_service = 0;
+            $schetPayment->service_id = 0;
+            $schetPayment->type = Payments::TYPE_REFILL;
+            $schetPayment->way = Payments::WAY_SCHET;
+            $schetPayment->date = $date_time->format('Y-m-d');
+            $schetPayment->invoice_number = $maxPaymentNumber['invoice_number'] + 1;
+            $schetPayment->invoice_date = $date_time->format('Y-m-d');
+            $schetPayment->amount = $sumToPdf['NewPaid']['amount'];
+            $schetPayment->status = Payments::STATUS_EXPOSED;
+            $schetPayment->description = 'Пополнение баланса через счет';
+            $schetPayment->save(false);
 
-        $pdfFile = Yii::$app->pdf;
-        $mpdf = $pdfFile->api;
-        $mpdf->SetHeader('Счёт №' . $number . ' от ' . $date);
-        $mpdf->SetTitle('Счёт №' . $number . ' от ' . $date);
+            $pdfFile = Yii::$app->pdf;
+            $mpdf = $pdfFile->api;
+            $mpdf->SetHeader('Счёт №' . $number . ' от ' . $date);
+            $mpdf->SetTitle('Счёт №' . $number . ' от ' . $date);
 
-        $user = User::find()->joinWith('userSetting')->where(['user.id' => Yii::$app->user->id])->asArray()
-            ->limit(1)->one();
-        $content = $this->renderPartial('_schetPDF', ['number' => $number, 'date' => $date, 'user' => $user,
-            'amount' => $sumToPdf['NewPaid']['amount']]);
-        $mpdf->WriteHtml($content);
-        $filename = 'Счёт №' . $number . ' от ' . $date . '.pdf';
-        return $mpdf->Output($filename, 'D');
+            $user = User::find()->joinWith('userSetting')->where(['user.id' => Yii::$app->user->id])->asArray()
+                ->limit(1)->one();
+            $content = $this->renderPartial('_schetPDF', ['number' => $number, 'date' => $date, 'user' => $user,
+                'amount' => $sumToPdf['NewPaid']['amount']]);
+            $mpdf->WriteHtml($content);
+            $filename = 'Счёт №' . $number . ' от ' . $date . '.pdf';
+            return $mpdf->Output($filename, 'D');
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -409,8 +419,9 @@ class UserController extends Controller {
                     $payments->service_id = 0;
                     $payments->type = Payments::TYPE_REFILL;
                     $payments->way = Payments::WAY_CARD;
-                    $payments->date = date('Y-m-d');
-                    $payments->invoice_date = date('Y-m-d');
+                    $date_time = new DateTime('now');
+                    $payments->date = $date_time->format('Y-m-d');
+                    $payments->invoice_date = $date_time->format('Y-m-d');
                     $payments->amount = $resp_array->transaction->amount;
                     $payments->description = $resp_array->transaction->description;
 
@@ -473,6 +484,7 @@ class UserController extends Controller {
      * @param string $id
      *
      * @return string
+     * @throws \Exception
      */
     public function actionTickets($id = '') {
         $tickets = Tickets::find()->where(['user_id' => Yii::$app->user->id, 'status' => Tickets::STATUS_OPEN_TICKET])
@@ -487,7 +499,8 @@ class UserController extends Controller {
 
             $newTextTicket = new TicketsText();
             $newTextTicket->ticket_id = $newTicket->id;
-            $newTextTicket->date_time = date('Y-m-d H:i:s');
+            $date_time = new DateTime('now', new DateTimeZone("UTC"));
+            $newTextTicket->date_time = $date_time->format('Y-m-d H:i:s');
             $newTextTicket->text = $newTicket->tickets_text;
             $newTextTicket->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTextTicket->save(false);
@@ -512,7 +525,8 @@ class UserController extends Controller {
         $newTicketText = new TicketsText();
         if ($newTicketText->load(Yii::$app->request->post())) {
             $newTicketText->ticketsFiles = UploadedFile::getInstances($newTicketText, 'ticketsFiles');
-            $newTicketText->date_time = date('Y-m-d H:i:s');
+            $date_time = new DateTime('now', new DateTimeZone("UTC"));
+            $newTicketText->date_time = $date_time->format('Y-m-d H:i:s');
             $newTicketText->user_type = TicketsText::TYPE_USER_NORMAL;
             $newTicketText->save(false);
 

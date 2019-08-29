@@ -1,11 +1,12 @@
 <?php
 
+use app\models\tariff\Tariff;
 use yii\helpers\Html;
 use yii\web\YiiAsset;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\models\Tariff */
+/* @var $model app\models\tariff\Tariff */
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Тарифы', 'url' => ['index']];
@@ -13,7 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
 YiiAsset::register($this); ?>
 
 <div class="tariff-view">
-
     <h1><?= Html::encode($this->title); ?></h1>
 
     <p>
@@ -43,9 +43,9 @@ YiiAsset::register($this); ?>
                 'format' => 'html',
                 'value' => function($data) {
                     if ($data->drop) {
-                        return '<p class="text-success">Да</p>';
+                        return '<p class="text-success">' . Tariff::getDrop(false, $data->drop) . '</p>';
                     } else {
-                        return '<p class="text-danger">Нет</p>';
+                        return '<p class="text-danger">' . Tariff::getDrop(false, $data->drop) . '</p>';
                     }
                 }
             ],
@@ -54,15 +54,14 @@ YiiAsset::register($this); ?>
                 'format' => 'html',
                 'value' => function($data) {
                     if ($data->status) {
-                        return '<p class="text-success">Включен</p>';
+                        return '<p class="text-success">' . Tariff::getStatus(false, $data->status) . '</p>';
                     } else {
-                        return '<p class="text-danger">Выключен</p>';
+                        return '<p class="text-danger">' . Tariff::getStatus(false,$data->status) . '</p>';
                     }
                 }
             ],
             [
                 'attribute' => 'maximum',
-                'filter' => [0 => "Нет", 1 => "Да"],
                 'format' => 'html',
                 'headerOptions' => ['width' => '140'],
                 'value' => function($data) {
@@ -74,6 +73,43 @@ YiiAsset::register($this); ?>
                 }
             ],
             'term',
+            [
+                'attribute' => 'resolutionService',
+                'format' => 'html',
+                'value' => function($data) {
+                    if ($data->tariffAdditionQty) {
+                        $string = '<p class="text-success">';
+                        foreach ($data->tariffAdditionQty as $taQ) {
+                            $string .= $data->additionQty[$taQ->addition_id]->name . ' - Количество: ';
+                            if ($taQ->status_con == 0) {
+                                $string .= 'Неограниченно<br>';
+                            } else {
+                                $string .= $taQ->status_con . '<br>';
+                            }
+                        }
+                        $string .= '</p>';
+                        return $string;
+                    } else {
+                        return '<p class="text-danger">В этом тарифе нельзя подключать доп услуги</p>';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'connectedServices',
+                'format' => 'html',
+                'value' => function($data) {
+                    if ($data->tariffAddition) {
+                        $string = '<p class="text-success">';
+                        foreach ($data->tariffAddition as $taQ) {
+                            $string .= $data->addition[$taQ->addition_id]->name . '<br>';
+                        }
+                        $string .= '</p>';
+                        return $string;
+                    } else {
+                        return '<p class="text-danger">В этом тарифе нет доп. услуг подключенных по умолчанию</p>';
+                    }
+                }
+            ],
         ],
     ]); ?>
 </div>

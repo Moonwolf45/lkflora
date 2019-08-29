@@ -50,6 +50,9 @@ AppAsset::register($this); ?>
     <body <?php echo $class; ?>>
 
         <?php $this->beginBody(); ?>
+            <div class="background-loader">
+                <div class="loader"></div>
+            </div>
             <div id="wrapper">
                 <?php echo $this->render('/layouts/_parts/_navigations'); ?>
                 <?= $content; ?>
