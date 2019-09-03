@@ -121,6 +121,8 @@ class Shops extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getShopsAdditions() {
-        return $this->hasMany(ShopsAddition::class, ['shop_id' => 'id']);
+        return $this->hasMany(ShopsAddition::class, ['shop_id' => 'id'])->indexBy(function($row) {
+            return $row['shop_id'] . '_' . $row['addition_id'];
+        });
     }
 }

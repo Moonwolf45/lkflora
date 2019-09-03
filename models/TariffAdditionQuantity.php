@@ -55,7 +55,7 @@ class TariffAdditionQuantity extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getAddition() {
-        return $this->hasOne(Addition::class, ['id' => 'addition_id']);
+        return $this->hasOne(Addition::class, ['id' => 'addition_id'])->indexBy('id');
     }
 
     /**

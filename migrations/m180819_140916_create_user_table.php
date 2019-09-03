@@ -24,8 +24,8 @@ class m180819_140916_create_user_table extends Migration {
             'auth_key' => Schema::TYPE_STRING . '(32) NOT NULL COMMENT "Ключ авторизации"',
             'avatar' => Schema::TYPE_STRING . ' NOT NULL DEFAULT "images/group.svg" COMMENT "Аватар"',
             'balance' => Schema::TYPE_DECIMAL . '(12,2) NOT NULL COMMENT "Баланс"',
-            'status' => Schema::TYPE_SMALLINT . ' NOT NULL DEFAULT 10 COMMENT "Статус пользователя"',
-            'role' => Schema::TYPE_SMALLINT . '(1) NOT NULL DEFAULT 0 COMMENT "Роль"',
+            'status' => Schema::TYPE_TINYINT . ' NOT NULL DEFAULT 10 COMMENT "Статус пользователя"',
+            'role' => Schema::TYPE_TINYINT . '(1) NOT NULL DEFAULT 0 COMMENT "Роль"',
         ]);
 
     }

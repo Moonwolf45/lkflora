@@ -18,6 +18,16 @@
 	}
 }
 
+.button_gray{
+	background: $light-gray;
+	margin: 0px 0 0 15px;
+	display: none;
+	max-width: 200px;
+	&:hover{
+		background: darken($light-gray,5%);
+	}
+}
+
 .button_width-200px{
 	max-width: 200px;
 }
@@ -25,5 +35,37 @@
 .button_width-270px{
 	max-width: 270px;
 	margin-left: 1px;
+}
+
+@media (max-width:730px) {
+	.button_gray{
+		display: block;
+	}
+}
+@media (max-width:480px) {
+	.button_gray{
+		margin: 15px 0 0 0;
+	}
+}
+
+@media (max-width:430px) {
+	.button_small{
+		position: relative;
+		width: 40px;
+		min-width: 40px;
+		height: 40px;
+		background: $green;
+		font-size: 0;
+		&:after{
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform:translate(-50%, -50%);
+			width: 16px;
+			height: 16px;
+			background: url(../images/icon/icon-small-btn-arrow.svg) no-repeat center/cover;
+		}
+	}
 }
 

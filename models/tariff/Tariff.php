@@ -3,6 +3,8 @@
 namespace app\models\tariff;
 
 use app\models\addition\Addition;
+use app\models\MessageToPaid;
+use app\models\service\Service;
 use app\models\TariffAddition;
 use app\models\TariffAdditionQuantity;
 use Yii;
@@ -26,13 +28,15 @@ use yii\db\ActiveRecord;
  * @property TariffAddition[] $tariffAdditions
  * @property TariffAdditionQuantity[] $tariffAdditionsQty
  *
- * @property int $resolutionServiceQuantity Количество
+ * @property array $resolutionServiceQuantity[] Количество
+ * @property array $connectedServiceQuantity[] Количество
  */
 class Tariff extends ActiveRecord {
 
     public $resolutionService = [];
     public $resolutionServiceQuantity = [];
-    public $connectedServices;
+    public $connectedService = [];
+    public $connectedServiceQuantity = [];
 
     const DROP_FALSE = 0;
     const DROP_TRUE = 1;
@@ -58,9 +62,10 @@ class Tariff extends ActiveRecord {
             [['about'], 'string'],
             [['term'], 'integer'],
             [['name'], 'string', 'max' => 255],
-            [['resolutionService', 'connectedServices'], 'each', 'rule' => ['integer']],
-            [['resolutionServiceQuantity'], 'each', 'rule' => ['number', 'min' => 0, 'max' => 999]],
-            ['resolutionServiceQuantity', 'default', 'value' => 1],
+            [['resolutionService', 'connectedService'], 'each', 'rule' => ['integer']],
+            [['resolutionServiceQuantity', 'connectedServiceQuantity'], 'each', 'rule' => ['integer', 'min' => 0,
+                'max' => 999]],
+            [['resolutionServiceQuantity', 'connectedServiceQuantity'], 'default', 'value' => 1],
         ];
     }
 
@@ -95,7 +100,8 @@ class Tariff extends ActiveRecord {
 
             'resolutionService' => 'Доп. Услуги которые можно подключать',
             'resolutionServiceQuantity' => 'Количество',
-            'connectedServices' => 'Доп. улсуги которые подключены по умолчанию в тарифе',
+            'connectedService' => 'Доп. улсуги которые подключены по умолчанию в тарифе',
+            'connectedServiceQuantity' => 'Количество',
         ];
     }
 
@@ -111,7 +117,7 @@ class Tariff extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getTariffAddition() {
-        return $this->hasMany(TariffAddition::class, ['tariff_id' => 'id']);
+        return $this->hasMany(TariffAddition::class, ['tariff_id' => 'id'])->indexBy('addition_id');
     }
 
     /**
@@ -126,7 +132,7 @@ class Tariff extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getTariffAdditionQty() {
-        return $this->hasMany(TariffAdditionQuantity::class, ['tariff_id' => 'id']);
+        return $this->hasMany(TariffAdditionQuantity::class, ['tariff_id' => 'id'])->indexBy('addition_id');
     }
 
     /**
@@ -134,21 +140,15 @@ class Tariff extends ActiveRecord {
      *
      * @param string $i
      *
-     * @param bool $data
-     *
      * @return array|mixed
      */
-    public static function getDrop($data = false, $i = '') {
+    public static function getDrop($i = null) {
         $dropArray = [
             self::DROP_TRUE => 'Да',
             self::DROP_FALSE => 'Нет',
         ];
 
-        if ($data) {
-            return $dropArray;
-        } else {
-            return $dropArray[$i];
-        }
+        return $i === null ? $dropArray : $dropArray[$i];
     }
 
     /**
@@ -156,20 +156,51 @@ class Tariff extends ActiveRecord {
      *
      * @param string $i
      *
-     * @param bool $data
-     *
      * @return array|mixed
      */
-    public static function getStatus($data = false, $i = '') {
+    public static function getStatus($i = null) {
         $statusArray = [
             self::STATUS_ON => 'Включен',
             self::STATUS_OFF => 'Выключен',
         ];
 
-        if ($data) {
-            return $statusArray;
-        } else {
-            return $statusArray[$i];
+        return $i === null ? $statusArray : $statusArray[$i];
+    }
+
+    /**
+     * Действия которые выполняются после сохранения модели
+     *
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave ($insert, $changedAttributes) {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($this->cost != $changedAttributes['cost']) {
+            $all_message_service_id = [];
+            $services = Service::find()->where(['AND', 'type_service' => Service::TYPE_TARIFF, ['OR',
+                'type_serviceId' => $this->id, 'old_service_id' => $this->id]])->all();
+            if (!empty($services)) {
+                foreach ($services as $service) {
+                    if ($service->type_serviceId == $this->id) {
+                        $service->writeoff_amount = $this->cost;
+                        $all_message_service_id[] = $service->id;
+                    }
+
+                    if ($service->old_service_id == $this->id) {
+                        $service->old_writeoff_amount = $this->cost;
+                    }
+                    $service->save(false);
+                }
+            }
+
+            $messages = MessageToPaid::find()->where(['service_id' => $all_message_service_id])->all();
+            if (!empty($messages)) {
+                foreach ($messages as $message) {
+                    $message->amount = $this->cost;
+                    $message->save(false);
+                }
+            }
         }
     }
 }

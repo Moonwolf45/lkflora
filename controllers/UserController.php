@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-use app\models\addition\Addition;
 use app\models\payments\NewPaid;
 use app\models\payments\Payments;
 use app\models\service\Service;
@@ -63,11 +62,12 @@ class UserController extends Controller {
      * @throws \yii\db\StaleObjectException
      */
     public function actionIndex() {
-        $shops = Shops::find()->joinWith('tariff')->joinWith('additions')
-            ->where(['user_id' => Yii::$app->user->id, 'deleted' => Shops::DELETED_FALSE])->asArray()->all();
+        $shops = Shops::find()->joinWith('tariff')->joinWith('shopsAdditions.addition')
+            ->where(['shops.user_id' => Yii::$app->user->id, 'shops.deleted' => Shops::DELETED_FALSE])->asArray()->all();
 
-        $tariffs = Tariff::find()->asArray()->all();
-        $additions = Addition::find()->asArray()->all();
+        $tariffs = Tariff::find()->joinWith('tariffAdditionQty.addition tAQa')
+            ->joinWith('tariffAddition.addition tAa')->where(['tariff.status' => Tariff::STATUS_ON])
+            ->indexBy('id')->asArray()->all();
 
         $monthly_payment = Service::find()->where(['user_id' => Yii::$app->user->id, 'agree' => Service::AGREE_TRUE])
             ->asArray()->all();
@@ -89,6 +89,7 @@ class UserController extends Controller {
             Service::saveTariff($modelShop->tariff_id, $modelShop->id, Yii::$app->user->id);
 
             if (!empty($modelShop->addition)) {
+                $ta_keys = array_keys($tariffs[$modelShop->tariff_id]['tariffAddition']);
                 foreach ($modelShop->addition as $addition_one) {
                     $shopAddition = new ShopsAddition();
                     $shopAddition->shop_id = $modelShop->id;
@@ -96,7 +97,11 @@ class UserController extends Controller {
                     $shopAddition->quantity = 1;
                     $shopAddition->save();
 
-                    Service::saveAddition($addition_one, $modelShop->id, 1, Yii::$app->user->id);
+                    if (in_array($addition_one, $ta_keys)) {
+                        Service::saveAddition($addition_one, $modelShop->id, 1, Yii::$app->user->id, true);
+                    } else {
+                        Service::saveAddition($addition_one, $modelShop->id, 1, Yii::$app->user->id, false);
+                    }
                 }
             }
 
@@ -135,7 +140,7 @@ class UserController extends Controller {
         }
 
         return $this->render('index', compact('shops', 'modelShop', 'tariffs',
-            'additions', 'invoice', 'newTicket', 'tickets', 'monthly_payment'));
+            'invoice', 'newTicket', 'tickets', 'monthly_payment'));
     }
 
     /**
@@ -201,6 +206,12 @@ class UserController extends Controller {
     public function actionShopEditService() {
         $shopEditService = Yii::$app->request->post();
 
+        $tariff_addition = Tariff::find()->joinWith('tariffAddition')->where([
+            'tariff.id' => $shopEditService['Shops']['tariff_id'], 'tariff.status' => Tariff::STATUS_ON])->asArray()
+            ->one();
+
+        $tariff_addition_keys = array_keys($tariff_addition['tariffAddition']);
+
         $shopAdditions = ShopsAddition::find()->where(['shop_id' => $shopEditService['Shops']['id']])
             ->indexBy('addition_id')->all();
         $keys = array_keys($shopAdditions);
@@ -211,7 +222,15 @@ class UserController extends Controller {
                     $shopAdditions[$key]->quantity = $shopEditService['Shops']['quantityArr'][$key];
                     $shopAdditions[$key]->save();
 
-                    Service::updateAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id);
+                    if (in_array($key, $tariff_addition_keys)) {
+                        if ($tariff_addition['tariffAddition'][$key]['quantity'] > $shopEditService['Shops']['quantityArr'][$key]) {
+                            Service::updateAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id, true);
+                        } else {
+                            Service::updateAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id, true, $tariff_addition['tariffAddition'][$key]['quantity']);
+                        }
+                    } else {
+                        Service::updateAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id);
+                    }
                 } else {
                     $shopAddition = new ShopsAddition();
                     $shopAddition->shop_id = $shopEditService['Shops']['id'];
@@ -219,11 +238,21 @@ class UserController extends Controller {
                     $shopAddition->quantity = $shopEditService['Shops']['quantityArr'][$key];
                     $shopAddition->save();
 
-                    Service::saveAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id);
+                    if (in_array($key, $tariff_addition_keys)) {
+                        if ($tariff_addition['tariffAddition'][$key]['quantity'] > $shopEditService['Shops']['quantityArr'][$key]) {
+                            Service::saveAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id, true);
+                        } else {
+                            Service::saveAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id, true, $tariff_addition['tariffAddition'][$key]['quantity']);
+                        }
+                    } else {
+                        Service::saveAddition($key, $shopEditService['Shops']['id'], $shopEditService['Shops']['quantityArr'][$key], Yii::$app->user->id);
+                    }
                 }
             } else {
-                $shopAdditions[$key]->delete();
-                Service::deleteAddition($key, $shopEditService['Shops']['id'], Yii::$app->user->id);
+                if (in_array($key, $keys)) {
+                    $shopAdditions[$key]->delete();
+                    Service::deleteAddition($key, $shopEditService['Shops']['id'], Yii::$app->user->id);
+                }
             }
         }
 
@@ -488,7 +517,7 @@ class UserController extends Controller {
      */
     public function actionTickets($id = '') {
         $tickets = Tickets::find()->where(['user_id' => Yii::$app->user->id, 'status' => Tickets::STATUS_OPEN_TICKET])
-            ->with('lastTicket')->asArray()->all();
+            ->joinWith('lastTicket')->asArray()->all();
 
         $newTicket = new Tickets();
         if ($newTicket->load(Yii::$app->request->post())) {
@@ -548,8 +577,8 @@ class UserController extends Controller {
         }
 
         if ($id != '') {
-            $openTicket = Tickets::find()->where(['tickets.id' => $id])->joinWith('user')
-                ->joinWith('ticketsText.ticketsFiles')->asArray()->one();
+            $openTicket = Tickets::find()->where(['tickets.id' => $id])->joinWith('ticketsText.ticketsFiles')
+                ->asArray()->one();
 
             return $this->render('tickets', compact('newTicket', 'newTicketText', 'tickets', 'openTicket'));
         } else {

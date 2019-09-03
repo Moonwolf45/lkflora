@@ -33,6 +33,9 @@
 	
 }
 
+.s-pt0{
+	padding-top: 0;
+}
 
 // display
 .d-f-between{display: flex; -webkit-justify-content: space-between; justify-content: space-between;}
@@ -52,6 +55,10 @@
 }
 .s-fz12px{
 	font-size: 12px;
+}
+
+.s-fz14px{
+	font-size: 14px;
 }
 
 .s-fz15px{
@@ -85,11 +92,11 @@
 
 
 
-// .point-event-opacity{
-// 	pointer-events: none;
-// 	opacity: 0;
-// 	visibility: hidden;
-// }
+.point-event-opacity{
+	pointer-events: none;
+	opacity: 0;
+	visibility: hidden;
+}
 
 // @media (max-width:730px) {
 // 	.s-line{

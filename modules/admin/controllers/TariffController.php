@@ -52,8 +52,8 @@ class TariffController extends Controller {
      * @return mixed
      */
     public function actionView($id) {
-        $model = Tariff::find()->joinWith('addition ad')->joinWith('additionQty adq')->where(['tariff.id' => $id])
-            ->one();
+        $model = Tariff::find()->joinWith('addition ad')->joinWith('additionQty adq')
+            ->where(['tariff.id' => $id])->one();
 
         return $this->render('view', compact('model'));
     }
@@ -86,6 +86,7 @@ class TariffController extends Controller {
                         $newConSer = new TariffAddition();
                         $newConSer->tariff_id = $model->id;
                         $newConSer->addition_id = $connectedService;
+                        $newConSer->quantity = $model->connectedServiceQuantity[$key];
                         $newConSer->save();
                     }
                 }
@@ -124,13 +125,14 @@ class TariffController extends Controller {
                 }
             }
 
-            if (!empty($model->connectedServices)) {
+            if (!empty($model->connectedService)) {
                 TariffAddition::deleteAll(['tariff_id' => $id]);
-                foreach ($model->connectedServices as $connectedService) {
-                    if ($connectedService != '') {
+                foreach ($model->connectedService as $key => $connectedService_one) {
+                    if ($connectedService_one != '') {
                         $newConSer = new TariffAddition();
                         $newConSer->tariff_id = $id;
-                        $newConSer->addition_id = $connectedService;
+                        $newConSer->addition_id = $connectedService_one;
+                        $newConSer->quantity = $model->connectedServiceQuantity[$key];
                         $newConSer->save();
                     }
                 }

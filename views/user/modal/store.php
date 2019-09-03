@@ -6,9 +6,8 @@ use yii\web\View;
 use yii\widgets\ActiveForm;
 
 
-/** @var TYPE_NAME $modelShop */
-/** @var TYPE_NAME $tariffs */
-/** @var TYPE_NAME $additions */
+/** @var $modelShop app\models\shops\Shops */
+/** @var $tariffs app\models\tariff\Tariff */
 
 ?>
 
@@ -50,17 +49,34 @@ use yii\widgets\ActiveForm;
                                         ->label('Тариф'); ?>
                                 </div>
                             </div>
-                            <div class="add-store__col add-store__col_w100">
-                                <div class="add-store__box">
-                                    <div class="field">
-                                        <p class="field__text">Доп услуги</p>
+                            <?php $all_addition = []; foreach ($tariffs as $key => $tariff): ?>
+                                <?php $all_addition[$tariff['id']] = array_merge($tariff['tariffAdditionQty'], $tariff['tariffAddition'])?>
+                                <?php if ($key == 0): ?>
+                                    <div class="add-store__col add-store__col_w100 addition_block" id="tariff_<?= $tariff['id']; ?>">
+                                        <div class="add-store__box">
+                                            <div class="field">
+                                                <p class="field__text">Доп услуги</p>
+                                            </div>
+                                            <?= Html::activeDropDownList($modelShop, 'addition[]',
+                                                ArrayHelper::map($all_addition[$tariff['id']], 'addition_id', 'addition.name'), [
+                                                    'multiple' => 'multiple',
+                                                    'class' => 'field-select_' . $tariff['id']]); ?>
+                                        </div>
                                     </div>
-                                    <?= Html::activeDropDownList($modelShop, 'addition[]',
-                                        ArrayHelper::map($additions, 'id', 'name'), [
-                                        'multiple' => 'multiple',
-                                        'class' => 'field-select']); ?>
-                                </div>
-                            </div>
+                                <?php else: ?>
+                                    <div class="add-store__col add-store__col_w100 addition_block" id="tariff_<?= $tariff['id']; ?>" style="display:none;">
+                                        <div class="add-store__box">
+                                            <div class="field">
+                                                <p class="field__text">Доп услуги</p>
+                                            </div>
+                                            <?= Html::activeDropDownList($modelShop, 'addition[]',
+                                                ArrayHelper::map($all_addition[$tariff['id']], 'addition_id', 'addition.name'), [
+                                                    'multiple' => 'multiple',
+                                                    'class' => 'field-select_' . $tariff['id']]); ?>
+                                        </div>
+                                    </div>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
                         </div>
 
                         <?= Html::submitButton('Отправить', ['class' => 'button button_width-270px add-store__button']); ?>
@@ -74,10 +90,26 @@ use yii\widgets\ActiveForm;
 
 <?php
 $script = <<< JS
-    var select = new SlimSelect({
-        select: '.field-select',
-        showSearch: false,
-        placeholder: 'Выберите одну или несколько',
+    $('.addition_block').each(function(index, value) {
+        let tariff_id = $(this).attr('id');
+        let idArr = tariff_id.split('_');
+        let select = new SlimSelect({
+            select: '.field-select_' + idArr[1],
+            showSearch: false,
+            placeholder: 'Выберите одну или несколько',
+        });   
+    });
+
+    $('select[name="Shops[tariff_id]"]').on('change', function(e) {
+        let id = $(this).val();
+        
+        $('.addition_block').each(function(index, value) {
+            if ('tariff_' + id == $(this).attr('id')) {
+                $(this).css({'display':'block'});
+            } else {
+                $(this).css({'display':'none'});
+            }
+        });
     });
 JS;
 

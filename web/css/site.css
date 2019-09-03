@@ -126,19 +126,23 @@ a.desc:after {
     margin-left: 15px;
 }
 
-.block_resolutionService div .form-group {
+.block_resolutionService div .form-group,
+.block_connectedService div .form-group {
     float: left;
     margin-right: 10px;
 }
 
-.block_resolutionService div .form-group:first-child {
+.block_resolutionService div .form-group:first-child,
+.block_connectedService div .form-group:first-child {
     width: 49%;
 }
 
-.block_resolutionService div .form-group:nth-child(2) {
+.block_resolutionService div .form-group:nth-child(2),
+.block_connectedService div .form-group:nth-child(2) {
     width: 45%;
 }
 
+.block_connectedService div .form-group,
 .block_connectedService div .form-group {
     float: left;
     width: 96.3%;

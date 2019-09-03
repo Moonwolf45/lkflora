@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
  *
  * @property int $tariff_id
  * @property int $addition_id
+ * @property int $quantity Количество
  *
  * @property Addition $addition
  * @property Tariff $tariff
@@ -30,10 +31,12 @@ class TariffAddition extends ActiveRecord {
     public function rules() {
         return [
             [['tariff_id', 'addition_id'], 'required'],
-            [['tariff_id', 'addition_id'], 'integer'],
+            [['tariff_id', 'addition_id', 'quantity'], 'integer'],
             [['tariff_id', 'addition_id'], 'unique', 'targetAttribute' => ['tariff_id', 'addition_id']],
-            [['addition_id'], 'exist', 'skipOnError' => true, 'targetClass' => Addition::class, 'targetAttribute' => ['addition_id' => 'id']],
-            [['tariff_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tariff::class, 'targetAttribute' => ['tariff_id' => 'id']],
+            [['addition_id'], 'exist', 'skipOnError' => true, 'targetClass' => Addition::class,
+                'targetAttribute' => ['addition_id' => 'id']],
+            [['tariff_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tariff::class,
+                'targetAttribute' => ['tariff_id' => 'id']],
         ];
     }
 
@@ -44,6 +47,7 @@ class TariffAddition extends ActiveRecord {
         return [
             'tariff_id' => 'Tariff ID',
             'addition_id' => 'Addition ID',
+            'quantity' => 'Количество',
         ];
     }
 
@@ -51,7 +55,7 @@ class TariffAddition extends ActiveRecord {
      * @return \yii\db\ActiveQuery
      */
     public function getAddition() {
-        return $this->hasOne(Addition::class, ['id' => 'addition_id']);
+        return $this->hasOne(Addition::class, ['id' => 'addition_id'])->indexBy('id');
     }
 
     /**

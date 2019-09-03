@@ -5,10 +5,10 @@ use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 
 
-/** @var TYPE_NAME $editStore_id */
-/** @var TYPE_NAME $modelShop */
-/** @var TYPE_NAME $shop_id */
-/** @var TYPE_NAME $addressShop */
+/** @var $editStore_id */
+/** @var $modelShop app\models\shops\Shops */
+/** @var $shop_id */
+/** @var $addressShop */
 
 ?>
 

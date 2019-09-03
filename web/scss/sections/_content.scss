@@ -22,7 +22,7 @@
 
 // .content-advertising{
 // 	padding-top: 35px;
-	
+
 // }
 
 //FOR ADVERTISING
@@ -40,7 +40,7 @@
 	color: $dark;
 	margin-bottom: 20px;
 
-}	
+}
 
 .content__col-12,
 .content__col-9,
@@ -78,26 +78,50 @@
 	height: 100%;
 }
 
+.content__box_appeal{
+	display: none;
+	&.active{
+		display: block;
+	}
+}
+
 .content__box_pb85{
 	padding-bottom: 85px;
-	
+
 }
 
 .content__box-messages{
 	height: calc(100% + 63px);
 }
 
-
+@media (max-width:1199px) {
+	.content__col-9_messages{
+		width: 70%;
+	}
+	.content__col-3-messages{
+		width: 30%;
+	}
+}
 @media (max-width:991px) {
 	.content{
 		padding-top: calc(50px + 15px);
 		padding-left: 15px;
 		padding-right: 15px;
 	}
+	.content__col-9_messages{
+		width: 100%;
+	}
+	.content__col-3-messages{
+		top: 0;
+		width: 100%;
+	}
 	.content__title{
 		display: none;
 	}
-	
+	.content__box_appeal{
+		display: none;
+	}
+
 	.content__row_main{
 		margin: 0 -5px;
 	}
@@ -113,9 +137,6 @@
 		padding: 0 5px 10px 5px;
 	}
 
-	.content__col-9_messages{
-		width: 100%;
-	}
 }
 
 @media (max-width:530px){
@@ -124,5 +145,5 @@
 		width: 100%;
 	}
 
-	
+
 }

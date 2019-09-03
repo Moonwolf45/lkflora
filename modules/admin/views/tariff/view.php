@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\tariff\Tariff */
 
-$this->title = $model->name;
+$this->title = 'Тариф: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Тарифы', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 YiiAsset::register($this); ?>
@@ -43,9 +43,9 @@ YiiAsset::register($this); ?>
                 'format' => 'html',
                 'value' => function($data) {
                     if ($data->drop) {
-                        return '<p class="text-success">' . Tariff::getDrop(false, $data->drop) . '</p>';
+                        return '<p class="text-success">' . Tariff::getDrop($data->drop) . '</p>';
                     } else {
-                        return '<p class="text-danger">' . Tariff::getDrop(false, $data->drop) . '</p>';
+                        return '<p class="text-danger">' . Tariff::getDrop($data->drop) . '</p>';
                     }
                 }
             ],
@@ -54,9 +54,9 @@ YiiAsset::register($this); ?>
                 'format' => 'html',
                 'value' => function($data) {
                     if ($data->status) {
-                        return '<p class="text-success">' . Tariff::getStatus(false, $data->status) . '</p>';
+                        return '<p class="text-success">' . Tariff::getStatus($data->status) . '</p>';
                     } else {
-                        return '<p class="text-danger">' . Tariff::getStatus(false,$data->status) . '</p>';
+                        return '<p class="text-danger">' . Tariff::getStatus($data->status) . '</p>';
                     }
                 }
             ],
@@ -95,13 +95,18 @@ YiiAsset::register($this); ?>
                 }
             ],
             [
-                'attribute' => 'connectedServices',
+                'attribute' => 'connectedService',
                 'format' => 'html',
                 'value' => function($data) {
                     if ($data->tariffAddition) {
                         $string = '<p class="text-success">';
                         foreach ($data->tariffAddition as $taQ) {
-                            $string .= $data->addition[$taQ->addition_id]->name . '<br>';
+                            $string .= $data->addition[$taQ->addition_id]->name . ' - Количество: ';
+                            if ($taQ->quantity == 0) {
+                                $string .= 'Неограниченно<br>';
+                            } else {
+                                $string .= $taQ->quantity . '<br>';
+                            }
                         }
                         $string .= '</p>';
                         return $string;

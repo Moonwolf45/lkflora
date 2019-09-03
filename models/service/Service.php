@@ -128,17 +128,13 @@ class Service extends ActiveRecord {
      *
      * @return array|mixed
      */
-    public static function getTypeService($i = '') {
+    public static function getTypeService($i = null) {
         $typeArray = [
             self::TYPE_TARIFF => 'Тариф',
             self::TYPE_ADDITION => 'Доп. услуга',
         ];
 
-        if ($i == '') {
-            return $typeArray;
-        } else {
-            return $typeArray[$i];
-        }
+        return $i === null ? $typeArray : $typeArray[$i];
     }
 
     /**
@@ -148,17 +144,13 @@ class Service extends ActiveRecord {
      *
      * @return array|mixed
      */
-    public static function getRepeatService($i = '') {
+    public static function getRepeatService($i = null) {
         $repeatArray = [
             self::REPEAT_TRUE => 'Да',
             self::REPEAT_FALSE => 'Нет',
         ];
 
-        if ($i == '') {
-            return $repeatArray;
-        } else {
-            return $repeatArray[$i];
-        }
+        return $i === null ? $repeatArray : $repeatArray[$i];
     }
 
     /**
@@ -168,17 +160,13 @@ class Service extends ActiveRecord {
      *
      * @return array|mixed
      */
-    public static function getAgreeService($i = '') {
+    public static function getAgreeService($i = null) {
         $agreeArray = [
             self::AGREE_TRUE => 'Подтверждён',
             self::AGREE_FALSE => 'Не подтверждён',
         ];
 
-        if ($i == '') {
-            return $agreeArray;
-        } else {
-            return $agreeArray[$i];
-        }
+        return $i === null ? $agreeArray : $agreeArray[$i];
     }
 
     /**
@@ -188,17 +176,13 @@ class Service extends ActiveRecord {
      *
      * @return array|mixed
      */
-    public static function getDeleteService($i = '') {
+    public static function getDeleteService($i = null) {
         $deleteArray = [
             self::DELETED_TRUE => 'Да',
             self::DELETED_FALSE => 'Нет',
         ];
 
-        if ($i == '') {
-            return $deleteArray;
-        } else {
-            return $deleteArray[$i];
-        }
+        return $i === null ? $deleteArray : $deleteArray[$i];
     }
 
     /**
@@ -274,14 +258,49 @@ class Service extends ActiveRecord {
      * @param int $quantity
      * @param int $user_id
      *
+     * @param bool $against_the_tariff
+     *
+     * @param int $quantity_max
+     *
      * @return bool
      */
-    public static function saveAddition($addition_id = 0, $shop_id = 0, $quantity = 1, $user_id = 0) {
+    public static function saveAddition($addition_id = 0, $shop_id = 0, $quantity = 1, $user_id = 0, $against_the_tariff = false, $quantity_max = 0) {
         if ($addition_id != 0 && $shop_id != 0 && $user_id != 0) {
             $addition = Addition::find()->where(['id' => $addition_id])->asArray()->limit(1)->one();
 
             if (!empty($addition)) {
-                for ($i = 0; $i < $quantity; $i++) {
+                if ($quantity_max != 0) {
+                    $quantity -= $quantity_max;
+
+                    for ($i = 0; $i < $quantity; $i++) {
+                        $saveService = new Service();
+                        $saveService->user_id = $user_id;
+                        $saveService->shop_id = $shop_id;
+                        $saveService->type_service = self::TYPE_ADDITION;
+                        $saveService->type_serviceId = $addition_id;
+                        $saveService->connection_date = date("Y-m-d");
+                        $saveService->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
+                        $saveService->writeoff_amount = $addition['cost'];
+                        $saveService->edit_description = 'Добавление услуги';
+                        $saveService->agree = self::AGREE_FALSE;
+                        if ($addition['type']) {
+                            $saveService->repeat_service = self::REPEAT_TRUE;
+                        } else {
+                            $saveService->repeat_service = self::REPEAT_FALSE;
+                        }
+                        $saveService->deleted = self::DELETED_FALSE;
+
+                        $saveService->old_service_id = null;
+                        $saveService->old_connection_date = null;
+                        $saveService->old_writeoff_date = null;
+                        $saveService->old_writeoff_amount = null;
+                        $saveService->save(false);
+                    }
+                } else {
+                    $quantity_max = $quantity;
+                }
+
+                for ($i = 0; $i < $quantity_max; $i++) {
                     $saveService = new Service();
                     $saveService->user_id = $user_id;
                     $saveService->shop_id = $shop_id;
@@ -289,7 +308,13 @@ class Service extends ActiveRecord {
                     $saveService->type_serviceId = $addition_id;
                     $saveService->connection_date = date("Y-m-d");
                     $saveService->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
-                    $saveService->writeoff_amount = $addition['cost'];
+                    if ($against_the_tariff) {
+                        $saveService->writeoff_amount = 0;
+                        $saveService->edit_description = 'Добавление услуги<br>Стоимость услуги входит в стоимость тарифа';
+                    } else {
+                        $saveService->writeoff_amount = $addition['cost'];
+                        $saveService->edit_description = 'Добавление услуги';
+                    }
                     $saveService->agree = self::AGREE_FALSE;
                     if ($addition['type']) {
                         $saveService->repeat_service = self::REPEAT_TRUE;
@@ -302,7 +327,6 @@ class Service extends ActiveRecord {
                     $saveService->old_connection_date = null;
                     $saveService->old_writeoff_date = null;
                     $saveService->old_writeoff_amount = null;
-                    $saveService->edit_description = 'Добавление услуги';
                     $saveService->save(false);
                 }
 
@@ -321,17 +345,20 @@ class Service extends ActiveRecord {
      * @param int $quantity
      * @param int $user_id
      *
+     * @param bool $against_the_tariff
+     * @param int $quantity_max
+     *
      * @return bool
-     * @throws StaleObjectException
-     * @throws \Throwable
      */
-    public static function updateAddition($id = 0, $shop_id = 0, $quantity = 1, $user_id = 0) {
+    public static function updateAddition($id = 0, $shop_id = 0, $quantity = 1, $user_id = 0, $against_the_tariff = false, $quantity_max = 0) {
         $old_service_id = null;
         $old_connection_date = null;
         $old_writeoff_date = null;
         $old_writeoff_amount = null;
         $edit_description = null;
 
+        $free_service = false;
+        $new_max = 0;
         if ($user_id != 0 && $shop_id != 0 && $id != 0) {
             $oldServiceAdditions = Service::find()->where(['user_id' => $user_id, 'shop_id' => $shop_id,
                 'agree' => self::AGREE_TRUE, 'type_service' => self::TYPE_ADDITION, 'type_serviceId' => $id])->all();
@@ -342,6 +369,15 @@ class Service extends ActiveRecord {
 
                 if ($quantity > $countOldService) {
                     $new_quantity = $quantity - $countOldService;
+                    if ($quantity < $quantity_max) {
+                        $new_max = $quantity_max - $quantity;
+                        if ($new_max > $new_quantity) {
+                            $free_service = true;
+                        } else {
+                            $new_quantity -= $new_max;
+                        }
+                    }
+
                     for ($i = 0; $i < $new_quantity; $i++) {
                         $next_payment = new Service();
                         $next_payment->user_id = $user_id;
@@ -350,7 +386,11 @@ class Service extends ActiveRecord {
                         $next_payment->type_serviceId = $id;
                         $next_payment->connection_date = date("Y-m-d");
                         $next_payment->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
-                        $next_payment->writeoff_amount = $addition['cost'];
+                        if ($free_service) {
+                            $next_payment->writeoff_amount = 0;
+                        } else {
+                            $next_payment->writeoff_amount = $addition['cost'];
+                        }
                         $next_payment->agree = self::AGREE_FALSE;
                         if ($addition['type']) {
                             $next_payment->repeat_service = self::REPEAT_TRUE;
@@ -358,21 +398,52 @@ class Service extends ActiveRecord {
                             $next_payment->repeat_service = self::REPEAT_FALSE;
                         }
                         $next_payment->deleted = self::DELETED_FALSE;
-
                         $next_payment->edit_description = 'Увелечение количества';
-
                         $next_payment->save(false);
                     }
+
+                    if ($new_max != 0) {
+                        for ($i = 0; $i < $new_max; $i++) {
+                            $next_payment = new Service();
+                            $next_payment->user_id = $user_id;
+                            $next_payment->shop_id = $shop_id;
+                            $next_payment->type_service = self::TYPE_ADDITION;
+                            $next_payment->type_serviceId = $id;
+                            $next_payment->connection_date = date("Y-m-d");
+                            $next_payment->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
+                            $next_payment->writeoff_amount = 0;
+                            $next_payment->agree = self::AGREE_FALSE;
+                            if ($addition['type']) {
+                                $next_payment->repeat_service = self::REPEAT_TRUE;
+                            } else {
+                                $next_payment->repeat_service = self::REPEAT_FALSE;
+                            }
+                            $next_payment->deleted = self::DELETED_FALSE;
+                            $next_payment->edit_description = 'Увелечение количества';
+                            $next_payment->save(false);
+                        }
+                    }
+
                 } elseif ($quantity < $countOldService) {
                     $new_quantity = $countOldService - $quantity;
                     $i = 0;
                     foreach ($oldServiceAdditions as $oldServiceAddition) {
                         if ($i < $new_quantity) {
+                            if ($oldServiceAddition->writeoff_amount == 0) {
+                                $oldServiceAddition->agree = self::AGREE_FALSE;
+                                $oldServiceAddition->deleted = self::DELETED_TRUE;
+                                $oldServiceAddition->edit_description = 'Уменьшение количества';
+                                $oldServiceAddition->save(false);
+                                $i++;
+                            }
+                        }
+                    }
+
+                    foreach ($oldServiceAdditions as $oldServiceAddition) {
+                        if ($i < $new_quantity && $oldServiceAddition->writeoff_amount != 0) {
                             $oldServiceAddition->agree = self::AGREE_FALSE;
                             $oldServiceAddition->deleted = self::DELETED_TRUE;
-
                             $oldServiceAddition->edit_description = 'Уменьшение количества';
-
                             $oldServiceAddition->save(false);
                             $i++;
                         }
@@ -387,7 +458,12 @@ class Service extends ActiveRecord {
 
                 return true;
             } else {
-                self::saveAddition($id, $shop_id, $quantity, $user_id);
+                if ($quantity_max != 0) {
+                    self::saveAddition($id, $shop_id, $quantity, $user_id, $against_the_tariff, $quantity_max);
+                } else {
+                    self::saveAddition($id, $shop_id, $quantity, $user_id, $against_the_tariff);
+                }
+
                 return true;
             }
         }
@@ -434,9 +510,9 @@ class Service extends ActiveRecord {
      */
     public static function deleteAddition($addition_id = 0, $shop_id = 0, $user_id = 0) {
         if ($addition_id != 0 && $shop_id != 0 && $user_id != 0) {
-            $oldServiceAddition = Service::find()->where(['id' => $addition_id, 'user_id' => $user_id,
-                'shop_id' => $shop_id, 'agree' => self::AGREE_TRUE, 'deleted' => self::DELETED_FALSE])->limit(1)
-                ->one();
+            $oldServiceAddition = Service::find()->where(['type_serviceId' => $addition_id, 'user_id' => $user_id,
+                'shop_id' => $shop_id, 'type_service' => Service::TYPE_ADDITION, 'agree' => self::AGREE_TRUE,
+                'deleted' => self::DELETED_FALSE])->limit(1)->one();
 
             if (!empty($oldServiceAddition)) {
                 $oldServiceAddition->agree = self::AGREE_FALSE;

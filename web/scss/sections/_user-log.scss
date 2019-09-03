@@ -110,6 +110,10 @@
 		width: 100%;
 	}
 
+	.user-log__col_mobile {
+	    display: none;
+	}
+
 	.user-log__logo,
 	.logo__img{
 		display: block;
@@ -145,9 +149,5 @@
 		margin:0 -10px;
 	}
 }
-
-
-
-
 
 

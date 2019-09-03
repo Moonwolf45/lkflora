@@ -48,3 +48,23 @@
 	font-size: 15px;
 	color:$gray;
 }
+
+
+@media (max-width:430px) {
+	.attach_messages,.attach__wrapp-label_messages{
+		width: 25px;
+		-webkit-order: -1;
+		    -ms-order: -1;
+		        order: -1;
+		.attach__icon{
+			padding: 0;
+		}
+		.attach__text{
+			display: none !important;
+		}
+	}
+	.attach__wrapp-label_messages{
+		margin: 0;
+	}
+
+}

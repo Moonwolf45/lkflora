@@ -30,14 +30,14 @@ mihaildev\elfinder\Assets::noConflict($this);
             'editorOptions' => ElFinder::ckeditorOptions('elfinder', [])
         ]); ?>
 
-        <?= $form->field($model, 'drop')->dropDownList(Tariff::getDrop(true), [
+        <?= $form->field($model, 'drop')->dropDownList(Tariff::getDrop(), [
                 'options' => [
                     '0' => ['Selected' => true]
                 ]
             ]
         ); ?>
 
-        <?= $form->field($model, 'status')->dropDownList(Tariff::getStatus(true), [
+        <?= $form->field($model, 'status')->dropDownList(Tariff::getStatus(), [
                 'options' => [
                     '1' => ['Selected' => true]
                 ]
@@ -93,12 +93,17 @@ mihaildev\elfinder\Assets::noConflict($this);
                 <?php if(!empty($model->tariffAddition)): ?>
                     <?php foreach ($model->tariffAddition as $ta): ?>
                         <div>
-                            <?= $form->field($model, 'connectedServices[]')->dropDownList(
+                            <?= $form->field($model, 'connectedService[]')->dropDownList(
                                 ArrayHelper::map($additions, 'id', 'name'), [
                                     'prompt' => 'Выберите доп. услуги которые уже подключены в данном тарифе',
                                     'options' => [$ta->addition_id => ['selected' => true]]
                                 ]
                             ); ?>
+
+                            <?= $form->field($model, 'connectedServiceQuantity[]')->textInput([
+                                'type' => 'number',
+                                'value' => $ta->quantity
+                            ]); ?>
                             <button type="button" class="close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -106,11 +111,15 @@ mihaildev\elfinder\Assets::noConflict($this);
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div>
-                        <?= $form->field($model, 'connectedServices[]')->dropDownList(
+                        <?= $form->field($model, 'connectedService[]')->dropDownList(
                             ArrayHelper::map($additions, 'id', 'name'), [
                                 'prompt' => 'Выберите доп. услуги которые уже подключены в данном тарифе',
                             ]
                         ); ?>
+
+                        <?= $form->field($model, 'connectedServiceQuantity[]')->textInput([
+                            'type' => 'number'
+                        ]); ?>
                     </div>
                 <?php endif; ?>
             </div>
@@ -134,11 +143,13 @@ $script = <<< JS
     });
 
     $('.add_con_ser').on('click', function(e) {
-        let new_data = $('.block_connectedService div').clone();
+        let new_data = $('.block_connectedService').children()[0].cloneNode(true);
+        new_data.children[0].children[1].value = '';
+        new_data.children[1].children[1].value = 0;
         $('.block_connectedService').append(new_data);
     });
     
-    $('.close').on('click', function(e) {
+    $('div').on('click', '.close', function(e) {
         $(this).parent().remove();
     });
 JS;

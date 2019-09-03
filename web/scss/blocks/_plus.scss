@@ -1,0 +1,37 @@
+.plus{
+	position: relative;
+	width: 18px;
+	height: 18px;
+	-webkit-border-radius: 50%;
+	        border-radius: 50%;
+	background: #E4E8F0;
+	cursor: pointer;
+	&:before,&:after{
+		content: '';
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform:translate(-50%, -50%);
+		width: 10px;
+		height: 2px;
+		background: $gray;
+		-webkit-border-radius: 1px;
+		        border-radius: 1px;
+	}
+	&:before{
+		transform:translate(-50%, -50%);
+	}
+	&:after{
+		transform:translate(-50%, -50%) rotate(-90deg);
+	}
+}
+
+.plus_desktop{
+	display: block;
+}
+
+@media (max-width:991px) {
+	.plus_desktop{
+		display: none;
+	}
+}

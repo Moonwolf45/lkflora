@@ -66,7 +66,11 @@ class CronController extends Controller {
                     if ($service->type_service = Service::TYPE_TARIFF) {
                         $payment->description = 'Списание с баланса оплаты за тариф';
                     } else {
-                        $payment->description = 'Списание с баланса оплаты за доп. услугу';
+                        if ($payment->amount == 0) {
+                            $payment->description = 'Стоимость услуги входит в стоимость тарифа<br>Списание с баланса оплаты за доп. услугу';
+                        } else {
+                            $payment->description = 'Списание с баланса оплаты за доп. услугу';
+                        }
                     }
                     $payment->status = Payments::STATUS_PAID;
                     $payment->save(false);
@@ -83,8 +87,8 @@ class CronController extends Controller {
                         $oldDebtor->debtor = MessageToPaid::DEBTOR_NO;
                         $oldDebtor->save(false);
                     } else {
-                        $service->delete();
-                        $oldDebtor->delete();
+                        $oldDebtor->debtor = MessageToPaid::DEBTOR_NO;
+                        $oldDebtor->save(false);
                     }
                 }
             }

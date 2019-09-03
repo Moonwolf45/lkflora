@@ -1,0 +1,21 @@
+.back-btn{
+	font-size: 12px;
+	text-transform: uppercase;
+	color: $gray;
+	text-align: right;
+	display: none;
+}
+
+.back-btn_message{
+	position: absolute;
+	top: 15px;
+	left: auto;
+	right: 15px;
+}
+
+
+@media (max-width:991px) {
+	.back-btn{
+		display: block;
+	}
+}

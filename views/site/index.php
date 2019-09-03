@@ -9,18 +9,15 @@ $this->title = 'Авторизация';
 <?php $form = ActiveForm::begin() ?>
 <div class="field user-log__field">
     <p class="field__text">Ваш email</p>
-    <?= $form->field($model, 'email', [
-        'inputOptions' => ['class' => 'input']
-    ])->label(''); ?>
+    <?= $form->field($model, 'email', ['inputOptions' => ['class' => 'input']])->label(''); ?>
 </div>
 <div class="field user-log__field">
     <div class="field__justi">
         <p class="field__text">Ваш Пароль</p>
         <a href="<?php echo Url::to(['site/reset-password']); ?>" class="field__link">Забыли пароль?</a>
     </div>
-    <?= $form->field($model, 'password', [
-        'inputOptions' => ['class' => 'input'],
-    ])->label('')->input('password') ?>
+    <?= $form->field($model, 'password', ['inputOptions' => ['class' => 'input']])->label('')
+        ->input('password') ?>
 </div>
 <?= Html::submitButton('Войти', ['class' => 'button user-log__button']) ?>
 <?php ActiveForm::end() ?>

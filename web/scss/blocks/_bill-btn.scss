@@ -5,6 +5,7 @@
 }
 
 .bill-btn__box{
+	background: #fff;
 	border: 1px solid #E0E7FF;
 	border-radius: 5px;
 	display: flex;
@@ -37,7 +38,7 @@
 }
 
 
-.bill-btn__link{
+.bill-btn__text{
 	display: inline-block;
 	vertical-align: middle;
 	font-weight: 500;
@@ -48,7 +49,7 @@
 }
 
 @media (max-width:1170px) {
-	.bill-btn__link{
+	.bill-btn__text{
 		font-size: 12px;
 	}
 }
@@ -57,13 +58,13 @@
 	.bill-btn__box{
 		max-width: 290px;
 	}
-	.bill-btn__link{
+	.bill-btn__text{
 		font-size: 14px;
 	}
 }
 
 @media (max-width:480px) {
-	.bill-btn__link{
+	.bill-btn__text{
 		font-size: 12px;
 	}
 }

@@ -6,6 +6,13 @@
 	color: $gray;
 }
 
+.sub-title_no-ttu{
+	text-transform: none;
+	font-size: 12px;
+	padding-bottom: 0;
+	padding-left: 10px;
+}
+
 .sub-title_pl20{
 	padding-left: 20px;
 }
@@ -18,6 +25,10 @@
 	}
 }
 
+.sub-title__span{
+	display: none;
+}
+
 @media (max-width:1170px) {
 	.sub-title_pl20{
 		padding-left: 0px;
@@ -25,6 +36,14 @@
 }
 
 @media (max-width:991px) {
+	.content__box-messages{
+		.sub-title__span-desktop{
+			display: none;
+		}
+		.sub-title__span{
+			display: block;
+		}
+	}
 	.sub-title_pl20{
 		padding-left: 20px;
 	}
@@ -40,6 +59,11 @@
 }
 
 @media (max-width:530px) {
-
+	.sub-title__span-desktop{
+		display: none;
+	}
+	.sub-title__span{
+		display: block;
+	}
 
 }

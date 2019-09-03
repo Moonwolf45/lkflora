@@ -3,15 +3,15 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
-/** @var TYPE_NAME $newTicket */
+/** @var $newTicket app\models\tickets\Tickets */
 
 ?>
 
 <div class="jsx-modal" data-jsx-modal-id="appeal">
     <div class="jsx-modal__block jsx-modal-popup jsx-modal-popup_appeal">
         <div class="close close-add-store jsx-modal__close"></div>
-        <div class="appeal">
-            <div class="appeal__wrapp appeal__wrapp_mw435 appeal__wrapp_m30">
+        <div class="appeal appeal_main">
+            <div class="appeal__wrapp appeal__wrapp_main">
                 <div class="little-title">Создание обращения в техподдержку</div>
                 <?php $form3 = ActiveForm::begin([
                     'options' => ['class' => 'appeal__form', 'data' => ['pjax' => true],

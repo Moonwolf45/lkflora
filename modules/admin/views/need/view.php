@@ -17,11 +17,17 @@ YiiAsset::register($this); ?>
 
     <h1><?= Html::encode($this->title); ?></h1>
 
-    <p>
-        <?= Html::a('Подтвердить', ['update', 'id' => $model->id, 'shop_id' => $model->shop_id], [
-            'class' => 'btn btn-success'
-        ]); ?>
-    </p>
+    <?php if ($model->agree == Service::AGREE_FALSE): ?>
+        <p>
+            <?= Html::a('Подтвердить', ['update', 'id' => $model->id, 'shop_id' => $model->shop_id], [
+                'class' => 'btn btn-success'
+            ]); ?>
+
+            <?= Html::a('Отменить', ['cancel', 'id' => $model->id, 'shop_id' => $model->shop_id], [
+                'class' => 'btn btn-danger'
+            ]); ?>
+        </p>
+    <?php endif; ?>
 
     <?= DetailView::widget([
         'model' => $model,

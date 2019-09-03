@@ -80,9 +80,8 @@
 .shops__request-help-icon{
 	 width: 14px;
 	 height: 14px;
-	 background: url(/images/icon/icon-hint.svg) no-repeat center/contain;
+	 background: url(../images/icon/icon-hint.svg) no-repeat center/contain;
 }
-
 
 .shops__item-box-link{
 	position: relative;
@@ -233,6 +232,10 @@
 
 	.shops__item-box-mobile{
 		padding-left: 10px;
+	}
+
+	.shops__item-request{
+		padding-right: 10px;
 	}
 
 }

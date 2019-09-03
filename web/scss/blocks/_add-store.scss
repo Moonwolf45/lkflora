@@ -57,10 +57,12 @@
 	.add-store__col{
 		width: 100%;
 	}
+	.add-store__col_w100{
+		max-width: 370px;
+	}
 }
 
 @media (max-width:560px) {
-
 	.add-store__img{
 		display: none;
 	}
