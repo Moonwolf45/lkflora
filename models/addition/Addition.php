@@ -2,6 +2,8 @@
 
 namespace app\models\addition;
 
+use app\models\MessageToPaid;
+use app\models\service\Service;
 use app\models\shops\Shops;
 use app\models\tariff\Tariff;
 use app\models\TariffAddition;
@@ -99,5 +101,47 @@ class Addition extends ActiveRecord {
      */
     public function getShops() {
         return $this->hasMany(Shops::class, ['id' => 'shop_id'])->viaTable('{{%shops_addition}}', ['addition_id' => 'id']);
+    }
+
+    /**
+     * Действия которые выполняются после сохранения
+     *
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave ($insert, $changedAttributes) {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($this->cost != $changedAttributes['cost']) {
+            $all_message_service_id = [];
+            $services = Service::find()->where(['type_service' => Service::TYPE_ADDITION])->andWhere(['OR',
+                'type_serviceId' => $this->id, 'old_service_id' => $this->id])->all();
+            if (!empty($services)) {
+                foreach ($services as $service) {
+                    if ($service->type_serviceId == $this->id) {
+                        if ($service->writeoff_amount != 0) {
+                            $service->writeoff_amount = $this->cost;
+                        }
+                        $service->old_writeoff_amount = $this->cost;
+                        $all_message_service_id[] = $service->id;
+                    }
+
+                    if ($service->old_service_id == $this->id) {
+                        $service->old_writeoff_amount = $this->cost;
+                    }
+                    $service->save(false);
+                }
+            }
+
+            $messages = MessageToPaid::find()->where(['service_id' => $all_message_service_id])->all();
+            if (!empty($messages)) {
+                foreach ($messages as $message) {
+                    if ($message->amount != 0) {
+                        $message->amount = $this->cost;
+                        $message->save(false);
+                    }
+                }
+            }
+        }
     }
 }

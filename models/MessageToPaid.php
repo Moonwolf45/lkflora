@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\models\db\User;
+use app\models\service\Service;
 use Yii;
 use yii\db\ActiveRecord;
 
@@ -65,5 +66,12 @@ class MessageToPaid extends ActiveRecord {
      */
     public function getUser() {
         return $this->hasOne(User::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getService() {
+        return $this->hasOne(Service::class, ['id' => 'service_id']);
     }
 }

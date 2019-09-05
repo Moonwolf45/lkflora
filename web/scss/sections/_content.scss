@@ -22,7 +22,7 @@
 
 // .content-advertising{
 // 	padding-top: 35px;
-
+	
 // }
 
 //FOR ADVERTISING
@@ -40,7 +40,7 @@
 	color: $dark;
 	margin-bottom: 20px;
 
-}
+}	
 
 .content__col-12,
 .content__col-9,
@@ -87,11 +87,21 @@
 
 .content__box_pb85{
 	padding-bottom: 85px;
-
+	
 }
 
 .content__box-messages{
 	height: calc(100% + 63px);
+}
+
+
+body.js-active-box-message{
+	.content__box_appeal{
+		display: block;
+	}
+	.content__box-messages{
+		display: none;
+	}
 }
 
 @media (max-width:1199px) {
@@ -121,7 +131,7 @@
 	.content__box_appeal{
 		display: none;
 	}
-
+	
 	.content__row_main{
 		margin: 0 -5px;
 	}
@@ -145,5 +155,5 @@
 		width: 100%;
 	}
 
-
+	
 }

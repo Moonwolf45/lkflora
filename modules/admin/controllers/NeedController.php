@@ -84,12 +84,14 @@ class NeedController extends Controller {
                 $user_update->save(false);
 
                 $service->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
+                $service->save(false);
+
                 $date_to_paid = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 30, date("Y")));
 
                 $payment = new Payments();
                 $payment->user_id = $service->user_id;
                 $payment->shop_id = $service->shop_id;
-                if ($service->type_service = Service::TYPE_TARIFF) {
+                if ($service->type_service == Service::TYPE_TARIFF) {
                     $payment->type_service = Payments::TYPE_SERVICE_TARIFF;
                 } else {
                     $payment->type_service = Payments::TYPE_SERVICE_ADDITION;
@@ -100,7 +102,7 @@ class NeedController extends Controller {
                 $payment->date = date('Y-m-d');
                 $payment->invoice_date = date('Y-m-d');
                 $payment->amount = $service->writeoff_amount;
-                if ($service->type_service = Service::TYPE_TARIFF) {
+                if ($service->type_service == Service::TYPE_TARIFF) {
                     $payment->description = 'Списание с баланса оплаты за тариф';
                 } else {
                     if ($payment->amount == 0) {
@@ -128,7 +130,7 @@ class NeedController extends Controller {
                     $message_to_paid->save(false);
                 }
 
-                if ($service->type_service = Service::TYPE_TARIFF) {
+                if ($service->type_service == Service::TYPE_TARIFF) {
                     $tA = TariffAddition::find()->where(['tariff_id' => $service->type_serviceId])
                         ->indexBy('addition_id')->all();
                     $keys_tA = array_keys($tA);
@@ -153,6 +155,7 @@ class NeedController extends Controller {
                         if (in_array($sA_key, $keys_tA)) {
                             if ($tA[$sA_key]['quantity'] != 0 && $sA_value['quantity'] > $tA[$sA_key]['quantity']) {
                                 $sA_value['quantity'] = $tA[$sA_key]['quantity'];
+                                $sA_value->save();
 
                                 $count_delete_service = count($newServices[$sA_key]) - $tA[$sA_key]['quantity'];
                                 for ($del = 0; $del < $count_delete_service; $del++) {
@@ -189,8 +192,6 @@ class NeedController extends Controller {
                                 $nS->delete();
                             }
                         }
-
-                        $sA_value->save();
                     }
                 }
             } else {
@@ -210,8 +211,8 @@ class NeedController extends Controller {
                     $message_to_paid->save(false);
                 }
                 $service->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")));
+                $service->save(false);
             }
-            $service->save(false);
         } else {
             if (!empty($message)) {
                 $message->delete();
@@ -227,7 +228,7 @@ class NeedController extends Controller {
             $shop->save(false);
         }
 
-        return $this->redirect(['view', 'id' => $id]);
+        return $this->redirect(['index']);
     }
 
     /**

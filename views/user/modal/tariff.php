@@ -58,12 +58,15 @@ foreach ($additions_tariff as $key_tariff => $a_t) {
             $i++;
         }
     }
-    $error[$key_tariff]['text'] = mb_strimwidth($error[$key_tariff]['text'], 0, iconv_strlen($error[$key_tariff]['text']) - 2);
 
-    if ($i == 1) {
-        $error[$key_tariff]['text'] .= ' - Данная услуга будет отключена при переходе на выбранный тариф';
-    } else {
-        $error[$key_tariff]['text'] .= ' - Данные услуги будут отключены при переходе на выбранный тариф';
+    if ($error[$key_tariff]['status']) {
+        $error[$key_tariff]['text'] = mb_strimwidth($error[$key_tariff]['text'], 0, iconv_strlen($error[$key_tariff]['text']) - 2);
+
+        if ($i == 1) {
+            $error[$key_tariff]['text'] .= ' - Данная услуга будет отключена при переходе на выбранный тариф';
+        } else {
+            $error[$key_tariff]['text'] .= ' - Данные услуги будут отключены при переходе на выбранный тариф';
+        }
     }
 }
 

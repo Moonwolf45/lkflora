@@ -100,7 +100,7 @@ class Tariff extends ActiveRecord {
 
             'resolutionService' => 'Доп. Услуги которые можно подключать',
             'resolutionServiceQuantity' => 'Количество',
-            'connectedService' => 'Доп. улсуги которые подключены по умолчанию в тарифе',
+            'connectedService' => 'Бесплатные услуги (стоимость входит в тариф)',
             'connectedServiceQuantity' => 'Количество',
         ];
     }
@@ -168,7 +168,7 @@ class Tariff extends ActiveRecord {
     }
 
     /**
-     * Действия которые выполняются после сохранения модели
+     * Действия которые выполняются после сохранения
      *
      * @param bool $insert
      * @param array $changedAttributes
@@ -178,8 +178,8 @@ class Tariff extends ActiveRecord {
 
         if ($this->cost != $changedAttributes['cost']) {
             $all_message_service_id = [];
-            $services = Service::find()->where(['AND', 'type_service' => Service::TYPE_TARIFF, ['OR',
-                'type_serviceId' => $this->id, 'old_service_id' => $this->id]])->all();
+            $services = Service::find()->where(['type_service' => Service::TYPE_TARIFF])->andWhere(['OR',
+                    'type_serviceId' => $this->id, 'old_service_id' => $this->id])->all();
             if (!empty($services)) {
                 foreach ($services as $service) {
                     if ($service->type_serviceId == $this->id) {
@@ -202,5 +202,25 @@ class Tariff extends ActiveRecord {
                 }
             }
         }
+    }
+
+    /**
+     * Более быстрое сравнение массивов
+     *
+     * @param $arrayFrom
+     * @param $arrayAgainst
+     *
+     * @return mixed
+     */
+    public static function arrayDiffEmulation($arrayFrom, $arrayAgainst) {
+        $arrayAgainst = array_flip($arrayAgainst);
+
+        foreach ($arrayFrom as $key => $value) {
+            if(isset($arrayAgainst[$value])) {
+                unset($arrayFrom[$key]);
+            }
+        }
+
+        return $arrayFrom;
     }
 }

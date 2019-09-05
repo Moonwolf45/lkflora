@@ -93,9 +93,13 @@ class AdditionController extends Controller {
     /**
      * Deletes an existing Addition model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
      * @param integer $id
+     *
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id) {
         $this->findModel($id)->delete();

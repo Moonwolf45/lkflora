@@ -326,7 +326,7 @@ class Service extends ActiveRecord {
                     $saveService->old_service_id = null;
                     $saveService->old_connection_date = null;
                     $saveService->old_writeoff_date = null;
-                    $saveService->old_writeoff_amount = null;
+                    $saveService->old_writeoff_amount = $addition['cost'];
                     $saveService->save(false);
                 }
 
@@ -398,6 +398,7 @@ class Service extends ActiveRecord {
                             $next_payment->repeat_service = self::REPEAT_FALSE;
                         }
                         $next_payment->deleted = self::DELETED_FALSE;
+                        $next_payment->old_writeoff_amount = $addition['cost'];
                         $next_payment->edit_description = 'Увелечение количества';
                         $next_payment->save(false);
                     }
@@ -419,6 +420,7 @@ class Service extends ActiveRecord {
                                 $next_payment->repeat_service = self::REPEAT_FALSE;
                             }
                             $next_payment->deleted = self::DELETED_FALSE;
+                            $next_payment->old_writeoff_amount = $addition['cost'];
                             $next_payment->edit_description = 'Увелечение количества';
                             $next_payment->save(false);
                         }

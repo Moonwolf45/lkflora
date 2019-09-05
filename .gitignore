@@ -45,3 +45,6 @@ web/upload/tickets/
 web/upload/temp_files/
 web/upload/undefined/
 web/upload/user/
+
+#composer.lock
+composer.lock

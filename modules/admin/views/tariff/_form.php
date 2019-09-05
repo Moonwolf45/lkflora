@@ -88,7 +88,7 @@ mihaildev\elfinder\Assets::noConflict($this);
         </div>
 
         <div class="row block_service">
-            <h4>Подключенные услуги</h4>
+            <h4>Бесплатные услуги</h4>
             <div class="block_connectedService">
                 <?php if(!empty($model->tariffAddition)): ?>
                     <?php foreach ($model->tariffAddition as $ta): ?>

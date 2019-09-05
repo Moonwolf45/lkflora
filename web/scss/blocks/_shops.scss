@@ -41,6 +41,14 @@
 	}
 }
 
+.shops__list_processing {
+	.add-something,.shops__item-box:not(.shops__item-request){
+		opacity: 0.6;
+		pointer-events: none;
+		filter:blur(1px);
+	}
+}
+
 .shops__item{
 	display: flex;
 	-webkit-justify-content: space-between;
@@ -82,6 +90,7 @@
 	 height: 14px;
 	 background: url(../images/icon/icon-hint.svg) no-repeat center/contain;
 }
+
 
 .shops__item-box-link{
 	position: relative;

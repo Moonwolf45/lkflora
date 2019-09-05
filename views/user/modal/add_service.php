@@ -122,7 +122,9 @@ use yii\widgets\ActiveForm;
                                                                     'value' => $shopsAdditions[$shop_id . '_' . $tAQ['addition']['id']]['quantity'],
                                                                     'min' => 1, 'max' => $max]); ?>
 
-                                                            <?php $free_services[$tAQ['addition']['id']]['quantity'] -= $shopsAdditions[$shop_id . '_' . $tAQ['addition']['id']]['quantity']; ?>
+                                                            <?php if (array_key_exists($tAQ['addition']['id'], $free_services)) {
+                                                                $free_services[$tAQ['addition']['id']]['quantity'] -= $shopsAdditions[$shop_id . '_' . $tAQ['addition']['id']]['quantity'];
+                                                            } ?>
                                                         </div>
                                                         <div class="number-plus js_number-plus">+</div>
                                                     </div>

@@ -46,8 +46,13 @@ $this->title = 'Главная'; ?>
                                         $id_modal = md5($shop['id'] . '_' . $shop['tariff']['id']);
                                         $tariff_id = $shop['tariff']['id']; $shop_id = $shop['id'];
                                         $count_addition = 0; $shopsAdditions = $shop['shopsAdditions'];
+                                        $class_to_shop = '';
                                     ?>
-                                    <ul class="shops__list">
+
+                                    <?php if($shop['on_check']): ?>
+                                        <?php $class_to_shop = 'shops__list_processing';?>
+                                    <?php endif; ?>
+                                    <ul class="shops__list <?= $class_to_shop; ?>">
                                         <li class="shops__item-mobile">
                                             <div class="shops__item-box s-di-vertical-m shops__item-title">Тариф</div>
                                             <div class="shops__item-box shops__item-box-mobile s-di-vertical-m" data-jsx-modal-target="tariff_<?=$id_modal; ?>">
