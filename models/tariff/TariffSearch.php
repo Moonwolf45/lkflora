@@ -40,6 +40,9 @@ class TariffSearch extends Tariff {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 15,
+            ],
         ]);
 
         $this->load($params);

@@ -47,6 +47,9 @@ AdminAsset::register($this); ?>
 <body>
 <?php $this->beginBody(); ?>
 
+<div class="background-loader">
+    <div class="loader"></div>
+</div>
 <div class="wrap">
     <?php NavBar::begin([
         'brandLabel' => "Админ-панель FloraPoint",
@@ -89,6 +92,18 @@ AdminAsset::register($this); ?>
 </footer>
 
 <?php $this->endBody(); ?>
+
+<script>
+    $(document).ready(function () {
+        $(document).on('pjax:complete', function() {
+            $('.background-loader').hide();
+        });
+
+        $(document).on('pjax:send', function() {
+            $('.background-loader').show();
+        });
+    });
+</script>
 </body>
 </html>
 <?php $this->endPage(); ?>

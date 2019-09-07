@@ -18,9 +18,6 @@ use yii\web\NotFoundHttpException;
 class UserController extends Controller {
 
     /**
-     * Настройка доступа
-     * todo: в данный момент доступ открыт всем авторизированным пользователям!
-     *
      * @return array
      */
     public function behaviors() {
@@ -54,7 +51,6 @@ class UserController extends Controller {
      * @param $id
      *
      * @return string
-     * @throws NotFoundHttpException
      */
     public function actionView($id) {
         $model = User::find()->joinWith('userSetting')->where(['user.id' => $id])->limit(1)->one();
@@ -64,7 +60,6 @@ class UserController extends Controller {
             ->where(['service.user_id' => Yii::$app->user->id])->asArray()->all();
 
         $model->shops = $shops;
-
 
         return $this->render('view', compact('model', 'services'));
     }
@@ -117,8 +112,12 @@ class UserController extends Controller {
             $model->password_hash = $pass;
             $model->sendMailForNewUser();
             $model->password_hash = Yii::$app->security->generatePasswordHash($model->password_hash);
-
             $model->save();
+
+            $userS = new UserSettings();
+            $userS->user_id = $model->id;
+            $userS->doc_num = Yii::$app->request->post()['User']['doc_num'];
+            $userS->save(false);
 
             return $this->redirect(['view', 'id' => $model->id]);
         }

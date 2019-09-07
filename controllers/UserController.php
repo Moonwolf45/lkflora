@@ -66,8 +66,7 @@ class UserController extends Controller {
             ->where(['shops.user_id' => Yii::$app->user->id, 'shops.deleted' => Shops::DELETED_FALSE])->asArray()->all();
 
         $tariffs = Tariff::find()->joinWith('tariffAdditionQty.addition tAQa')
-            ->joinWith('tariffAddition.addition tAa')->where(['tariff.status' => Tariff::STATUS_ON])
-            ->indexBy('id')->asArray()->all();
+            ->joinWith('tariffAddition.addition tAa')->indexBy('id')->asArray()->all();
 
         $monthly_payment = Service::find()->where(['user_id' => Yii::$app->user->id, 'agree' => Service::AGREE_TRUE])
             ->asArray()->all();
@@ -266,24 +265,24 @@ class UserController extends Controller {
     /**
      * Страница детализации баланса
      *
-     * @param $d
-     * @param $i
+     * @param int $d
+     * @param int $i
+     *
+     * @param int $h
      *
      * @return string
      */
-    public function actionPayment($d, $i) {
-        if ($d == '') {
-            $d = 1;
-        }
-
-        if ($i == '') {
-            $i = 1;
-        }
-
+    public function actionPayment($d = 1, $i = 1, $h = 1) {
         $modelPaid = new NewPaid();
-        $payments = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_WRITEOFF,
-            'status' => Payments::STATUS_PAID])->with('shop')->with('tariff')->with('addition')
-            ->orderBy(['id' => SORT_DESC])->asArray()->all();
+        $payments = Payments::find()->joinWith('shop')->joinWith('tariff')->joinWith('addition')
+            ->where(['payments.user_id' => Yii::$app->user->id, 'payments.type' => Payments::TYPE_WRITEOFF,
+                'payments.status' => Payments::STATUS_PAID])->orderBy(['payments.id' => SORT_DESC])
+            ->limit(3 * $h)->asArray()->all();
+
+        $payments_count = Payments::find()->joinWith('shop')->joinWith('tariff')->joinWith('addition')
+            ->where(['payments.user_id' => Yii::$app->user->id, 'payments.type' => Payments::TYPE_WRITEOFF,
+                'payments.status' => Payments::STATUS_PAID])->orderBy(['payments.id' => SORT_DESC])
+            ->asArray()->count();
 
         $deposit = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL,
             'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->limit(3 * $d)->asArray()->all();
@@ -299,8 +298,8 @@ class UserController extends Controller {
 
         $maxPaymentId = Payments::getMaxId();
 
-        return $this->render('payment', compact('d', 'i', 'modelPaid', 'payments', 'deposit', 'invoice',
-            'maxPaymentId', 'deposit_count', 'invoice_count'));
+        return $this->render('payment', compact('d', 'i', 'h', 'modelPaid', 'payments', 'deposit',
+            'invoice', 'maxPaymentId', 'deposit_count', 'invoice_count', 'payments_count'));
     }
 
     /**

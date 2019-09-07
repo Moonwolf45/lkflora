@@ -2,7 +2,9 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\MessageToPaid;
 use app\models\service\Service;
+use app\models\tariff\Tariff;
 use Yii;
 use app\models\shops\Shops;
 use app\models\shops\ShopsSearch;
@@ -44,14 +46,16 @@ class ShopsController extends Controller {
 
     /**
      * Displays a single Shops model.
+     *
      * @param integer $id
+     *
      * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = Shops::find()->joinWith('services.tariff')->joinWith('services.additions')
+            ->where(['shops.id' => $id])->limit(1)->one();
+
+        return $this->render('view', compact('model'));
     }
 
     /**
@@ -82,6 +86,20 @@ class ShopsController extends Controller {
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $tariff = Tariff::findOne(['id' => $model->tariff_id]);
+
+            $service = Service::find()->where(['shop_id' => $model->id, 'type_service' => Service::TYPE_TARIFF])
+                ->limit(1)->one();
+            $service->type_serviceId = $model->tariff_id;
+            $service->connection_date = date('Y-m-d');
+            $service->writeoff_amount = $tariff->cost;
+            $service->save(false);
+
+            $message_to_service = MessageToPaid::find()->where(['service_type' => Service::TYPE_TARIFF,
+                'service_id' => $service->id])->limit(1)->one();
+            $message_to_service->amount = $tariff->cost;
+            $message_to_service->save(false);
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -103,7 +121,7 @@ class ShopsController extends Controller {
      */
     public function actionDelete($id) {
         $this->findModel($id)->delete();
-        $services = Service::find()->where(['shop_id' => $id, 'completed' => Service::COMPLETED_TRUE])->all();
+        $services = Service::find()->where(['shop_id' => $id])->all();
         foreach ($services as $service) {
             $service->delete();
         }

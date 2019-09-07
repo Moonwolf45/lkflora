@@ -4,6 +4,7 @@ namespace app\models\shops;
 
 use app\models\addition\Addition;
 use app\models\db\User;
+use app\models\service\Service;
 use app\models\ShopsAddition;
 use app\models\tariff\Tariff;
 use yii\behaviors\TimestampBehavior;
@@ -124,5 +125,9 @@ class Shops extends ActiveRecord {
         return $this->hasMany(ShopsAddition::class, ['shop_id' => 'id'])->indexBy(function($row) {
             return $row['shop_id'] . '_' . $row['addition_id'];
         });
+    }
+
+    public function getServices() {
+        return $this->hasMany(Service::class, ['shop_id' => 'id']);
     }
 }

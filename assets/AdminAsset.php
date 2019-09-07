@@ -20,6 +20,7 @@ class AdminAsset extends AssetBundle
     ];
 
     public $js = [
+
     ];
 
     public $depends = [

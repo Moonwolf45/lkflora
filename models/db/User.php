@@ -30,6 +30,7 @@ use yii\web\IdentityInterface;
  * @property string  $password write-only password
  *
  * @property UserSettings $userSetting
+ * @property Shops $shops
  *
  * @property string $doc_num     Номер договора
  * @property string $type_org    Тип организации
@@ -89,9 +90,15 @@ class User extends ActiveRecord implements IdentityInterface {
     /**
      * {@inheritdoc}
      */
-    public function behaviors() {
+    public function behaviors(){
         return [
-            TimestampBehavior::class,
+            [
+                'class' => TimestampBehavior::class,
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                    ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+                ],
+            ],
         ];
     }
 
@@ -104,8 +111,14 @@ class User extends ActiveRecord implements IdentityInterface {
             ['role', 'default', 'value' => self::ROLE_USER],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_ADMIN]],
-            [['phone', 'doc_num', 'type_org', 'name_org', 'ur_addr_org', 'ogrn', 'inn', 'kpp', 'bik_banka', 'name_bank',
-                'kor_schet', 'rass_schet'], 'string', 'max' => 255],
+            [['phone', 'type_org', 'name_org', 'ur_addr_org', 'name_bank'], 'string', 'max' => 255],
+            [['kor_schet', 'rass_schet'], 'string', 'max' => 20],
+            [['kpp', 'bik_banka'], 'number', 'max' => 9],
+            [['doc_num'], 'number', 'max' => 10],
+            [['ogrn'], 'number', 'max' => 15],
+            [['inn'], 'number', 'max' => 12],
+
+
         ];
     }
 
@@ -259,6 +272,7 @@ class User extends ActiveRecord implements IdentityInterface {
             'email' => 'E-mail пользователя',
             'phone' => 'Номер телефона',
             'role' => 'Роль',
+            'doc_num' => 'Номер договора',
         ];
     }
 

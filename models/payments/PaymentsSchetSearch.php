@@ -40,7 +40,10 @@ class PaymentsSchetSearch extends Payments {
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
-            'sort' => ['defaultOrder' => ['invoice_number' => SORT_DESC]]
+            'sort' => ['defaultOrder' => ['invoice_number' => SORT_DESC]],
+            'pagination' => [
+                'pageSize' => 15,
+            ],
         ]);
 
         $this->load($params);

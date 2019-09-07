@@ -16,16 +16,13 @@ use yii\widgets\MaskedInput;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <label for="user-email">E-mail нового пользователя:</label>
-    <?= Html::activeTextInput($model, 'email', ['class' => 'form-control']); ?>
-
-    <br>
+    <?= $form->field($model, 'email')->textInput(['type' => 'email'])->label('E-mail нового пользователя:'); ?>
 
     <?= $form->field($model, 'phone')->widget(MaskedInput::class, [
         'mask' => '+7 (999) 999-99-99',
     ]); ?>
 
-    <br>
+    <?= $form->field($model, 'doc_num')->textInput()->label('Номер договора'); ?>
 
     <div class="form-group">
         <?= Html::submitButton('Сохранить', ['class' => 'btn btn-success']) ?>

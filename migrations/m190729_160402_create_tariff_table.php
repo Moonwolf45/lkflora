@@ -21,7 +21,7 @@ class m190729_160402_create_tariff_table extends Migration {
             'drop' => Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 0 COMMENT "Запрещает подключать тариф хуже"',
             'status' => Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 1 COMMENT "Статус"',
             'maximum' => Schema::TYPE_BOOLEAN . ' NOT NULL DEFAULT 0 COMMENT "Максимальный тариф"',
-            'term' => Schema::TYPE_INTEGER . ' NOT NULL COMMENT "Промо тариф"'
+            'term' => Schema::TYPE_INTEGER . ' NOT NULL DEFAULT 0 COMMENT "Промо тариф"'
         ]);
     }
 

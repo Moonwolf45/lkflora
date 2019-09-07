@@ -34,10 +34,13 @@ class UserSearch extends User {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = User::find();
+        $query = User::find()->joinWith('userSetting');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 15,
+            ],
         ]);
 
         $this->load($params);
@@ -47,17 +50,17 @@ class UserSearch extends User {
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'status' => $this->status,
-            'role' => $this->role
+            'user.id' => $this->id,
+            'user.status' => $this->status,
+            'user.role' => $this->role
         ]);
 
-        $query->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'phone', $this->phone])
-            ->andFilterWhere(['like', 'company_name', $this->company_name])
-            ->andFilterWhere(['like', 'password_hash', $this->password_hash])
-            ->andFilterWhere(['like', 'password_reset_token', $this->password_reset_token])
-            ->andFilterWhere(['like', 'auth_key', $this->auth_key]);
+        $query->andFilterWhere(['like', 'user.email', $this->email])
+            ->andFilterWhere(['like', 'user.phone', $this->phone])
+            ->andFilterWhere(['like', 'user.company_name', $this->company_name])
+            ->andFilterWhere(['like', 'user.password_hash', $this->password_hash])
+            ->andFilterWhere(['like', 'user.password_reset_token', $this->password_reset_token])
+            ->andFilterWhere(['like', 'user.auth_key', $this->auth_key]);
 
         return $dataProvider;
     }

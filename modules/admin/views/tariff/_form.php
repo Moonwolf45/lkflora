@@ -51,6 +51,17 @@ mihaildev\elfinder\Assets::noConflict($this);
         <div class="row block_service">
             <h4>Разршенные услуги</h4>
             <div class="block_resolutionService">
+                <div style="display:none;">
+                    <?= $form->field($model, 'resolutionService[]')->dropDownList(
+                        ArrayHelper::map($additions, 'id', 'name'), [
+                            'prompt' => 'Выберите доп. услуги котоые можно подключать в данном тарифе',
+                        ]
+                    ); ?>
+
+                    <?= $form->field($model, 'resolutionServiceQuantity[]')->textInput([
+                        'type' => 'number'
+                    ]); ?>
+                </div>
                 <?php if(!empty($model->tariffAdditionQty)): ?>
                     <?php foreach ($model->tariffAdditionQty as $taQ): ?>
                         <div>
@@ -90,6 +101,17 @@ mihaildev\elfinder\Assets::noConflict($this);
         <div class="row block_service">
             <h4>Бесплатные услуги</h4>
             <div class="block_connectedService">
+                <div style="display:none;">
+                    <?= $form->field($model, 'connectedService[]')->dropDownList(
+                        ArrayHelper::map($additions, 'id', 'name'), [
+                            'prompt' => 'Выберите доп. услуги которые уже подключены в данном тарифе',
+                        ]
+                    ); ?>
+
+                    <?= $form->field($model, 'connectedServiceQuantity[]')->textInput([
+                        'type' => 'number'
+                    ]); ?>
+                </div>
                 <?php if(!empty($model->tariffAddition)): ?>
                     <?php foreach ($model->tariffAddition as $ta): ?>
                         <div>
@@ -137,6 +159,7 @@ mihaildev\elfinder\Assets::noConflict($this);
 $script = <<< JS
     $('.add_res_ser').on('click', function(e) {
         let new_data = $('.block_resolutionService').children()[0].cloneNode(true);
+        new_data.style = 'display:block;';
         new_data.children[0].children[1].value = '';
         new_data.children[1].children[1].value = 0;
         $('.block_resolutionService').append(new_data);
@@ -144,6 +167,7 @@ $script = <<< JS
 
     $('.add_con_ser').on('click', function(e) {
         let new_data = $('.block_connectedService').children()[0].cloneNode(true);
+        new_data.style = 'display:block;';
         new_data.children[0].children[1].value = '';
         new_data.children[1].children[1].value = 0;
         $('.block_connectedService').append(new_data);

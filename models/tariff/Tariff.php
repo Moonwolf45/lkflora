@@ -60,6 +60,7 @@ class Tariff extends ActiveRecord {
             [['drop', 'status', 'maximum'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['cost'], 'number'],
             [['about'], 'string'],
+            [['term'], 'default', 'value' => null],
             [['term'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['resolutionService', 'connectedService'], 'each', 'rule' => ['integer']],

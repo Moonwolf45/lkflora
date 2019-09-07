@@ -145,7 +145,7 @@ switch ($currentPage) {
                 <p class="user-data__cash">баланс:
                     <span><?= Yii::$app->formatter->asDecimal(Yii::$app->user->identity->balance, 2); ?> руб</span>
                 </p>
-                <a href="<?php echo Url::to(['/user/payment', 'd' => 1, 'i' => 1]); ?>" class="user-data__add-cash">
+                <a href="<?php echo Url::to(['/user/payment', 'd' => 1, 'i' => 1, 'h' => 1]); ?>" class="user-data__add-cash">
                     <?=Html::img('@web/images/icon/icon-add.svg'); ?>
                 </a>
             </div>
@@ -178,7 +178,7 @@ switch ($currentPage) {
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="<?php echo Url::to(['/user/payment', 'd' => 1, 'i' => 1]); ?>" class="menu__link <?= $active_tree; ?>" title="Финансы">
+                    <a href="<?php echo Url::to(['/user/payment', 'd' => 1, 'i' => 1, 'h' => 1]); ?>" class="menu__link <?= $active_tree; ?>" title="Финансы">
                         <div class="menu__box">
                             <span class="menu__icon">
                                 <?=Html::img('@web/images/icon/icon-finance.svg'); ?>

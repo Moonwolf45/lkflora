@@ -189,4 +189,11 @@ addSupportClick.click(function(event) {
 	}
 });
 
+	$(document).on('pjax:complete', function() {
+		$('.background-loader').hide();
+	});
+
+	$(document).on('pjax:send', function() {
+		$('.background-loader').show();
+	});
 })(jQuery);

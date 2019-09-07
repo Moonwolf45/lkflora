@@ -214,10 +214,6 @@ class NeedController extends Controller {
                 $service->save(false);
             }
         } else {
-            if (!empty($message)) {
-                $message->delete();
-            }
-
             $service->delete();
         }
 
@@ -262,7 +258,7 @@ class NeedController extends Controller {
                     $service->deleted = Service::DELETED_FALSE;
                     $service->save();
                 } else {
-                    if ($sA->quantity != 1) {
+                    if ($sA->quantity > 1) {
                         $sA->quantity -= 1;
                         $sA->save();
                     } else {
@@ -283,12 +279,26 @@ class NeedController extends Controller {
             $service->save();
         }
 
-        $count_service = Service::find()->where(['shop_id' => $shop_id, 'agree' => Service::AGREE_FALSE])->count();
-        if ($count_service == 0) {
-            $shop = Shops::findOne($shop_id);
-            $shop->on_check = Shops::ON_CHECK_FALSE;
-            $shop->save(false);
+        $count_service = Service::find()->where(['shop_id' => $shop_id])->asArray()->all();
+        $shop = Shops::findOne($shop_id);
+        if (!empty($count_service)) {
+            $agree_service = 0;
+            foreach ($count_service as $service) {
+                if ($service['agree'] == Service::AGREE_FALSE) {
+                    $agree_service += 1;
+                }
+            }
+
+            if ($agree_service > 0) {
+                $shop->on_check = Shops::ON_CHECK_FALSE;
+                $shop->save(false);
+            } else {
+                $shop->delete();
+            }
+        } else {
+            $shop->delete();
         }
+
 
         return $this->redirect(['index']);
     }

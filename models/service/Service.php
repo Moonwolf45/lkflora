@@ -78,7 +78,7 @@ class Service extends ActiveRecord {
         return [
             'id' => 'ID',
             'user_id' => 'ID Бренда',
-            'shop_id' => 'ID Магазина',
+            'shop_id' => 'Адрес магазина',
             'type_service' => 'Тип услуги',
             'type_serviceId' => 'ID Услуги на которую планируется списание',
             'connection_date' => 'Дата подключения',

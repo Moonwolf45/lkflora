@@ -250,7 +250,7 @@ class TariffController extends Controller {
             if (!empty($delete_connected_addition)) {
                 foreach ($all_service_to_id as $services_shop) {
                     foreach ($services_shop as $key => $services) {
-                        if (in_array($key, $key_del_con_addit)) {
+                        if (in_array($key, $key_del_con_addit) && !in_array($key, $key_add_res_addit)) {
                             if (array_key_exists($key, $resolution_addition)) {
                                 // TODO: Если есть платные
                                 if (in_array($key, $shopsAddition_keys)) {
@@ -298,7 +298,7 @@ class TariffController extends Controller {
             if (!empty($delete_resolution_addition)) {
                 foreach ($all_service_to_id as $services_shop) {
                     foreach ($services_shop as $key => $services) {
-                        if (in_array($key, $key_del_res_addit)) {
+                        if (in_array($key, $key_del_res_addit) && !in_array($key, $key_add_con_addit)) {
                             if (array_key_exists($key, $connected_addition)) {
                                 // TODO: Если бесплатные
                                 if (in_array($key, $shopsAddition_keys)) {
@@ -347,7 +347,7 @@ class TariffController extends Controller {
                 foreach ($all_service_to_id as $services_shop) {
                     foreach ($services_shop as $key => $services) {
                         // TODO: Переносим бесплатные в платные
-                        if (array_key_exists($key, $delete_connected_addition)) {
+                        if (array_key_exists($key, $delete_connected_addition) && array_key_exists($key, $add_resolution_addition)) {
                             if (in_array($key, $shopsAddition_keys)) {
                                 foreach ($all_shopsAddition[$key] as $sA) {
                                     if ($sA->quantity > $add_resolution_addition[$key]['qty']) {
@@ -375,7 +375,7 @@ class TariffController extends Controller {
                         }
 
                         // TODO: Переносим платные в бесплатные
-                        if (array_key_exists($key, $delete_resolution_addition)) {
+                        if (array_key_exists($key, $delete_resolution_addition) && array_key_exists($key, $add_connected_addition)) {
                             if (in_array($key, $shopsAddition_keys)) {
                                 foreach ($all_shopsAddition[$key] as $sA) {
                                     if ($sA->quantity > $add_connected_addition[$key]['qty']) {

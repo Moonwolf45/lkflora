@@ -40,10 +40,13 @@ class ServiceNotAgreeSearch extends Service {
      */
     public function search($params) {
         $query = Service::find()->joinWith('user')->joinWith('shop')->joinWith('tariff')
-            ->joinWith('additions')->where(['agree' => Service::AGREE_FALSE]);
+            ->joinWith('additions')->where(['service.agree' => Service::AGREE_FALSE]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 15,
+            ],
         ]);
 
         $this->load($params);
@@ -53,17 +56,17 @@ class ServiceNotAgreeSearch extends Service {
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'user_id' => $this->user_id,
-            'shop_id' => $this->shop_id,
-            'type_service' => $this->type_service,
-            'writeoff_amount' => $this->writeoff_amount,
-            'repeat_service' => $this->repeat_service,
-            'deleted' => $this->deleted,
+            'service.id' => $this->id,
+            'service.user_id' => $this->user_id,
+            'service.shop_id' => $this->shop_id,
+            'service.type_service' => $this->type_service,
+            'service.writeoff_amount' => $this->writeoff_amount,
+            'service.repeat_service' => $this->repeat_service,
+            'service.deleted' => $this->deleted,
         ]);
 
         if ($this->connection_date != '') {
-            $query->andFilterWhere(['like', 'connection_date', Yii::$app->formatter->asDate($this->connection_date, 'yyyy-MM-dd')]);
+            $query->andFilterWhere(['like', 'service.connection_date', Yii::$app->formatter->asDate($this->connection_date, 'yyyy-MM-dd')]);
         }
 
         return $dataProvider;

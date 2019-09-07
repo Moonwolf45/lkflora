@@ -8,6 +8,7 @@
 /** @var $shop_id */
 /** @var $shopsAdditions */
 
+use app\models\tariff\Tariff;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\web\View;
@@ -17,25 +18,27 @@ $tariff_drop = $tariffs[$tariff_id]['drop'];
 
 $additions_tariff = [];
 foreach ($tariffs as $tariff) {
-    if ($tariff_id != $tariff['id']) {
-        $tAQ_keys = array_keys($tariff['tariffAdditionQty']);
-        $tA_keys = array_keys($tariff['tariffAddition']);
+    if ($tariff['status'] == Tariff::STATUS_ON) {
+        if ($tariff_id != $tariff['id']) {
+            $tAQ_keys = array_keys($tariff['tariffAdditionQty']);
+            $tA_keys = array_keys($tariff['tariffAddition']);
 
-        foreach ($tariff['tariffAddition'] as $tA) {
-            if (in_array($tA['addition_id'], $tAQ_keys)) {
-                $additions_tariff[$tariff['id']][$tA['addition_id']] = $tA;
-                $additions_tariff[$tariff['id']][$tA['addition_id']]['status_con'] = $tariffs[$tariff['id']]['tariffAdditionQty'][$tA['addition_id']]['status_con'];
-            } else {
-                $additions_tariff[$tariff['id']][$tA['addition_id']] = $tA;
+            foreach ($tariff['tariffAddition'] as $tA) {
+                if (in_array($tA['addition_id'], $tAQ_keys)) {
+                    $additions_tariff[$tariff['id']][$tA['addition_id']] = $tA;
+                    $additions_tariff[$tariff['id']][$tA['addition_id']]['status_con'] = $tariffs[$tariff['id']]['tariffAdditionQty'][$tA['addition_id']]['status_con'];
+                } else {
+                    $additions_tariff[$tariff['id']][$tA['addition_id']] = $tA;
+                }
             }
-        }
 
-        foreach ($tariff['tariffAdditionQty'] as $tAQ) {
-            if (in_array($tAQ['addition_id'], $tA_keys)) {
-                $additions_tariff[$tariff['id']][$tAQ['addition_id']] = $tAQ;
-                $additions_tariff[$tariff['id']][$tAQ['addition_id']]['quantity'] = $tariffs[$tariff['id']]['tariffAddition'][$tAQ['addition_id']]['quantity'];
-            } else {
-                $additions_tariff[$tariff['id']][$tAQ['addition_id']] = $tAQ;
+            foreach ($tariff['tariffAdditionQty'] as $tAQ) {
+                if (in_array($tAQ['addition_id'], $tA_keys)) {
+                    $additions_tariff[$tariff['id']][$tAQ['addition_id']] = $tAQ;
+                    $additions_tariff[$tariff['id']][$tAQ['addition_id']]['quantity'] = $tariffs[$tariff['id']]['tariffAddition'][$tAQ['addition_id']]['quantity'];
+                } else {
+                    $additions_tariff[$tariff['id']][$tAQ['addition_id']] = $tAQ;
+                }
             }
         }
     }
@@ -82,64 +85,68 @@ foreach ($additions_tariff as $key_tariff => $a_t) {
             <div class="tariff__wrapp js_tab-parent">
                 <ul class="tariff__tab">
                     <?php foreach ($tariffs as $tariff): ?>
-                        <?php if ($tariff_drop): ?>
-                            <?php if($tariff_id < $tariff['id']): ?>
-                                <li class="tariff__tab-item js__tab-item" data-id="<?=$tariff['id']; ?>" data-name="<?=$tariff['name']; ?>">
-                                    <div class="version-name">
-                                        <h3 class="version-name__title version-name__title_tariff"><?=$tariff['name']; ?></h3>
-                                        <p class="version-name__price version-name__price-tab"><?=Yii::$app->formatter
-                                                ->asDecimal($tariff['cost'], 2); ?>
-                                            <?php if($tariff['term'] == ''): ?>
-                                                руб/мес
-                                            <?php else: ?>
-                                                руб
-                                            <?php endif; ?>
-                                        </p>
-                                    </div>
-                                    <div class="tariff__show-hide js__show-hide">
-                                        Что входит в тариф?
-                                    </div>
-                                </li>
-                            <?php endif; ?>
-                        <?php else: ?>
-                            <?php if($tariff_id != $tariff['id']): ?>
-                                <li class="tariff__tab-item js__tab-item" data-id="<?=$tariff['id']; ?>" data-name="<?=$tariff['name']; ?>">
-                                    <div class="version-name">
-                                        <h3 class="version-name__title version-name__title_tariff"><?=$tariff['name']; ?></h3>
-                                        <p class="version-name__price version-name__price-tab"><?=Yii::$app->formatter
-                                                ->asDecimal($tariff['cost'], 2); ?>
-                                            <?php if($tariff['term'] == ''): ?>
-                                                руб/мес
-                                            <?php else: ?>
-                                                руб
-                                            <?php endif; ?>
-                                        </p>
-                                    </div>
-                                    <div class="tariff__show-hide js__show-hide">
-                                        Что входит в тариф?
-                                    </div>
-                                </li>
+                        <?php if ($tariff['status'] == Tariff::STATUS_ON): ?>
+                            <?php if ($tariff_drop): ?>
+                                <?php if ($tariff_id < $tariff['id']): ?>
+                                    <li class="tariff__tab-item js__tab-item" data-id="<?=$tariff['id']; ?>" data-name="<?=$tariff['name']; ?>">
+                                        <div class="version-name">
+                                            <h3 class="version-name__title version-name__title_tariff"><?=$tariff['name']; ?></h3>
+                                            <p class="version-name__price version-name__price-tab"><?=Yii::$app->formatter
+                                                    ->asDecimal($tariff['cost'], 2); ?>
+                                                <?php if($tariff['term'] == ''): ?>
+                                                    руб/мес
+                                                <?php else: ?>
+                                                    руб
+                                                <?php endif; ?>
+                                            </p>
+                                        </div>
+                                        <div class="tariff__show-hide js__show-hide">
+                                            Что входит в тариф?
+                                        </div>
+                                    </li>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <?php if($tariff_id != $tariff['id']): ?>
+                                    <li class="tariff__tab-item js__tab-item" data-id="<?=$tariff['id']; ?>" data-name="<?=$tariff['name']; ?>">
+                                        <div class="version-name">
+                                            <h3 class="version-name__title version-name__title_tariff"><?=$tariff['name']; ?></h3>
+                                            <p class="version-name__price version-name__price-tab"><?=Yii::$app->formatter
+                                                    ->asDecimal($tariff['cost'], 2); ?>
+                                                <?php if($tariff['term'] == ''): ?>
+                                                    руб/мес
+                                                <?php else: ?>
+                                                    руб
+                                                <?php endif; ?>
+                                            </p>
+                                        </div>
+                                        <div class="tariff__show-hide js__show-hide">
+                                            Что входит в тариф?
+                                        </div>
+                                    </li>
+                                <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
                     <?php endforeach; ?>
                 </ul>
                 <ul class="tariff__content">
                     <?php foreach ($tariffs as $tariff): ?>
-                        <?php if ($tariff_drop): ?>
-                            <?php if ($tariff_id < $tariff['id']): ?>
-                                <li class="tariff__content-item js__content-item">
-                                    <div class="tariff__content-row">
-                                        <?=$tariff['about']; ?>
-                                    </div>
-                                </li>
-                            <?php endif; ?>
-                        <?php else: ?>
-                            <?php if($tariff_id != $tariff['id']): ?>
-                                <li class="tariff__content-item js__content-item">
-                                    <div class="tariff__content-row">
-                                        <?=$tariff['about']; ?>
-                                    </div>
-                                </li>
+                        <?php if ($tariff['status'] == Tariff::STATUS_ON): ?>
+                            <?php if ($tariff_drop): ?>
+                                <?php if ($tariff_id < $tariff['id']): ?>
+                                    <li class="tariff__content-item js__content-item">
+                                        <div class="tariff__content-row">
+                                            <?=$tariff['about']; ?>
+                                        </div>
+                                    </li>
+                                <?php endif; ?>
+                            <?php else: ?>
+                                <?php if($tariff_id != $tariff['id']): ?>
+                                    <li class="tariff__content-item js__content-item">
+                                        <div class="tariff__content-row">
+                                            <?=$tariff['about']; ?>
+                                        </div>
+                                    </li>
+                                <?php endif; ?>
                             <?php endif; ?>
                         <?php endif; ?>
                     <?php endforeach; ?>

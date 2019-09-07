@@ -7,12 +7,14 @@ use yii\web\View;
 use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 
-/** @var TYPE_NAME $modelPaid */
-/** @var TYPE_NAME $d */
-/** @var TYPE_NAME $i */
-/** @var TYPE_NAME $maxPaymentId */
-/** @var TYPE_NAME $deposit_count */
-/** @var TYPE_NAME $invoice_count */
+/** @var $modelPaid */
+/** @var $d */
+/** @var $i */
+/** @var $h */
+/** @var $maxPaymentId */
+/** @var $deposit_count */
+/** @var $invoice_count */
+/** @var $payments_count */
 
 //--
 $amount = 0;
@@ -33,6 +35,10 @@ $unix_timestamp = time();
 
 $secretKey = Yii::$app->params['testSecretKey'];
 //--
+
+$new_d = $d + 1;
+$new_i = $i + 1;
+$new_h = $h + 1;
 
 $this->title = 'Детализация баланса'; ?>
 
@@ -128,7 +134,6 @@ $this->title = 'Детализация баланса'; ?>
 
                         <ul class="payment__content">
                             <?php Pjax::begin(); ?>
-                                <?php $new_d = $d++; $new_i = $i++; ?>
                                 <li class="payment__content-item js__content-item">
                                     <table class="table">
                                         <?php if(!empty($invoice)): ?>
@@ -172,7 +177,7 @@ $this->title = 'Детализация баланса'; ?>
 
                                     <?php if(!empty($invoice)): ?>
                                         <?php if(count($invoice) < $invoice_count): ?>
-                                            <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i]); ?>" class="show-more">
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i, 'h' => $h]); ?>" class="show-more">
                                                 Показать ещё
                                             </a>
                                         <?php endif; ?>
@@ -221,54 +226,62 @@ $this->title = 'Детализация баланса'; ?>
 
                                     <?php if(!empty($deposit)): ?>
                                         <?php if(count($deposit) < $deposit_count): ?>
-                                            <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i]); ?>" class="show-more">
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i, 'h' => $h]); ?>" class="show-more">
+                                                Показать ещё
+                                            </a>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </li>
+
+                                <li class="payment__content-item js__content-item">
+                                    <ul class="fee-history__list">
+                                        <?php if(!empty($payments)): ?>
+                                            <?php foreach($payments as $payment): ?>
+                                                <li class="fee-history__item">
+                                                    <div class="fee-history__col">
+                                                        <p><?=Yii::$app->formatter->asDate($payment['date']); ?></p>
+                                                    </div>
+                                                    <div class="fee-history__col">
+                                                        <p>
+                                                            <span class="s-medium">
+                                                                <?=Yii::$app->formatter->asDecimal($payment['amount'], 2); ?>
+                                                            </span> руб.
+                                                        </p>
+                                                    </div>
+                                                    <div class="fee-history__col">
+                                                        <p class="s-fz12px"><?= $payment['description']; ?></p>
+                                                    </div>
+                                                    <div class="fee-history__col">
+                                                        <?php if($payment['shop']): ?>
+                                                            <p class="s-fz12px"><?= $payment['shop']['address'];?></p>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <li class="fee-history__item">
+                                                <div class="empty_res">
+                                                    Списаний еще не было
+                                                </div>
+                                            </li>
+                                        <?php endif; ?>
+                                    </ul>
+
+                                    <?php if(!empty($payments)): ?>
+                                        <?php if(count($payments) < $payments_count): ?>
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $i, 'h' => $new_h]); ?>" class="show-more">
                                                 Показать ещё
                                             </a>
                                         <?php endif; ?>
                                     <?php endif; ?>
                                 </li>
                             <?php Pjax::end(); ?>
-
-                            <li class="payment__content-item js__content-item">
-                                <ul class="fee-history__list">
-                                    <?php if(!empty($payments)): ?>
-                                        <?php foreach($payments as $payment): ?>
-                                            <li class="fee-history__item">
-                                                <div class="fee-history__col">
-                                                    <p><?=Yii::$app->formatter->asDate($payment['date']); ?></p>
-                                                </div>
-                                                <div class="fee-history__col">
-                                                    <p>
-                                                        <span class="s-medium">
-                                                            <?=Yii::$app->formatter->asDecimal($payment['amount'], 2); ?>
-                                                        </span> руб.
-                                                    </p>
-                                                </div>
-                                                <div class="fee-history__col">
-                                                    <p class="s-fz12px"><?= $payment['description']; ?></p>
-                                                </div>
-                                                <div class="fee-history__col">
-                                                    <?php if($payment['shop']): ?>
-                                                        <p class="s-fz12px"><?= $payment['shop']['address'];?></p>
-                                                    <?php endif; ?>
-                                                </div>
-                                            </li>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <li class="fee-history__item">
-                                            <div class="empty_res">
-                                                Списаний еще не было
-                                            </div>
-                                        </li>
-                                    <?php endif; ?>
-                                </ul>
-                            </li>
                         </ul>
                     </div>
 
-                    <div class="payment__row payment__row-desctop">
-                        <div class="payment__col">
-                            <?php Pjax::begin(); ?>
+                    <?php Pjax::begin(); ?>
+                        <div class="payment__row payment__row-desctop">
+                            <div class="payment__col">
                                 <div class="check-status">
                                     <p class="sub-title">
                                         Созданные счета
@@ -309,7 +322,7 @@ $this->title = 'Детализация баланса'; ?>
 
                                     <?php if(!empty($invoice)): ?>
                                         <?php if(count($invoice) < $invoice_count): ?>
-                                            <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i]); ?>" class="show-more">
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i, 'h' => $h]); ?>" class="show-more">
                                                 Показать ещё
                                             </a>
                                         <?php endif; ?>
@@ -363,62 +376,70 @@ $this->title = 'Детализация баланса'; ?>
 
                                     <?php if(!empty($deposit)): ?>
                                         <?php if(count($deposit) < $deposit_count): ?>
-                                            <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $new_i]); ?>" class="show-more">
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $new_d, 'i' => $i, 'h' => $h]); ?>" class="show-more">
                                                 Показать ещё
                                             </a>
                                         <?php endif; ?>
                                     <?php endif; ?>
                                 </div>
-                            <?php Pjax::end(); ?>
-                        </div>
+                            </div>
 
-                        <div class="payment__col">
-                            <p class="sub-title">
-                                Детализация
-                            </p>
-                            <div class="fee-history">
-                                <ul class="fee-history__list">
-                                    <?php if(!empty($payments)): ?>
-                                        <?php foreach($payments as $payment): ?>
+                            <div class="payment__col">
+                                <p class="sub-title">
+                                    Детализация
+                                </p>
+                                <div class="fee-history">
+                                    <ul class="fee-history__list">
+                                        <?php if(!empty($payments)): ?>
+                                            <?php foreach($payments as $payment): ?>
+                                                <li class="fee-history__item">
+                                                    <div class="fee-history__col">
+                                                        <p><?=Yii::$app->formatter->asDate($payment['date']); ?></p>
+                                                    </div>
+                                                    <div class="fee-history__col">
+                                                        <p>
+                                                        <span class="s-medium">
+                                                            <?=Yii::$app->formatter->asDecimal($payment['amount'], 2); ?>
+                                                        </span> руб.
+                                                        </p>
+                                                    </div>
+                                                    <div class="fee-history__col">
+                                                        <?php $name = '';
+                                                        if ($payment['type_service'] == 1) {
+                                                            $name = $payment['tariff']['name'];
+                                                        } elseif ($payment['type_service'] == 2) {
+                                                            $name = $payment['addition']['name'];
+                                                        }
+                                                        ?>
+                                                        <p class="s-fz12px"><?= $payment['description']; ?>: <?= $name; ?></p>
+                                                    </div>
+                                                    <div class="fee-history__col">
+                                                        <?php if($payment['shop']): ?>
+                                                            <p class="s-fz12px"><?= $payment['shop']['address'];?></p>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </li>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
                                             <li class="fee-history__item">
-                                                <div class="fee-history__col">
-                                                    <p><?=Yii::$app->formatter->asDate($payment['date']); ?></p>
-                                                </div>
-                                                <div class="fee-history__col">
-                                                    <p>
-                                                    <span class="s-medium">
-                                                        <?=Yii::$app->formatter->asDecimal($payment['amount'], 2); ?>
-                                                    </span> руб.
-                                                    </p>
-                                                </div>
-                                                <div class="fee-history__col">
-                                                    <?php $name = '';
-                                                    if ($payment['type_service'] == 1) {
-                                                        $name = $payment['tariff']['name'];
-                                                    } elseif ($payment['type_service'] == 2) {
-                                                        $name = $payment['addition']['name'];
-                                                    }
-                                                    ?>
-                                                    <p class="s-fz12px"><?= $payment['description']; ?>: <?= $name; ?></p>
-                                                </div>
-                                                <div class="fee-history__col">
-                                                    <?php if($payment['shop']): ?>
-                                                        <p class="s-fz12px"><?= $payment['shop']['address'];?></p>
-                                                    <?php endif; ?>
+                                                <div class="empty_res">
+                                                    Списаний еще не было
                                                 </div>
                                             </li>
-                                        <?php endforeach; ?>
-                                    <?php else: ?>
-                                        <li class="fee-history__item">
-                                            <div class="empty_res">
-                                                Списаний еще не было
-                                            </div>
-                                        </li>
+                                        <?php endif; ?>
+                                    </ul>
+
+                                    <?php if(!empty($payments)): ?>
+                                        <?php if(count($payments) < $payments_count): ?>
+                                            <a href="<?=Url::to(['/user/payment', 'd' => $d, 'i' => $i, 'h' => $new_h]); ?>" class="show-more">
+                                                Показать ещё
+                                            </a>
+                                        <?php endif; ?>
                                     <?php endif; ?>
-                                </ul>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    <?php Pjax::end(); ?>
                 </div>
             </div>
         </div>
