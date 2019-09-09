@@ -213,3 +213,13 @@ hr {
     padding-bottom: 0;
     margin-bottom: 0;
 }
+
+.non-image {
+    background: #ccc;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    padding-top: 68px;
+    padding-left: 25px;
+}

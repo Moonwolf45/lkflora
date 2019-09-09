@@ -153,6 +153,18 @@ a.desc:after {
     float: right;
 }
 
+.user-avatar {
+    width: 170px;
+    height: 170px;
+}
+
+.user-avatar img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+}
+
 .background-loader {
     display: none;
     position: fixed;

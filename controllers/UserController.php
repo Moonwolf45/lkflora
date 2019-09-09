@@ -158,7 +158,8 @@ class UserController extends Controller {
         $shop->on_check = Shops::ON_CHECK_TRUE;
         $shop->save(false);
 
-        Service::saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'], Yii::$app->user->id, $oldTariff_id);
+        Service::saveTariff($updateShop['Shops']['tariff_id'], $updateShop['Shops']['id'], Yii::$app->user->id,
+            $oldTariff_id, $updateShop['Shops']['edit_tariff_change']);
 
         return $this->redirect(['/user/index']);
     }
@@ -279,10 +280,8 @@ class UserController extends Controller {
                 'payments.status' => Payments::STATUS_PAID])->orderBy(['payments.id' => SORT_DESC])
             ->limit(3 * $h)->asArray()->all();
 
-        $payments_count = Payments::find()->joinWith('shop')->joinWith('tariff')->joinWith('addition')
-            ->where(['payments.user_id' => Yii::$app->user->id, 'payments.type' => Payments::TYPE_WRITEOFF,
-                'payments.status' => Payments::STATUS_PAID])->orderBy(['payments.id' => SORT_DESC])
-            ->asArray()->count();
+        $payments_count = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_WRITEOFF,
+                'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->count();
 
         $deposit = Payments::find()->where(['user_id' => Yii::$app->user->id, 'type' => Payments::TYPE_REFILL,
             'status' => Payments::STATUS_PAID])->orderBy(['id' => SORT_DESC])->limit(3 * $d)->asArray()->all();

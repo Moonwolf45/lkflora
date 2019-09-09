@@ -1,6 +1,5 @@
 <?php
 
-use app\models\service\Service;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -31,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
+            'company_name',
             'email:email',
             'phone',
             [
@@ -42,15 +42,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         $shop_string = '';
                         $i = 1;
                         foreach ($data->shops as $shop) {
-                            $shop_string .= $i . ': ' . $shop['address'] . ', Тариф: ' . $shop['tariff']['name'] . '<br>';
+                            $shop_string .= $i . ': ' . $shop->address . ', Тариф: ' . $shop->tariff->name . '<br>';
 
-                            if (!empty($shop['shopsAdditions']) && !empty($shop['additions'])) {
+                            if (!empty($shop->shopsAdditions) && !empty($shop->additions)) {
                                 $shops_addition = [];
-                                foreach ($shop['shopsAdditions'] as $shop_ad) {
-                                    $shops_addition[$shop_ad['shop_id'] . '_' . $shop_ad['addition_id']] = $shop_ad;
+                                foreach ($shop->shopsAdditions as $shop_ad) {
+                                    $shops_addition[$shop_ad->shop_id . '_' . $shop_ad->addition_id] = $shop_ad;
                                 }
-                                foreach ($shop['additions'] as $addition) {
-                                    $shop_string .= '&nbsp;&nbsp;- ' . $addition['name'] . ', Кол-во: ' . $shops_addition[$shop['id'] . '_' . $addition['id']]['quantity'] .  '<br>';
+                                foreach ($shop->additions as $addition) {
+                                    $shop_string .= '&nbsp;&nbsp;- ' . $addition->name . ', Кол-во: ' . $shops_addition[$shop->id . '_' . $addition->id]->quantity .  '<br>';
                                 }
                             }
                             $i++;
@@ -58,6 +58,19 @@ $this->params['breadcrumbs'][] = $this->title;
                         return '<p class="text-success">' . $shop_string . '</p>';
                     } else {
                         return '<p class="text-danger">Не найдено не одного магазина</p>';
+                    }
+                }
+            ],
+            [
+                'attribute' => 'avatar',
+                'format' => 'html',
+                'headerOptions' => ['width' => '200'],
+                'value' => function($data) {
+                    if ($data['avatar'] != '') {
+                        return '<div class="user-avatar">' . Html::img('@web/' . $data['avatar'],
+                                ['class' => 'img-rounded']) . '</div>';
+                    } else {
+                        return '<div class="user-avatar">' . Html::img('@web/images/group.svg') . '</div>';
                     }
                 }
             ],
@@ -155,72 +168,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]); ?>
-
-    <hr>
-    <h2>Услуги</h2>
-    <?php foreach ($services as $service): ?>
-        <?= DetailView::widget([
-            'model' => $service,
-            'attributes' => [
-                [
-                    'attribute' => 'connection_date',
-                    'label' => 'Дата подключения',
-                    'format' => 'html',
-                    'value' => function($data) {
-                        return Yii::$app->formatter->asDate($data['connection_date']);
-                    }
-                ],
-                [
-                    'attribute' => 'shop_id',
-                    'label' => 'Магазин',
-                    'format' => 'html',
-                    'value' => function($data) {
-                        if ($data['shop']) {
-                            return $data['shop']['address'];
-                        } else {
-                            return '<p class="text-danger">Не найдено не одного магазина</p>';
-                        }
-
-                    }
-                ],
-                [
-                    'attribute' => 'type_service',
-                    'label' => 'Услуга',
-                    'format' => 'html',
-                    'value' => function($data) {
-                        if ($data['type_service'] == Service::TYPE_TARIFF) {
-                            return 'Тариф';
-                        } else {
-                            return 'Доп. услуга';
-                        }
-                    }
-                ],
-                [
-                    'attribute' => 'type_serviceId',
-                    'label' => 'Название услуги',
-                    'format' => 'html',
-                    'value' => function($data) {
-                        if ($data['type_service'] == Service::TYPE_TARIFF) {
-                            return $data['tariff']['name'];
-                        } else {
-                            return $data['additions'][0]['name'];
-                        }
-                    }
-                ],
-                [
-                    'attribute' => 'agree',
-                    'label' => 'Подтверждён',
-                    'format' => 'html',
-                    'value' => function($data) {
-                        if ($data['agree']) {
-                            return '<p class="text-success">Да</p>';
-                        } else {
-                            return '<p class="text-warning">Нет</p>';
-                        }
-                    }
-                ]
-            ]
-        ]); ?>
-    <?php endforeach; ?>
 
 </div>

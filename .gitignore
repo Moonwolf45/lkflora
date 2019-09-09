@@ -37,9 +37,6 @@ phpunit.phar
 #vagrant folder
 /vagrant
 
-#node_modules
-web/node_modules
-
 #upload
 web/upload/tickets/
 web/upload/temp_files/
@@ -47,4 +44,4 @@ web/upload/undefined/
 web/upload/user/
 
 #composer.lock
-composer.lock
+/composer.lock

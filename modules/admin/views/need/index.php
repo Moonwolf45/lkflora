@@ -3,6 +3,7 @@
 use app\models\db\User;
 use app\models\service\Service;
 use app\models\shops\Shops;
+use kartik\select2\Select2;
 use yii\grid\ActionColumn;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
@@ -41,7 +42,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 ],
                 [
                     'attribute' => 'shop_id',
-                    'filter' => ArrayHelper::map(Shops::find()->all(), 'id', 'address'),
+                    'filter' => Select2::widget([
+                        'model' => $searchModel,
+                        'attribute' => 'shop_id',
+                        'data' => ArrayHelper::map(Shops::find()->all(), 'id', 'address'),
+                        'options' => ['placeholder' => ''],
+                        'pluginOptions' => [
+                            'allowClear' => true
+                        ],
+                    ]),
                     'format' => 'html',
                     'value' => function($data) {
                         return $data->shop->address;

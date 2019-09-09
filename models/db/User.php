@@ -48,7 +48,6 @@ class User extends ActiveRecord implements IdentityInterface {
     use MailToUserTrait;
 
     public $passForMail;
-    public $shops;
 
     public $doc_num;
     public $type_org;
@@ -118,7 +117,7 @@ class User extends ActiveRecord implements IdentityInterface {
             [['ogrn'], 'number', 'max' => 15],
             [['inn'], 'number', 'max' => 12],
 
-
+            [['avatar'], 'file', 'extensions' => 'jpg, png, jpeg', 'maxSize' => 1024 * 1024 * 5],
         ];
     }
 
@@ -273,6 +272,8 @@ class User extends ActiveRecord implements IdentityInterface {
             'phone' => 'Номер телефона',
             'role' => 'Роль',
             'doc_num' => 'Номер договора',
+            'company_name' => 'Название бренда',
+            'avatar' => 'Аватарка',
         ];
     }
 

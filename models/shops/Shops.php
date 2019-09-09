@@ -32,6 +32,7 @@ class Shops extends ActiveRecord {
     public $addition = [];
     public $quantityArr = [];
     public $quantity = 1;
+    public $edit_tariff_change = '';
 
     const DELETED_TRUE = 1;
     const DELETED_FALSE = 0;
@@ -70,9 +71,10 @@ class Shops extends ActiveRecord {
             [['tariff_id', 'user_id', 'deleted'], 'integer'],
             [['on_check'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['addition', 'quantityArr'], 'each', 'rule' => ['integer', 'max' => 100]],
-            ['quantity', 'number', 'min' => 0, 'max' => 9999],
+            ['quantity', 'number', 'min' => 0, 'max' => 999],
             ['quantity', 'default', 'value' => 0],
             [['address'], 'string', 'max' => 255],
+            [['edit_tariff_change'], 'string'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class,
                 'targetAttribute' => ['user_id' => 'id']],
             [['tariff_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tariff::class,

@@ -27,6 +27,9 @@ class m190808_112601_create_service_table extends Migration {
 
         $this->addForeignKey('serviceUserId', '{{%service}}', 'user_id', '{{%user}}',
             'id');
+
+        $this->addForeignKey('serviceShopsId', '{{%service}}', 'shop_id', '{{%shops}}',
+            'id', 'CASCADE');
     }
 
     /**
@@ -34,6 +37,7 @@ class m190808_112601_create_service_table extends Migration {
      */
     public function safeDown() {
         $this->dropForeignKey('serviceUserId', '{{%service}}');
+        $this->dropForeignKey('serviceShopsId', '{{%service}}');
 
         $this->dropTable('{{%service}}');
     }

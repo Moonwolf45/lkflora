@@ -175,6 +175,8 @@ foreach ($additions_tariff as $key_tariff => $a_t) {
                         ->label(false); ?>
                     <?= $form1->field($modelShop, 'tariff_id')->hiddenInput(['value' => $tariff_id])
                         ->label(false); ?>
+                    <?= $form1->field($modelShop, 'edit_tariff_change')->hiddenInput(['value' => ''])
+                        ->label(false); ?>
                     <?= Html::submitButton('Перейти', ['class' => 'button button_width-200px tariff__button']); ?>
                 <?php $form1 = ActiveForm::end(); ?>
             </div>
@@ -195,6 +197,7 @@ $script = <<< JS
         
         $('.edit_addition').css({"display":"none"});
         $('#string_' + tariff_id).css({"display":"block"});
+        $('input[name="Shops[edit_tariff_change]"]').val('<p class="text-danger">' + $('#string_' + tariff_id + ' div p').html() + '</p>');
     });
 JS;
 //маркер конца строки, обязательно сразу, без пробелов и табуляции

@@ -6,7 +6,7 @@ use yii\widgets\MaskedInput;
 
 $this->title = 'Настройки';
 
-/** @var TYPE_NAME $profileSettings */
+/** @var $profileSettings app\models\db\User */
 
 ?>
 
@@ -57,16 +57,17 @@ $this->title = 'Настройки';
                                     <div class="unloadAvaInp">
                                         <div class="form-group">
                                             <label class="label">
-                                                <?php $avatar = '';
-                                                if (Yii::$app->user->identity->avatar) {
-                                                    $avatar = Yii::$app->user->identity->avatar;
-                                                } else {
-                                                    $avatar = 'images/group.svg';
-                                                } ?>
-                                                <?=Html::img('@web/' . $avatar, ['alt' => 'Ваше фото', 'id' => 'for-preview',
-                                                    'style' => 'width:150px;height:150px;border-radius:50%;object-fit:cover;']); ?>
+                                                <?php if (Yii::$app->user->identity->avatar): ?>
+                                                    <?= Html::img('@web/' . Yii::$app->user->identity->avatar, ['alt' => 'Ваше фото', 'id' => 'for-preview',
+                                                        'style' => 'width:150px;height:150px;border-radius:50%;object-fit:cover;']); ?>
+                                                <?php else: ?>
+                                                    <div class="non-image">Загрузить фото</div>
+                                                <?php endif; ?>
+
                                                 <?= $form->field($model, 'image', ['options' => ['id' => 'imgInp',
-                                                    'onchange' => 'previewFile()']])->fileInput(); ?>
+                                                    'onchange' => 'previewFile()']])->fileInput(['accept' => 'image/jpeg, 
+                                                    image/pjpeg, image/jpeg, image/jpeg, image/pjpeg, image/jpeg, 
+                                                    image/pjpeg, image/jpeg, image/pjpeg, image/png']); ?>
                                             </label>
                                         </div>
                                     </div>

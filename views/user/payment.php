@@ -235,7 +235,7 @@ $this->title = 'Детализация баланса'; ?>
 
                                 <li class="payment__content-item js__content-item">
                                     <ul class="fee-history__list">
-                                        <?php if(!empty($payments)): ?>
+                                        <?php if (!empty($payments)): ?>
                                             <?php foreach($payments as $payment): ?>
                                                 <li class="fee-history__item">
                                                     <div class="fee-history__col">
@@ -252,7 +252,7 @@ $this->title = 'Детализация баланса'; ?>
                                                         <p class="s-fz12px"><?= $payment['description']; ?></p>
                                                     </div>
                                                     <div class="fee-history__col">
-                                                        <?php if($payment['shop']): ?>
+                                                        <?php if ($payment['shop']): ?>
                                                             <p class="s-fz12px"><?= $payment['shop']['address'];?></p>
                                                         <?php endif; ?>
                                                     </div>

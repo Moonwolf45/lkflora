@@ -238,8 +238,7 @@ class NeedController extends Controller {
     public function actionCancel($id, $shop_id) {
         $service = Service::findOne($id);
 
-        if ($service->old_service_id == null && $service->old_connection_date == null && $service->old_writeoff_date == null
-            && $service->old_writeoff_amount == null) {
+        if ($service->old_service_id == null && $service->old_connection_date == null && $service->old_writeoff_date == null) {
             if ($service->type_service == Service::TYPE_ADDITION) {
                 $sA = ShopsAddition::find()->where(['shop_id' => $service->shop_id,
                     'addition_id' => $service->type_serviceId])->limit(1)->one();
@@ -290,10 +289,11 @@ class NeedController extends Controller {
             }
 
             if ($agree_service > 0) {
-                $shop->on_check = Shops::ON_CHECK_FALSE;
+                $shop->on_check = Shops::ON_CHECK_TRUE;
                 $shop->save(false);
             } else {
-                $shop->delete();
+                $shop->on_check = Shops::ON_CHECK_FALSE;
+                $shop->save(false);
             }
         } else {
             $shop->delete();

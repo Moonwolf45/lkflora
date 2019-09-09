@@ -193,11 +193,13 @@ class Service extends ActiveRecord {
      * @param int $user_id
      * @param int $old_id
      *
+     * @param string $edit_text
+     *
      * @return bool
      * @throws StaleObjectException
      * @throws \Throwable
      */
-    public static function saveTariff($tariff_id = 0, $shop_id = 0, $user_id = 0, $old_id = 0) {
+    public static function saveTariff($tariff_id = 0, $shop_id = 0, $user_id = 0, $old_id = 0, $edit_text = '') {
         $old_service_id = null;
         $old_connection_date = null;
         $old_writeoff_date = null;
@@ -215,7 +217,7 @@ class Service extends ActiveRecord {
                     $old_connection_date = $oldServiceTariff->connection_date;
                     $old_writeoff_date = $oldServiceTariff->writeoff_date;
                     $old_writeoff_amount = $oldServiceTariff->writeoff_amount;
-                    $edit_description = 'Изменение тарифа';
+                    $edit_description = $edit_text;
 
                     $oldServiceTariff->delete();
                 }
@@ -293,7 +295,7 @@ class Service extends ActiveRecord {
                         $saveService->old_service_id = null;
                         $saveService->old_connection_date = null;
                         $saveService->old_writeoff_date = null;
-                        $saveService->old_writeoff_amount = null;
+                        $saveService->old_writeoff_amount = $addition['cost'];
                         $saveService->save(false);
                     }
                 } else {

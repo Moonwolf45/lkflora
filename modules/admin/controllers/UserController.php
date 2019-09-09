@@ -53,15 +53,10 @@ class UserController extends Controller {
      * @return string
      */
     public function actionView($id) {
-        $model = User::find()->joinWith('userSetting')->where(['user.id' => $id])->limit(1)->one();
-        $shops = Shops::find()->joinWith('additions')->joinWith('tariff')->where(['user_id' => $id])
-            ->asArray()->all();
-        $services = Service::find()->joinWith('shop')->joinWith('additions')->joinWith('tariff')
-            ->where(['service.user_id' => Yii::$app->user->id])->asArray()->all();
+        $model = User::find()->joinWith('userSetting')->where(['user.id' => $id])
+            ->joinWith('shops.additions')->joinWith('shops.tariff')->limit(1)->one();
 
-        $model->shops = $shops;
-
-        return $this->render('view', compact('model', 'services'));
+        return $this->render('view', compact('model'));
     }
 
     /**
@@ -122,9 +117,7 @@ class UserController extends Controller {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create', ['model' => $model]);
     }
 
     /**
