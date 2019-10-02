@@ -84,24 +84,24 @@
     });
 
     // Attach file
-    $(".clip-input1").change(function () {
-        const input = $(this)[0];
-        let filename = '';
-        let d = 0;
+	$(".clip-input1").change(function () {
+		const input = $(this)[0];
+		let filename = '';
+		let d = 0;
 
-        for (let i = 0; i < input.files.length; i++) {
-            d = i;
-            d++;
+		for (let i = 0; i < input.files.length; i++) {
+			d = i;
+			d++;
 
-            if (d === input.files.length) {
-                filename += input.files[i].name;
-            } else {
-                filename += input.files[i].name + ', ';
-            }
-        }
+			if (d === input.files.length) {
+				filename += input.files[i].name;
+			} else {
+				filename += input.files[i].name + ', ';
+			}
+		}
 
-        $(".clip-input-txt1").text(filename);
-    });
+		$(".clip-input-txt1").text(filename);
+	});
 
     //Tab Tarife
     var $parentTab = $('.js_tab-parent');

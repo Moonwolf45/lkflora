@@ -17,10 +17,11 @@ class AdminAsset extends AssetBundle
 
     public $css = [
         'css/site.css',
+        'css/jquery.fancybox.min.css',
     ];
 
     public $js = [
-
+        'js/jquery.fancybox.min.js',
     ];
 
     public $depends = [

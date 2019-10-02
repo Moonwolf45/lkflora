@@ -112,10 +112,14 @@ class User extends ActiveRecord implements IdentityInterface {
             ['role', 'in', 'range' => [self::ROLE_USER, self::ROLE_ADMIN]],
             [['phone', 'type_org', 'name_org', 'ur_addr_org', 'name_bank'], 'string', 'max' => 255],
             [['kor_schet', 'rass_schet'], 'string', 'max' => 20],
-            [['kpp', 'bik_banka'], 'number', 'max' => 9],
-            [['doc_num'], 'number', 'max' => 10],
-            [['ogrn'], 'number', 'max' => 15],
-            [['inn'], 'number', 'max' => 12],
+//            [['kpp', 'bik_banka'], 'number', 'max' => 9],
+            [['kpp', 'bik_banka'], 'number'],
+//            [['doc_num'], 'number', 'max' => 10],
+            [['doc_num'], 'number'],
+//            [['ogrn'], 'number', 'max' => 15],
+            [['ogrn'], 'number'],
+//            [['inn'], 'number', 'max' => 12],
+            [['inn'], 'number'],
 
             [['avatar'], 'file', 'extensions' => 'jpg, png, jpeg', 'maxSize' => 1024 * 1024 * 5],
         ];

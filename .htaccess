@@ -20,7 +20,7 @@ RewriteRule ^fonts/(.*)$ /web/fonts/$1 [L]
 RewriteRule ^images/(.*)$ /web/images/$1 [L]
 RewriteRule ^upload/(.*)$ /web/upload/$1 [L]
 RewriteRule ^js/(.*)$ /web/js/$1 [L]
-RewriteRule ^sass/(.*)$ /web/scss/$1 [L]
+RewriteRule ^scss/(.*)$ /web/scss/$1 [L]
 RewriteRule (.*) /web/$1
 
 RewriteCond %{REQUEST_FILENAME} !-f

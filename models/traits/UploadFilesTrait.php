@@ -69,10 +69,7 @@ trait UploadFilesTrait {
             foreach ($model_name->$field as $key => $file) {
                 $randTempNameFile = time() . '_' . preg_replace("/[^ \w]+/", "_", $file->baseName) . '.' . $file->extension;
                 $name_image = time() . '.' . $file->extension;
-                if ($file->type == 'image/jpeg' || $file->type == 'image/pjpeg' || $file->type == 'image/jpeg'
-                    || $file->type == 'image/jpeg' || $file->type == 'image/pjpeg' || $file->type == 'image/jpeg'
-                    || $file->type == 'image/pjpeg' || $file->type == 'image/jpeg' || $file->type == 'image/pjpeg'
-                    || $file->type == 'image/png') {
+                if ($file->type == 'image/jpeg' || $file->type == 'image/pjpeg' || $file->type == 'image/png') {
                         $new_name_image = 'upload/temp_files/' . $randTempNameFile;
                         $path = 'upload/' . $path_to_file . '/' . $name_image;
                         shell_exec('convert ' . $new_name_image . ' -auto-orient -quality 90 ' . $path);
@@ -99,5 +96,31 @@ trait UploadFilesTrait {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Функция удаления файлов
+     *
+     * @param $model_name
+     * @param $field
+     *
+     * @param string $type_model
+     *
+     * @return bool|string
+     */
+    public function deleteImages($model_name, $field, $type_model = 'array') {
+        if ($type_model == 'array') {
+            foreach ($model_name->$field as $file) {
+                if (file_exists($file->file)) {
+                    @unlink($file->file);
+                }
+            }
+        } else {
+            if (file_exists($model_name->$field->file)) {
+                @unlink($model_name->$field->file);
+            }
+        }
+
+        return true;
     }
 }

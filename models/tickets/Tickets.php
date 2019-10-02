@@ -62,7 +62,7 @@ class Tickets extends ActiveRecord {
             'user_id' => 'ID Бренда',
             'subject' => 'Тема обращения',
             'tickets_text' => 'Текст сообщения',
-            'status' => 'Открыто_закрыто обращение',
+            'status' => 'Открыто\закрыто обращение',
             'new_text' => 'Есть новое сообщение',
 
             'ticketFiles' => 'Доп. файл (до 5шт.)',

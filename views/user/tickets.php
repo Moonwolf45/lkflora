@@ -20,9 +20,7 @@ $form_ticket = 'block';
 if ($id != '') {
     $ticket = 'block';
     $form_ticket = 'none';
-}
-
-?>
+} ?>
 
 <div class="content">
     <h2 class="content__title">Сообщения</h2>
@@ -62,11 +60,9 @@ if ($id != '') {
                                         <label class="attach__label" id="label-file1" for="file1">
                                             <?= Html::activeFileInput($newTicket, 'ticketFiles[]', [
                                                 'multiple' => true, 'class' => 'left clip-input attach__input',
-                                                'id' => 'file1', 'accept' => 'image/jpeg, image/pjpeg, image/jpeg, 
-                                                image/jpeg, image/pjpeg, image/jpeg, image/pjpeg, image/jpeg, 
-                                                image/pjpeg, image/png, application/pdf, application/msword,
-                                                application/excel, application/vnd.ms-excel, application/x-excel,
-                                                application/x-msexcel, 
+                                                'id' => 'file1', 'accept' => 'image/jpeg, image/pjpeg, image/png, 
+                                                application/pdf, application/msword, application/excel, 
+                                                application/vnd.ms-excel, application/x-excel, application/x-msexcel, 
                                                 application/vnd.openxmlformats-officedocument.wordprocessingml.document,
                                                 application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']); ?>
                                             <span class="attach__icon s-di-vertical-m"></span>
@@ -123,7 +119,7 @@ if ($id != '') {
                                                         </div>
                                                     <?php endif; ?>
 
-                                                    <p class="discussion__name"><?= $openTicket['user']['company_name']; ?></p>
+                                                    <p class="discussion__name"><?= Yii::$app->user->identity->company_name; ?></p>
 
                                                     <?php if (!empty($textTicket['ticketsFiles'])): ?>
                                                         <?php foreach($textTicket['ticketsFiles'] as $file): ?>
@@ -229,11 +225,9 @@ if ($id != '') {
                                             <label class="attach__label" id="label-file1" for="file1">
                                                 <?= Html::activeFileInput($newTicketText, 'ticketsFiles[]', [
                                                     'multiple' => true, 'class' => 'left clip-input1 attach__input',
-                                                    'id' => 'file1', 'accept' => 'image/jpeg, image/pjpeg, image/jpeg,
-                                                    image/jpeg, image/pjpeg, image/jpeg, image/pjpeg, image/jpeg,
-                                                    image/pjpeg, image/png, application/pdf, application/msword,
-                                                    application/excel, application/vnd.ms-excel, application/x-excel,
-                                                    application/x-msexcel,
+                                                    'id' => 'file1', 'accept' => 'image/jpeg, image/pjpeg, image/png, 
+                                                    application/pdf, application/msword, application/excel, 
+                                                    application/vnd.ms-excel, application/x-excel, application/x-msexcel,
                                                     application/vnd.openxmlformats-officedocument.wordprocessingml.document,
                                                     application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']); ?>
                                                 <span class="attach__icon s-di-vertical-m"></span>

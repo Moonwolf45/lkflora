@@ -28,6 +28,15 @@ trait MailToUserTrait {
             'text' => 'views/' . $view . '-text',
         ], $params);
 
+		if (array_key_exists('at_file', $params)) {
+			foreach ($params['at_file'] as $file) {
+				$content_file = file_get_contents($file->tempName);
+				$result->attachContent($content_file, [
+					'fileName' => $file->baseName . '.' . $file->extension,
+					'contentType' => $file->type]);
+			}
+		}
+
         $result->setTo($email);
         $result->setSubject($subject);
         $result->send();
