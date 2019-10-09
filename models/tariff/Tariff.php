@@ -5,6 +5,7 @@ namespace app\models\tariff;
 use app\models\addition\Addition;
 use app\models\MessageToPaid;
 use app\models\service\Service;
+use app\models\shops\Shops;
 use app\models\TariffAddition;
 use app\models\TariffAdditionQuantity;
 use Yii;
@@ -137,6 +138,13 @@ class Tariff extends ActiveRecord {
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getShops() {
+        return $this->hasMany(Shops::class, ['tariff_id' => 'id']);
+    }
+
+    /**
      * Получаем значение дропа
      *
      * @param string $i
@@ -203,25 +211,5 @@ class Tariff extends ActiveRecord {
                 }
             }
         }
-    }
-
-    /**
-     * Более быстрое сравнение массивов
-     *
-     * @param $arrayFrom
-     * @param $arrayAgainst
-     *
-     * @return mixed
-     */
-    public static function arrayDiffEmulation($arrayFrom, $arrayAgainst) {
-        $arrayAgainst = array_flip($arrayAgainst);
-
-        foreach ($arrayFrom as $key => $value) {
-            if(isset($arrayAgainst[$value])) {
-                unset($arrayFrom[$key]);
-            }
-        }
-
-        return $arrayFrom;
     }
 }

@@ -25,7 +25,6 @@
         "yiisoft/yii2-httpclient": "^2.0",
         "ext-json": "*",
         "adamasantares/sum2str": "^0.1.1",
-        "cboden/ratchet": "^0.4.1",
         "kartik-v/yii2-widget-select2": "dev-master"
     },
     "require-dev": {

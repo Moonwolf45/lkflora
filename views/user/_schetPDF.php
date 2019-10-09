@@ -3,9 +3,9 @@
 use adamasantares\sum2str\Sum2Str;
 use yii\helpers\Html;
 
-/** @var TYPE_NAME $number */
-/** @var TYPE_NAME $date */
-/** @var TYPE_NAME $user */
+/** @var $number */
+/** @var $date */
+/** @var $user app\models\db\User */
 
 ?>
 

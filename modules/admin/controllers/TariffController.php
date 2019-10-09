@@ -42,9 +42,12 @@ class TariffController extends Controller {
         $searchModel = new TariffSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
+        $otherRates = Tariff::find()->asArray()->all();
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'otherRates' => $otherRates,
         ]);
     }
 
@@ -241,9 +244,6 @@ class TariffController extends Controller {
             $key_del_res_addit = array_keys($delete_resolution_addition);
             $key_del_con_addit = array_keys($delete_connected_addition);
 
-            $add_edit_resolution = array_intersect($key_del_con_addit, $key_add_res_addit);
-            $add_edit_connection = array_intersect($key_del_res_addit, $key_add_con_addit);
-
             $edit_message = [];
 
             //TODO: Удаление бесплатных
@@ -300,7 +300,7 @@ class TariffController extends Controller {
                     foreach ($services_shop as $key => $services) {
                         if (in_array($key, $key_del_res_addit) && !in_array($key, $key_add_con_addit)) {
                             if (array_key_exists($key, $connected_addition)) {
-                                // TODO: Если бесплатные
+                                // TODO: Если есть бесплатные
                                 if (in_array($key, $shopsAddition_keys)) {
                                     foreach ($all_shopsAddition[$key] as $sA) {
                                         if ($sA->quantity > $connected_addition[$key]['qty']) {
@@ -360,8 +360,9 @@ class TariffController extends Controller {
                             $d = 0;
                             foreach ($services as $service) {
                                 if ($d < $add_resolution_addition[$key]['qty']) {
+                                    $wa = $service->writeoff_amount;
                                     $service->writeoff_amount = $service->old_writeoff_amount;
-                                    $service->old_writeoff_amount = null;
+                                    $service->old_writeoff_amount = $wa;
                                     $service->edit_description = 'Добавление услуги';
                                     $service->save(false);
 
@@ -443,8 +444,9 @@ class TariffController extends Controller {
                                             $edit_message[$service->id] = $service->writeoff_amount;
                                             $e++;
                                         } else {
+                                            $wa = $service->writeoff_amount;
                                             $service->writeoff_amount = $service->old_writeoff_amount;
-                                            $service->old_writeoff_amount = null;
+                                            $service->old_writeoff_amount = $wa;
                                             $service->edit_description = 'Добавление услуги';
                                             $service->save(false);
 
@@ -509,8 +511,9 @@ class TariffController extends Controller {
                                             $edit_message[$service->id] = $service->writeoff_amount;
                                             $e++;
                                         } else {
+                                            $wa = $service->writeoff_amount;
                                             $service->writeoff_amount = $service->old_writeoff_amount;
-                                            $service->old_writeoff_amount = null;
+                                            $service->old_writeoff_amount = $wa;
                                             $service->edit_description = 'Добавление услуги';
                                             $service->save(false);
 
@@ -526,8 +529,9 @@ class TariffController extends Controller {
                                 $e = 0;
                                 foreach ($services as $service) {
                                     if ($e < $edit_resolution_addition[$key]['qty']) {
+                                        $wa = $service->writeoff_amount;
                                         $service->writeoff_amount = $service->old_writeoff_amount;
-                                        $service->old_writeoff_amount = null;
+                                        $service->old_writeoff_amount = $wa;
                                         $service->edit_description = 'Добавление услуги';
                                         $service->save(false);
 
@@ -582,8 +586,9 @@ class TariffController extends Controller {
                                             $edit_message[$service->id] = $service->writeoff_amount;
                                             $e++;
                                         } else {
+                                            $wa = $service->writeoff_amount;
                                             $service->writeoff_amount = $service->old_writeoff_amount;
-                                            $service->old_writeoff_amount = null;
+                                            $service->old_writeoff_amount = $wa;
                                             $service->edit_description = 'Добавление услуги';
                                             $service->save(false);
 
@@ -646,23 +651,178 @@ class TariffController extends Controller {
      * @throws \yii\db\StaleObjectException
      */
     public function actionDelete($id) {
-        $this->findModel($id)->delete();
+        $tariff = Tariff::find()->where(['id' => $id])->limit(1)->one();
+        $tariff->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Tariff model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Tariff the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
+     * Deletes an existing Tariff model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
+     * @return \yii\web\Response
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
-    protected function findModel($id) {
-        if (($model = Tariff::findOne($id)) !== null) {
-            return $model;
+    public function actionModalDelete() {
+        $id_mtp = [];
+        $form = Yii::$app->request->post();
+
+        echo "<pre>";
+        print_r($form);
+        echo "</pre>";
+
+        $additions = Addition::find()->indexBy('id')->asArray()->all();
+        $otherTariff = Tariff::find()->where(['id' => $form['otherRate']])->asArray()->one();
+        $ta = TariffAddition::find()->where(['tariff_id' => $form['otherRate']])->indexBy('addition_id')
+            ->asArray()->all();
+        $ta_keys = array_keys($ta);
+        $taq = TariffAdditionQuantity::find()->where(['tariff_id' => $form['otherRate']])
+            ->indexBy('addition_id')->asArray()->all();
+        $taq_keys = array_keys($taq);
+
+        $services = Service::find()->where(['type_service' => Service::TYPE_TARIFF, 'type_serviceId' => $form['oldTariff_id']])->all();
+        foreach ($services as $service) {
+            $id_mtp[] = $service->id;
+
+            $service->type_serviceId = $form['otherRate'];
+            $service->writeoff_amount = $otherTariff['cost'];
+            $service->edit_description = 'Изменение тарифа';
+            $service->save(false);
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        $mtp_all = MessageToPaid::find()->where(['service_id' => $id_mtp])->all();
+        foreach ($mtp_all as $mtp) {
+            $mtp->amount = $otherTariff['cost'];
+            $mtp->save(false);
+        }
+
+        $shops = Shops::find()->where(['tariff_id' => $form['oldTariff_id']])->all();
+        foreach ($shops as $shop) {
+            $shop->tariff_id = $form['otherRate'];
+            $shop->save(false);
+
+            $sa_all = ShopsAddition::find()->where(['shop_id' => $shop->id])->all();
+            foreach ($sa_all as $sa) {
+                if (in_array($sa->addition_id, $taq_keys) && in_array($sa->addition_id, $ta_keys)) {
+                    $del_mtp = [];
+                    $update_mtp = [];
+
+                    if (in_array($sa->addition_id, $taq_keys)) {
+                        $del_services = Service::find()->where(['shop_id' => $shop->id,
+                            'type_service' => Service::TYPE_ADDITION, 'type_serviceId' => $sa->addition_id])->all();
+
+                        if ($sa->quantity <= $taq[$sa->addition_id]['quantity']) {
+                            foreach ($del_services as $del_s) {
+                                $del_s->writeoff_amount = $additions[$sa->addition_id]['cost'];
+                                $del_s->old_writeoff_amount = 0;
+                                $del_s->save(false);
+
+                                $update_mtp[$del_s->id]['id'] = $del_s->id;
+                                $update_mtp[$del_s->id]['amount'] = $additions[$sa->addition_id]['cost'];
+                            }
+                        } else {
+                            $new_q = $taq[$sa->addition_id]['quantity'] - $sa->quantity;
+
+                            $i = 0;
+                            foreach ($del_services as $del_s) {
+                                if ($i < $new_q) {
+                                    $del_mtp[] = $del_s->id;
+
+                                    $del_s->delete();
+                                    $i++;
+                                }
+                            }
+
+                            $sa->quantity = $ta[$sa->addition_id]['quantity'];
+                            $sa->save(false);
+                        }
+
+                        if (!empty($del_mtp)) {
+                            $mtp_data = MessageToPaid::find()->where(['service_id' => $del_mtp])->all();
+                            foreach ($mtp_data as $m_d) {
+                                $m_d->delete();
+                            }
+                        }
+
+                        if (!empty($update_mtp)) {
+                            $u_mtp = array_keys($update_mtp);
+
+                            $mtp_data = MessageToPaid::find()->where(['service_id' => $u_mtp])->all();
+                            foreach ($mtp_data as $u_d) {
+                                $u_d->amount = $update_mtp[$u_d->service_id]['amount'];
+                                $u_d->save(false);
+                            }
+                        }
+                    }
+
+                    if (in_array($sa->addition_id, $ta_keys)) {
+                        $del_services = Service::find()->where(['shop_id' => $shop->id,
+                            'type_service' => Service::TYPE_ADDITION, 'type_serviceId' => $sa->addition_id])->all();
+
+                        if ($sa->quantity <= $ta[$sa->addition_id]['quantity']) {
+                            $i = 0;
+
+                            foreach ($del_services as $del_s) {
+                                if ($i < $sa->quantity) {
+                                    $del_s->writeoff_amount = 0;
+                                    $del_s->old_writeoff_amount = $additions[$sa->addition_id]['cost'];
+                                    $del_s->save(false);
+
+                                    $i++;
+
+                                    $update_mtp[$del_s->id]['id'] = $del_s->id;
+                                    $update_mtp[$del_s->id]['amount'] = 0;
+                                }
+                            }
+                        } else {
+                            $new_q = $ta[$sa->addition_id]['quantity'] - $sa->quantity;
+
+                            $i = 0;
+                            foreach ($del_services as $del_s) {
+                                if ($i < $new_q) {
+                                    $del_mtp[] = $del_s->id;
+
+                                    $del_s->delete();
+                                    $i++;
+                                }
+                            }
+
+                            $sa->quantity = $ta[$sa->addition_id]['quantity'];
+                            $sa->save(false);
+                        }
+
+                        if (!empty($del_mtp)) {
+                            $mtp_data = MessageToPaid::find()->where(['service_id' => $del_mtp])->all();
+                            foreach ($mtp_data as $m_d) {
+                                $m_d->delete();
+                            }
+                        }
+
+                        if (!empty($update_mtp)) {
+                            $u_mtp = array_keys($update_mtp);
+
+                            $mtp_data = MessageToPaid::find()->where(['service_id' => $u_mtp])->all();
+                            foreach ($mtp_data as $u_d) {
+                                $u_d->amount = $update_mtp[$u_d->service_id]['amount'];
+                                $u_d->save(false);
+                            }
+                        }
+                    }
+                } else {
+                    $del_services = Service::find()->where(['shop_id' => $shop->id,
+                        'type_service' => Service::TYPE_ADDITION, 'type_serviceId' => $sa->addition_id])->all();
+
+                    foreach ($del_services as $del_s) {
+                        $del_s->delete();
+                    }
+
+                    $sa->delete();
+                }
+            }
+        }
+
+        return $this->redirect(['index']);
     }
 }

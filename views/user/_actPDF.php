@@ -3,8 +3,8 @@
 use adamasantares\sum2str\Sum2Str;
 use yii\helpers\Html;
 
-/** @var TYPE_NAME $model */
-/** @var TYPE_NAME $user */
+/** @var $model app\models\payments\Payments */
+/** @var $user app\models\db\User */
 
 ?>
 

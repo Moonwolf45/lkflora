@@ -36,7 +36,7 @@ class TariffSearch extends Tariff {
      * @return ActiveDataProvider
      */
     public function search($params) {
-        $query = Tariff::find();
+        $query = Tariff::find()->joinWith('shops');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

@@ -27,6 +27,7 @@ use app\models\form\UserSettingsForm;
 use app\models\form\UploadAvatarForm;
 use yii\web\UploadedFile;
 
+
 class UserController extends Controller {
     use UploadFilesTrait;
 
@@ -570,6 +571,10 @@ class UserController extends Controller {
                     $newTextFiles->save(false);
                 }
             }
+
+            $new_text = Tickets::findOne($newTicketText->ticket_id);
+            $new_text->new_text = false;
+            $new_text->save(false);
 
             return $this->refresh();
         }
