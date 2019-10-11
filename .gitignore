@@ -1,6 +1,5 @@
 # phpstorm project files
 .idea
-/.htaccess
 .htaccess
 
 # netbeans project files
@@ -45,4 +44,4 @@ web/upload/undefined/
 web/upload/user/
 
 #composer.lock
-/composer.lock
+composer.lock

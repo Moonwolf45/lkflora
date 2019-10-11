@@ -79,9 +79,9 @@ $config = [
                 ],
                 [
                     'class' => 'yii\log\FileTarget',
-                    'categories' => ['cron_work'],
+                    'categories' => ['cronWork'],
                     'levels' => ['info', 'profile', 'error', 'warning'],
-                    'logFile' => '@runtime/logs/'. date('d.m.Y') .'.log',
+                    'logFile' => '@runtime/logs/'. date('d.m.Y') . '.log',
                     'logVars' => ['_GET', '_POST'],
                 ],
             ],

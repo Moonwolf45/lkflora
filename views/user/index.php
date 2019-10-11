@@ -1,5 +1,6 @@
 <?php
 
+use app\models\MessageToPaid;
 use app\models\payments\Payments;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -12,11 +13,76 @@ use yii\widgets\Pjax;
 /** @var $invoice app\models\payments\Payments */
 /** @var $tickets app\models\tickets\Tickets */
 /** @var $newTicket app\models\tickets\Tickets */
-/** @var $monthly_payment */
+/** @var $monthly_payment app\models\service\Service */
+/** @var $next_payment app\models\MessageToPaid */
 
 $this->title = 'Главная'; ?>
 
 <div class="content content-main content-advertising">
+    <?php if (!empty($next_payment)): ?>
+        <?php $debtor = 0; $tomorrow = 0; $after_tomorrow = 0; $after_the_day_after_tomorrow = 0;
+
+            foreach ($next_payment as $nP) {
+                if ($nP['date_to_paid'] == date("Y-m-d") || $nP['debtor'] == MessageToPaid::DEBTOR_YES) {
+                    $debtor += $nP['amount'];
+                }
+
+                if ($nP['date_to_paid'] == date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")))) {
+                    $tomorrow += $nP['amount'];
+                }
+
+                if ($nP['date_to_paid'] == date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 2, date("Y")))) {
+                    $after_tomorrow += $nP['amount'];
+                }
+
+                if ($nP['date_to_paid'] == date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 3, date("Y")))) {
+                    $after_the_day_after_tomorrow += $nP['amount'];
+                }
+            }
+        ?>
+
+        <?php if ($tomorrow != 0 || $after_tomorrow != 0 || $after_the_day_after_tomorrow != 0): ?>
+            <div class="alert alert-warning" role="alert">
+                <h4 class="alert-heading">Важно!</h4>
+                <hr>
+
+                <?php if ($tomorrow != 0): ?>
+                    <p class="mb-0">Завтра у вас будет списана оплата за тариф\доп. услуги в размере
+                        <b><?= Yii::$app->formatter->asDecimal($tomorrow, 2); ?> руб.</b>
+                    </p>
+                <?php endif; ?>
+
+                <?php if ($after_tomorrow != 0): ?>
+                    <p class="mb-0">Послезавтра у вас будет списана оплата за тариф\доп. услуги в размере
+                        <b><?= Yii::$app->formatter->asDecimal($after_tomorrow, 2); ?> руб.</b>
+                    </p>
+                <?php endif; ?>
+
+                <?php if ($after_the_day_after_tomorrow != 0): ?>
+                    <p class="mb-0">Через 3 дня у вас будет списана оплата за тариф\доп. услуги в размере
+                        <b><?= Yii::$app->formatter->asDecimal($after_the_day_after_tomorrow, 2); ?> руб.</b>
+                    </p>
+                <?php endif; ?>
+                <br>
+
+                <p class="mb-0">Пожулайста проследите, что бы у вас на балансе хватило денег на оплату услуг.</p>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($debtor != 0): ?>
+            <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Внимание!</h4>
+                <hr>
+                <p class="mb-0">У вас имеется долг за тариф\доп. услуги в размере
+                    <b><?= Yii::$app->formatter->asDecimal($debtor, 2); ?> руб.</b><br>
+                    <br>
+                    Пожалуйста пополните баланс на данную сумму.
+                </p>
+            </div>
+        <?php endif; ?>
+
+    <?php endif; ?>
+
     <div class="content__row content__row_main">
         <div class="content__col-6 content__col_shops">
             <div class="content__box content__box_pb85">

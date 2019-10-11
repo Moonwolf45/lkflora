@@ -709,6 +709,7 @@ class TariffController extends Controller {
                     $del_mtp = [];
                     $update_mtp = [];
 
+                    // TODO: Проверяем и изменяем разрешенные доп. опции
                     if (in_array($sa->addition_id, $taq_keys)) {
                         $del_services = Service::find()->where(['shop_id' => $shop->id,
                             'type_service' => Service::TYPE_ADDITION, 'type_serviceId' => $sa->addition_id])->all();
@@ -757,6 +758,7 @@ class TariffController extends Controller {
                         }
                     }
 
+                    // TODO: Проверяем и изменяем бесплатные доп. опции
                     if (in_array($sa->addition_id, $ta_keys)) {
                         $del_services = Service::find()->where(['shop_id' => $shop->id,
                             'type_service' => Service::TYPE_ADDITION, 'type_serviceId' => $sa->addition_id])->all();

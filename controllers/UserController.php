@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\MessageToPaid;
 use app\models\payments\NewPaid;
 use app\models\payments\Payments;
 use app\models\service\Service;
@@ -79,6 +80,12 @@ class UserController extends Controller {
         $tickets = Tickets::find()->joinWith('lastTicket')->where(['tickets.user_id' => Yii::$app->user->id,
             'tickets.status' => Tickets::STATUS_OPEN_TICKET])->limit(3)->asArray()->all();
 
+        $next_payment = MessageToPaid::find()->where(['user_id' => Yii::$app->user->id])
+            ->andWhere(['>=', 'date_to_paid', date('Y-m-d')])
+            ->andWhere(['<=', 'date_to_paid', date("Y-m-d",
+                mktime(0, 0, 0, date("m"), date("d") + 3, date("Y")))])
+            ->asArray()->all();
+
         $modelShop = new Shops();
         $newTicket = new Tickets();
 
@@ -140,7 +147,7 @@ class UserController extends Controller {
         }
 
         return $this->render('index', compact('shops', 'modelShop', 'tariffs',
-            'invoice', 'newTicket', 'tickets', 'monthly_payment'));
+            'invoice', 'newTicket', 'tickets', 'monthly_payment', 'next_payment'));
     }
 
     /**

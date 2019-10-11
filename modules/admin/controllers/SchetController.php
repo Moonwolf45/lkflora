@@ -48,7 +48,7 @@ class SchetController extends Controller {
      * @return string
      */
     public function actionView($id) {
-        $model = Payments::find()->where(['payments.id' => $id])->joinWith('user')->limit(1)->one();
+        $model = Payments::find()->where(['payments.id' => $id])->joinWith('shop')->joinWith('user')->limit(1)->one();
 
         return $this->render('view', ['model' => $model]);
     }

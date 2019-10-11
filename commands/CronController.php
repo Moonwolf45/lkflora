@@ -6,12 +6,14 @@ use app\models\db\User;
 use app\models\MessageToPaid;
 use app\models\payments\Payments;
 use app\models\service\Service;
+use app\models\traits\MailToUserTrait;
 use app\models\Transaction;
 use Yii;
 use yii\console\Controller;
 use yii\httpclient\Client;
 
 class CronController extends Controller {
+    use MailToUserTrait;
 
     /**
      * @throws \Throwable
@@ -19,36 +21,35 @@ class CronController extends Controller {
      * @throws \yii\db\StaleObjectException
      */
     public function actionUpdate() {
-        Yii::beginProfile('UpdateBalanceUser');
+        Yii::beginProfile('UpdateBalanceUser', 'cronWork');
 
         $today = date('Y-m-d');
         $time = date('H:i:s');
-        Yii::info("Проверка услуг, для спиcаyия средств\r\n 
-            Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n 
-            Время: " . $time, 'cron_work');
+        Yii::info("Проверка услуг, для спиcаyия средств; Дата: " . Yii::$app->formatter->asDate($today, 'long') . "; Время: " . $time, 'cronWork');
 
         $services = Service::find()->where(['writeoff_date' => $today, 'agree' => Service::AGREE_TRUE,
             'deleted' => Service::DELETED_FALSE])->all();
 
         if (!empty($services)) {
-            Yii::info("Начинаем обновлять пользователей" , 'cron_work');
+            Yii::info("Начинаем обновлять пользователей" , 'cronWork');
 
             foreach ($services as $service) {
                 $user = User::findOne($service->user_id);
-                Yii::info("Пользователь: " . $user->company_name, 'cron_work');
+                Yii::info("Пользователь: " . $user->company_name, 'cronWork');
 
                 $oldDebtor = MessageToPaid::find()->where(['user_id' => $service->user_id,
                     'service_type' => $service->type_service, 'service_id' => $service->id,
                     'amount' => $service->writeoff_amount])->limit(1)->one();
 
                 if ($user->balance < $service->writeoff_amount) {
+                    Yii::info("Записываем человека в должники", 'cronWork');
                     $service->writeoff_date = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")));
                     $service->save(false);
 
                     $oldDebtor->debtor = MessageToPaid::DEBTOR_YES;
                     $oldDebtor->save(false);
                 } else {
-                    Yii::info("Записываем движение по счету в БД", 'cron_work');
+                    Yii::info("Записываем движение по счету в БД", 'cronWork');
                     $payment = new Payments();
                     $payment->user_id = $service->user_id;
                     $payment->shop_id = $service->shop_id;
@@ -92,12 +93,12 @@ class CronController extends Controller {
                     }
                 }
             }
-            Yii::info("Закончили обновлять пользователей", 'cron_work');
+            Yii::info("Закончили обновлять пользователей", 'cronWork');
         } else {
-            Yii::info("Сегодня списывать за уcлуги нечего", 'cron_work');
+            Yii::info("Сегодня списывать за уcлуги нечего", 'cronWork');
         }
 
-        Yii::endProfile('UpdateBalanceUser', 'cron_work');
+        Yii::endProfile('UpdateBalanceUser', 'cronWork');
     }
 
     /**
@@ -105,13 +106,11 @@ class CronController extends Controller {
      * @throws \yii\base\InvalidConfigException
      */
     public function actionRepeatTransaction() {
-        Yii::beginProfile('RepeatTransaction', 'cron_work');
+        Yii::beginProfile('RepeatTransaction', 'cronWork');
 
         $today = date('Y-m-d');
         $time = date('H:i:s');
-        Yii::info("Проверка таблицы транзакций, для поиска незваершенных\r\n 
-            Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n 
-            Время: " . $time, 'cron_work');
+        Yii::info("Проверка таблицы транзакций, для поиска незваершенных; Дата: " . Yii::$app->formatter->asDate($today, 'long') . "; Время: " . $time, 'cronWork');
 
         $transactions = Transaction::find()->where(['status' => Transaction::STATUS_REPEAT])->all();
         if (!empty($transactions)) {
@@ -159,33 +158,78 @@ class CronController extends Controller {
                 }
             }
         } else {
-            Yii::info("Незавершенных транзакций нет", 'cron_work');
+            Yii::info("Незавершенных транзакций нет", 'cronWork');
         }
 
-        Yii::endProfile('RepeatTransaction', 'cron_work');
+        Yii::endProfile('RepeatTransaction', 'cronWork');
     }
 
     public function actionMessageAboutPaymentForServices() {
-        Yii::beginProfile('MessageAboutPayment', 'cron_work');
+        Yii::beginProfile('MessageAboutPayment', 'cronWork');
 
         $today = date('Y-m-d');
         $time = date('H:i:s');
-        Yii::info("Проверка таблицы сообщений, для поиска скорых списаний\r\n 
-            Дата: " . Yii::$app->formatter->asDate($today, 'long') . "\r\n 
-            Время: " . $time, 'cron_work');
+        Yii::info("Проверка таблицы сообщений, для поиска скорых списаний; Дата: " . Yii::$app->formatter->asDate($today, 'long') . "; Время: " . $time, 'cronWork');
 
-        $messages = MessageToPaid::find()->where(['>=', 'date_to_paid', date("Y-m-d",
-            mktime(0, 0, 0, date("m"), date("d") + 3, date("Y")))])
-            ->limit(1)->groupBy('user_id')->all();
+        $all_user = User::find()->where(['status' => User::STATUS_ACTIVE])->asArray()->all();
 
-        if (!empty($messages)) {
-            Yii::info("Начинаем перебирать отбирать пользователей для сообщений", 'cron_work');
+        if (!empty($all_user)) {
+            Yii::info("Начинаем перебирать пользователей для сообщений", 'cronWork');
 
+            foreach ($all_user as $user) {
+                $messages = MessageToPaid::find()->where(['user_id' => $user['id']])
+                    ->andWhere(['>=', 'date_to_paid', date('Y-m-d')])
+                    ->andWhere(['<=', 'date_to_paid', date("Y-m-d",
+                        mktime(0, 0, 0, date("m"), date("d") + 3, date("Y")))])
+                    ->asArray()->all();
 
+                if (!empty($messages)) {
+                    Yii::info("Пользователь: " . $user['company_name'] . ' - ' . $user['email'], 'cronWork');
+
+                    $text = '';
+                    $tomorrow = 0;
+                    $after_the_day_after_tomorrow = 0;
+
+                    foreach ($messages as $nP) {
+                        if ($nP['date_to_paid'] == date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 1, date("Y")))) {
+                            $tomorrow += $nP['amount'];
+                        }
+
+                        if ($nP['date_to_paid'] == date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") + 3, date("Y")))) {
+                            $after_the_day_after_tomorrow += $nP['amount'];
+                        }
+                    }
+
+                    if ($tomorrow != 0 || $after_the_day_after_tomorrow != 0) {
+                        $text .= '<h4>Важно!</h4>';
+                        $text .= '<hr>';
+
+                        if ($tomorrow != 0) {
+                            $text .= '<p>Завтра у вас будет списана оплата за тариф\доп. услуги в размере';
+                            $text .= '<b>' . Yii::$app->formatter->asDecimal($tomorrow, 2) . ' руб.</b>';
+                            $text .=  '</p>';
+                        }
+
+                        if ($after_the_day_after_tomorrow != 0) {
+                            $text .= '<p>Завтра у вас будет списана оплата за тариф\доп. услуги в размере';
+                            $text .= '<b>' . Yii::$app->formatter->asDecimal($after_the_day_after_tomorrow, 2) . ' руб.</b>';
+                            $text .=  '</p>';
+                        }
+
+                        $text .= '<br>';
+                        $text .= '<p>Пожулайста проследите, что бы у вас на балансе хватило денег на оплату услуг.</p>';
+                        $text .= '<br><br><br><p>Это сообщение сгенерировано автоматически. Отвечать на него не нежуно.</p>';
+                    }
+
+                    $this->sendMailToUser($user['email'], 'messageToPaid', 'Оплата за услуги на сайте Florapoint.ru', ['text' => $text]);
+                }
+            }
+
+            Yii::info("Закончили перебирать пользователей", 'cronWork');
         } else {
-            Yii::info("Сообщений нет", 'cron_work');
+            Yii::info("Сообщений нет", 'cronWork');
         }
 
-        Yii::endProfile('MessageAboutPayment', 'cron_work');
+        Yii::endProfile('MessageAboutPayment', 'cronWork');
     }
 }
