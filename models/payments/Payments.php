@@ -141,7 +141,7 @@ class Payments extends ActiveRecord {
      *
      * @return bool|string
      */
-    public function getSignature($data = []) {
+    public static function getSignature($data = []) {
         if (!empty($data)) {
             $signature = '';
 

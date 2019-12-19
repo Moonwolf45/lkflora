@@ -431,8 +431,7 @@ class UserController extends Controller {
             $time_now = time();
             $salt = Yii::$app->security->generateRandomString(32);
 
-            $payments = new Payments();
-            $signature = $payments->getSignature(['transaction_id' => $transaction_id, 'unix_timestamp' => $time_now,
+            $signature = Payments::getSignature(['transaction_id' => $transaction_id, 'unix_timestamp' => $time_now,
                 'merchant' => Yii::$app->params['idSite'], 'salt' => $salt]);
 
             $client = new Client(['requestConfig' => ['format' => Client::FORMAT_URLENCODED],
@@ -541,7 +540,7 @@ class UserController extends Controller {
             $newTextTicket->save(false);
 
             if ($newTicket->ticketFiles) {
-                $manyFile = $this->uploadGallery($newTicket, 'ticketFiles','tickets');
+                $manyFile = $this->uploadGallery($newTicket, 'ticketFiles', 'tickets');
 
                 foreach ($manyFile as $ticketFile) {
                     $newTextFiles = new TicketsFiles();

@@ -115,11 +115,10 @@ class CronController extends Controller {
         $transactions = Transaction::find()->where(['status' => Transaction::STATUS_REPEAT])->all();
         if (!empty($transactions)) {
             foreach ($transactions as $transaction) {
-                $payments = new Payments();
                 $time_now = time();
                 $salt = Yii::$app->security->generateRandomString(32);
 
-                $signature = $payments->getSignature(['transaction_id' => $transaction->transaction_id, 'unix_timestamp' => $time_now,
+                $signature = Payments::getSignature(['transaction_id' => $transaction->transaction_id, 'unix_timestamp' => $time_now,
                     'merchant' => Yii::$app->params['idSite'], 'salt' => $salt]);
 
                 $client = new Client(['requestConfig' => ['format' => Client::FORMAT_URLENCODED],
@@ -147,7 +146,7 @@ class CronController extends Controller {
                             $transaction->save(false);
                         } elseif ($resp_array->transaction->state == 'PROCESSING' || $resp_array->transaction->state == 'WAITING_FOR_3DS') {
                             $payment->status = Payments::STATUS_WAITING;
-                        }  elseif ($resp_array->transaction->state == 'FAILED') {
+                        } elseif ($resp_array->transaction->state == 'FAILED') {
                             $payment->status = Payments::STATUS_CANCEL;
 
                             $transaction->status = Transaction::STATUS_OK;

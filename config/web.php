@@ -66,7 +66,7 @@ $config = [
             'textLayout' => 'layouts/main-text',
             'messageConfig' => [
                 'charset' => 'UTF-8',
-                'from' => ['info@lk.florapoint.ru' => 'Florapoint.tu'],
+                'from' => ['info@lk.florapoint.ru' => 'Florapoint.ru'],
             ],
         ],
         'log' => [

@@ -8,7 +8,6 @@ return [
     'charset'  => 'utf8',
 
     'enableSchemaCache'   => true,
-//    'schemaCacheDuration' => 3600,
-    'schemaCacheDuration' => 180,
+    'schemaCacheDuration' => 3600,
     'schemaCache'         => 'cache',
 ];
